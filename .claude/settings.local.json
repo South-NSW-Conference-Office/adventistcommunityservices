@@ -3,7 +3,11 @@
     "allow": [
       "Bash(git init:*)",
       "Bash(git add:*)",
-      "Bash(git commit -m \"$\\(cat <<''EOF''\nInitial commit: Adventist Community Services frontend\n\nReact + Vite + TypeScript + TailwindCSS project setup with:\n- MUI and Radix UI components\n- React Router for navigation\n- Various UI libraries \\(recharts, embla-carousel, etc.\\)\n\n🤖 Generated with [Claude Code]\\(https://claude.com/claude-code\\)\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")"
+      "Bash(git commit -m \"$\\(cat <<''EOF''\nInitial commit: Adventist Community Services frontend\n\nReact + Vite + TypeScript + TailwindCSS project setup with:\n- MUI and Radix UI components\n- React Router for navigation\n- Various UI libraries \\(recharts, embla-carousel, etc.\\)\n\n🤖 Generated with [Claude Code]\\(https://claude.com/claude-code\\)\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
+      "Bash(git branch:*)",
+      "Bash(git remote add:*)",
+      "Bash(git push:*)",
+      "Bash(git commit:*)"
     ]
   }
 }

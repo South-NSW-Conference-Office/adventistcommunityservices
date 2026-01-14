@@ -5,6 +5,7 @@ import { About } from './pages/About';
 import { Contact } from './pages/Contact';
 import { Services } from './pages/Services';
 import { ServiceDetails } from './pages/ServiceDetails';
+import { Churches } from './pages/Churches';
 import { ComingSoon } from './pages/ComingSoon';
 import { ForgotPassword } from './pages/ForgotPassword';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
@@ -44,6 +45,7 @@ function AppContent() {
         <Route path="/about" element={<About />} />
         <Route path="/services" element={<Services />} />
         <Route path="/services/:id" element={<ServiceDetails />} />
+        <Route path="/churches" element={<Churches />} />
         <Route path="/contact" element={<Contact />} />
       </Routes>
 

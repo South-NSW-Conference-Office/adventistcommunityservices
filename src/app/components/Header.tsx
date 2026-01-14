@@ -26,6 +26,7 @@ export function Header({ onLogout, isAuthenticated = false }: HeaderProps) {
             <Link to="/" className="text-white/90 hover:text-white transition-colors">Home</Link>
             <Link to="/about" className="text-white/90 hover:text-white transition-colors">About</Link>
             <Link to="/services" className="text-white/90 hover:text-white transition-colors">Services</Link>
+            <Link to="/churches" className="text-white/90 hover:text-white transition-colors">Churches</Link>
             <Link to="/contact" className="text-white/90 hover:text-white transition-colors">Contact</Link>
           </nav>
 
