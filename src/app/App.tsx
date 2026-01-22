@@ -6,9 +6,16 @@ import { Contact } from './pages/Contact';
 import { Services } from './pages/Services';
 import { ServiceDetails } from './pages/ServiceDetails';
 import { Churches } from './pages/Churches';
+import { ChurchDetails } from './pages/ChurchDetails';
+import { Teams } from './pages/Teams';
+import { TeamDetails } from './pages/TeamDetails';
 import { ComingSoon } from './pages/ComingSoon';
 import { ForgotPassword } from './pages/ForgotPassword';
+import { Preview } from './pages/Preview';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
+import { EditModeProvider } from './contexts/EditModeContext';
+import { EditModeFloatingButton, EditModeSaveBar } from './components/editable';
+import { Toaster } from './components/ui/sonner';
 import { Loader2 } from 'lucide-react';
 
 function AppContent() {
@@ -30,6 +37,7 @@ function AppContent() {
   if (!isAuthenticated) {
     return (
       <Routes>
+        <Route path="/preview/:token" element={<Preview />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="*" element={<ComingSoon />} />
       </Routes>
@@ -46,8 +54,16 @@ function AppContent() {
         <Route path="/services" element={<Services />} />
         <Route path="/services/:id" element={<ServiceDetails />} />
         <Route path="/churches" element={<Churches />} />
+        <Route path="/churches/:id" element={<ChurchDetails />} />
+        <Route path="/teams" element={<Teams />} />
+        <Route path="/teams/:id" element={<TeamDetails />} />
         <Route path="/contact" element={<Contact />} />
       </Routes>
+
+      {/* Edit Mode UI */}
+      <EditModeFloatingButton />
+      <EditModeSaveBar />
+      <Toaster position="top-right" richColors />
 
       {/* Footer */}
       <footer className="border-t border-white/10 mt-16">
@@ -99,7 +115,9 @@ export default function App() {
   return (
     <Router>
       <AuthProvider>
-        <AppContent />
+        <EditModeProvider>
+          <AppContent />
+        </EditModeProvider>
       </AuthProvider>
     </Router>
   );

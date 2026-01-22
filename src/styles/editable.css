@@ -1,0 +1,73 @@
+/* Editable Components Styles */
+
+/* ProseMirror/Tiptap Editor Styles */
+.ProseMirror {
+  outline: none;
+}
+
+.ProseMirror p.is-editor-empty:first-child::before {
+  color: rgba(255, 255, 255, 0.5);
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
+}
+
+.ProseMirror p {
+  margin-bottom: 0.5em;
+}
+
+.ProseMirror p:last-child {
+  margin-bottom: 0;
+}
+
+.ProseMirror ul,
+.ProseMirror ol {
+  padding-left: 1.5em;
+  margin-bottom: 0.5em;
+}
+
+.ProseMirror ul {
+  list-style-type: disc;
+}
+
+.ProseMirror ol {
+  list-style-type: decimal;
+}
+
+.ProseMirror li {
+  margin-bottom: 0.25em;
+}
+
+.ProseMirror a {
+  color: #F97023;
+  text-decoration: underline;
+}
+
+.ProseMirror a:hover {
+  color: #E86519;
+}
+
+/* Editable element hover states */
+[data-editable="true"] {
+  position: relative;
+}
+
+[data-editable="true"]:focus {
+  outline: none;
+}
+
+/* Ensure rich text editor inherits text color */
+[data-editable="true"] .ProseMirror {
+  color: inherit;
+}
+
+/* Edit mode body class for global styling */
+body.edit-mode [data-editable="true"]:not([data-editing="true"]) {
+  cursor: pointer;
+}
+
+/* Animate edit mode transitions */
+[data-editable="true"] {
+  transition: box-shadow 0.2s ease, outline 0.2s ease;
+}

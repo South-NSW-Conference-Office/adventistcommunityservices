@@ -1,75 +1,161 @@
 import { Loader2 } from 'lucide-react';
 import { useState, FormEvent } from 'react';
 import { contactApi, ContactFormData, VolunteerApplicationData } from '../services/contactApi';
+import { useCMSPage, CMSImage } from '../hooks/useCMSContent';
 
-export function Contact() {
-  const [formType, setFormType] = useState<'contact' | 'volunteer'>('contact');
+type FormType = 'contact' | 'volunteer';
+
+interface ValidationRule {
+  field: string;
+  message: string;
+  validate: (value: string) => boolean;
+}
+
+interface ImageLayoutConfig {
+  colSpan: 1 | 2;
+  height: string;
+}
+
+interface ImageMasonryProps {
+  images: CMSImage[];
+  layout: ImageLayoutConfig[];
+}
+
+const staticContactImages: CMSImage[] = [
+  { url: 'https://images.unsplash.com/photo-1725021059875-8f7fd08c843a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhdXN0cmFsaWElMjBzeWRuZXklMjBvZmZpY2UlMjBidWlsZGluZ3xlbnwxfHx8fDE3NjYxOTgyMTh8MA&ixlib=rb-4.1.0&q=80&w=1080', alt: 'ACS Office Building' },
+  { url: 'https://images.unsplash.com/photo-1556761175-b413da4baf72?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxvZmZpY2UlMjByZWNlcHRpb24lMjBkZXNrfGVufDF8fHx8MTczNDU2Nzg5Nnww&ixlib=rb-4.1.0&q=80&w=1080', alt: 'Reception Area' },
+  { url: 'https://images.unsplash.com/photo-1497366216548-37526070297c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxvZmZpY2UlMjBtZWV0aW5nJTIwcm9vbXxlbnwxfHx8fDE3MzQ1Njc4OTZ8MA&ixlib=rb-4.1.0&q=80&w=1080', alt: 'Meeting Room' },
+];
+
+const staticVolunteerImages: CMSImage[] = [
+  { url: 'https://images.unsplash.com/photo-1710092784814-4a6f158913b8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx2b2x1bnRlZXJzJTIwZm9vZCUyMGJhbmslMjBoZWxwaW5nfGVufDF8fHx8MTc2NjM3MDE3Nnww&ixlib=rb-4.1.0&q=80&w=1080', alt: 'Food Bank Volunteers' },
+  { url: 'https://images.unsplash.com/photo-1722336762551-831c0bcc2b59?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjb21tdW5pdHklMjB2b2x1bnRlZXJzJTIwcGFja2luZyUyMGNsb3RoZXN8ZW58MXx8fHwxNzY2MzcwMTc2fDA&ixlib=rb-4.1.0&q=80&w=1080', alt: 'Clothing Assistance' },
+  { url: 'https://images.unsplash.com/photo-1657558638549-9fd140b1ab5e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx2b2x1bnRlZXJzJTIwaGVscGluZyUyMGVsZGVybHl8ZW58MXx8fHwxNzY2MzcwMTc3fDA&ixlib=rb-4.1.0&q=80&w=1080', alt: 'Community Support' },
+  { url: 'https://images.unsplash.com/photo-1758599668125-e154250f24bd?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx2b2x1bnRlZXJzJTIwdGVhbXdvcmslMjBjb21tdW5pdHl8ZW58MXx8fHwxNzY2MzcwMTc3fDA&ixlib=rb-4.1.0&q=80&w=1080', alt: 'Teamwork' },
+  { url: 'https://images.unsplash.com/photo-1559027615-cd4628902d4a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx2b2x1bnRlZXJzJTIwaGFwcHklMjBjb21tdW5pdHl8ZW58MXx8fHwxNzM0NTY3ODk3fDA&ixlib=rb-4.1.0&q=80&w=1080', alt: 'Happy Volunteers' },
+];
+
+const contactImageLayout: ImageLayoutConfig[] = [
+  { colSpan: 2, height: 'h-48' },
+  { colSpan: 1, height: 'h-40' },
+  { colSpan: 1, height: 'h-40' },
+];
+
+const volunteerImageLayout: ImageLayoutConfig[] = [
+  { colSpan: 1, height: 'h-56' },
+  { colSpan: 1, height: 'h-56' },
+  { colSpan: 2, height: 'h-48' },
+  { colSpan: 1, height: 'h-40' },
+  { colSpan: 1, height: 'h-40' },
+];
+
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const PHONE_REGEX = /^[\d\s\-+()]{8,}$/;
+
+function getValidationRules(formType: FormType): ValidationRule[] {
+  const commonRules: ValidationRule[] = [
+    { field: 'name', message: 'Please enter a valid name', validate: (v) => v.trim().length >= 2 },
+    { field: 'email', message: 'Please enter a valid email address', validate: (v) => EMAIL_REGEX.test(v) },
+    { field: 'phone', message: 'Please enter a valid phone number', validate: (v) => PHONE_REGEX.test(v) },
+  ];
+
+  const contactRules: ValidationRule[] = [
+    { field: 'subject', message: 'Please enter a subject', validate: (v) => v.trim().length >= 3 },
+    { field: 'message', message: 'Please enter a message (minimum 10 characters)', validate: (v) => v.trim().length >= 10 },
+  ];
+
+  const volunteerRules: ValidationRule[] = [
+    { field: 'availability', message: 'Please select your availability', validate: (v) => Boolean(v) },
+    { field: 'interests', message: 'Please select an area of interest', validate: (v) => Boolean(v) },
+    { field: 'motivation', message: 'Please share your motivation (minimum 20 characters)', validate: (v) => v.trim().length >= 20 },
+  ];
+
+  return formType === 'contact'
+    ? [...commonRules, ...contactRules]
+    : [...commonRules, ...volunteerRules];
+}
+
+function validateForm(formData: FormData, formType: FormType): Record<string, string> {
+  const errors: Record<string, string> = {};
+  const rules = getValidationRules(formType);
+
+  for (const rule of rules) {
+    const value = (formData.get(rule.field) as string) || '';
+    if (!rule.validate(value)) {
+      errors[rule.field] = rule.message;
+    }
+  }
+
+  return errors;
+}
+
+function ImageMasonry({ images, layout }: ImageMasonryProps): JSX.Element {
+  return (
+    <div className="grid grid-cols-2 gap-3">
+      {layout.map((config, index) => {
+        const image = images[index];
+        if (!image) return null;
+        return (
+          <div key={index} className={config.colSpan === 2 ? 'col-span-2' : 'col-span-1'}>
+            <img
+              src={image.url}
+              alt={image.alt}
+              className={`w-full ${config.height} object-cover rounded-2xl shadow-lg`}
+            />
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+export function Contact(): JSX.Element {
+  const [formType, setFormType] = useState<FormType>('contact');
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
 
-  const validateForm = (formData: FormData) => {
-    const newErrors: Record<string, string> = {};
-    
-    const name = formData.get('name') as string;
-    const email = formData.get('email') as string;
-    const phone = formData.get('phone') as string;
+  const { getBlock, getJSONBlock } = useCMSPage('contact');
 
-    if (!name || name.trim().length < 2) {
-      newErrors.name = 'Please enter a valid name';
+  const heroLabel = getBlock('hero', 'section_label') || 'Contact Us';
+  const heroTitle = getBlock('hero', 'title') || 'Get In Touch';
+  const heroDescription1 = getBlock('hero', 'description_1') || "We'd love to hear from you. Whether you need assistance, have questions about our services, or want to join our team of dedicated volunteers, we're here to help.";
+  const heroDescription2 = getBlock('hero', 'description_2') || 'Our team is committed to responding to all inquiries promptly and connecting you with the right resources. Reach out today and become part of our community making a difference across Australia.';
+
+  const contactInfoTitle = getBlock('contact-info', 'title') || 'Contact Information';
+  const contactInfoDescription = getBlock('contact-info', 'description') || "Our offices are open to assist you with any inquiries, whether you need emergency support, have questions about our services, or want to learn more about how we can help. Adventist Community Services operates multiple locations across Australia, providing accessible support to communities in need with compassionate and professional staff. We've created a welcoming environment where everyone is treated with dignity and respect.";
+  const contactImages = getJSONBlock<CMSImage[]>('contact-info', 'images_data', staticContactImages);
+
+  const volunteerInfoTitle = getBlock('volunteer-info', 'title') || 'Why Volunteer With Us?';
+  const volunteerInfoDescription = getBlock('volunteer-info', 'description') || "Join a community of passionate individuals making a real difference across Australia, where you'll gain valuable experience, meet inspiring people, and contribute to meaningful change in your local community. We provide comprehensive training, flexible scheduling, and ongoing support to ensure your volunteer experience is rewarding and impactful. Whether you can commit to a few hours a week or regular shifts, we have opportunities that fit your lifestyle.";
+  const volunteerImages = getJSONBlock<CMSImage[]>('volunteer-info', 'images_data', staticVolunteerImages);
+
+  function handleFormTypeChange(type: FormType): void {
+    setFormType(type);
+    setErrors({});
+    setSubmitSuccess(false);
+    setSubmitError(null);
+  }
+
+  function handleInputChange(fieldName: string): void {
+    if (errors[fieldName]) {
+      setErrors((prev) => {
+        const updated = { ...prev };
+        delete updated[fieldName];
+        return updated;
+      });
     }
+  }
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!email || !emailRegex.test(email)) {
-      newErrors.email = 'Please enter a valid email address';
-    }
-
-    const phoneRegex = /^[\d\s\-+()]{8,}$/;
-    if (!phone || !phoneRegex.test(phone)) {
-      newErrors.phone = 'Please enter a valid phone number';
-    }
-
-    if (formType === 'contact') {
-      const subject = formData.get('subject') as string;
-      const message = formData.get('message') as string;
-
-      if (!subject || subject.trim().length < 3) {
-        newErrors.subject = 'Please enter a subject';
-      }
-
-      if (!message || message.trim().length < 10) {
-        newErrors.message = 'Please enter a message (minimum 10 characters)';
-      }
-    } else {
-      const availability = formData.get('availability') as string;
-      const interests = formData.get('interests') as string;
-      const motivation = formData.get('motivation') as string;
-
-      if (!availability) {
-        newErrors.availability = 'Please select your availability';
-      }
-
-      if (!interests) {
-        newErrors.interests = 'Please select an area of interest';
-      }
-
-      if (!motivation || motivation.trim().length < 20) {
-        newErrors.motivation = 'Please share your motivation (minimum 20 characters)';
-      }
-    }
-
-    return newErrors;
-  };
-
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+  async function handleSubmit(e: FormEvent<HTMLFormElement>): Promise<void> {
     e.preventDefault();
     const form = e.currentTarget;
     const formData = new FormData(form);
-    const newErrors = validateForm(formData);
+    const validationErrors = validateForm(formData, formType);
 
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors);
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
       return;
     }
 
@@ -108,24 +194,13 @@ export function Contact() {
     } finally {
       setIsSubmitting(false);
     }
-  };
+  }
 
-  const handleInputChange = (fieldName: string) => {
-    if (errors[fieldName]) {
-      setErrors(prev => {
-        const newErrors = { ...prev };
-        delete newErrors[fieldName];
-        return newErrors;
-      });
-    }
-  };
-
-  const handleFormTypeChange = (type: 'contact' | 'volunteer') => {
-    setFormType(type);
-    setErrors({});
-    setSubmitSuccess(false);
-    setSubmitError(null);
-  };
+  const isContact = formType === 'contact';
+  const infoTitle = isContact ? contactInfoTitle : volunteerInfoTitle;
+  const infoDescription = isContact ? contactInfoDescription : volunteerInfoDescription;
+  const images = isContact ? contactImages : volunteerImages;
+  const imageLayout = isContact ? contactImageLayout : volunteerImageLayout;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#F44314] via-[#F97023] to-[#F98344]">
@@ -145,23 +220,19 @@ export function Contact() {
 
         {/* Content */}
         <div className="relative z-10 max-w-4xl mx-auto px-6 py-32 text-center">
-          <p className="text-white/90 text-sm tracking-wider uppercase mb-4">Contact Us</p>
+          <p className="text-white/90 text-sm tracking-wider uppercase mb-4">{heroLabel}</p>
           <h1 className="text-white text-5xl md:text-6xl font-bold mb-6 leading-tight">
-            Get In Touch
+            {heroTitle}
           </h1>
-          <p className="text-white/90 text-lg mb-4 leading-relaxed max-w-3xl mx-auto">
-            We'd love to hear from you. Whether you need assistance, have questions about our services, or want to join our team of dedicated volunteers, we're here to help.
-          </p>
-          <p className="text-white/80 mb-10 leading-relaxed max-w-3xl mx-auto">
-            Our team is committed to responding to all inquiries promptly and connecting you with the right resources. Reach out today and become part of our community making a difference across Australia.
-          </p>
+          <p className="text-white/90 text-lg mb-4 leading-relaxed max-w-3xl mx-auto" dangerouslySetInnerHTML={{ __html: heroDescription1 }} />
+          <p className="text-white/80 mb-10 leading-relaxed max-w-3xl mx-auto" dangerouslySetInnerHTML={{ __html: heroDescription2 }} />
 
           {/* Action Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <button
               onClick={() => handleFormTypeChange('contact')}
               className={`px-8 py-4 rounded-xl font-semibold transition-all shadow-lg ${
-                formType === 'contact'
+                isContact
                   ? 'bg-white text-[#F44314]'
                   : 'bg-white/10 border border-white/20 text-white hover:bg-white/20'
               }`}
@@ -171,7 +242,7 @@ export function Contact() {
             <button
               onClick={() => handleFormTypeChange('volunteer')}
               className={`px-8 py-4 rounded-xl font-semibold transition-all shadow-lg ${
-                formType === 'volunteer'
+                !isContact
                   ? 'bg-white text-[#F44314]'
                   : 'bg-white/10 border border-white/20 text-white hover:bg-white/20'
               }`}
@@ -185,93 +256,17 @@ export function Contact() {
       {/* Contact Section */}
       <div className="max-w-7xl mx-auto px-6 pb-24">
         <div className="grid md:grid-cols-2 gap-12">
-          {/* Contact Information */}
+          {/* Contact/Volunteer Information */}
           <div>
-            {formType === 'contact' ? (
-              <>
-                <h3 className="text-white text-2xl font-semibold mb-6">Contact Information</h3>
-                <p className="text-white/80 mb-8">
-                  Our offices are open to assist you with any inquiries, whether you need emergency support, have questions about our services, or want to learn more about how we can help. Adventist Community Services operates multiple locations across Australia, providing accessible support to communities in need with compassionate and professional staff. We've created a welcoming environment where everyone is treated with dignity and respect.
-                </p>
-
-                {/* Contact Images Masonry */}
-                <div className="grid grid-cols-2 gap-3">
-                  <div className="col-span-2">
-                    <img 
-                      src="https://images.unsplash.com/photo-1725021059875-8f7fd08c843a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhdXN0cmFsaWElMjBzeWRuZXklMjBvZmZpY2UlMjBidWlsZGluZ3xlbnwxfHx8fDE3NjYxOTgyMTh8MA&ixlib=rb-4.1.0&q=80&w=1080"
-                      alt="ACS Office Building"
-                      className="w-full h-48 object-cover rounded-2xl shadow-lg"
-                    />
-                  </div>
-                  <div className="col-span-1">
-                    <img 
-                      src="https://images.unsplash.com/photo-1556761175-b413da4baf72?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxvZmZpY2UlMjByZWNlcHRpb24lMjBkZXNrfGVufDF8fHx8MTczNDU2Nzg5Nnww&ixlib=rb-4.1.0&q=80&w=1080"
-                      alt="Reception Area"
-                      className="w-full h-40 object-cover rounded-2xl shadow-lg"
-                    />
-                  </div>
-                  <div className="col-span-1">
-                    <img 
-                      src="https://images.unsplash.com/photo-1497366216548-37526070297c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxvZmZpY2UlMjBtZWV0aW5nJTIwcm9vbXxlbnwxfHx8fDE3MzQ1Njc4OTZ8MA&ixlib=rb-4.1.0&q=80&w=1080"
-                      alt="Meeting Room"
-                      className="w-full h-40 object-cover rounded-2xl shadow-lg"
-                    />
-                  </div>
-                </div>
-              </>
-            ) : (
-              <>
-                <h3 className="text-white text-2xl font-semibold mb-6">Why Volunteer With Us?</h3>
-                <p className="text-white/80 mb-8">
-                  Join a community of passionate individuals making a real difference across Australia, where you'll gain valuable experience, meet inspiring people, and contribute to meaningful change in your local community. We provide comprehensive training, flexible scheduling, and ongoing support to ensure your volunteer experience is rewarding and impactful. Whether you can commit to a few hours a week or regular shifts, we have opportunities that fit your lifestyle.
-                </p>
-
-                {/* Volunteer Images Masonry */}
-                <div className="grid grid-cols-2 gap-3">
-                  <div className="col-span-1">
-                    <img 
-                      src="https://images.unsplash.com/photo-1710092784814-4a6f158913b8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx2b2x1bnRlZXJzJTIwZm9vZCUyMGJhbmslMjBoZWxwaW5nfGVufDF8fHx8MTc2NjM3MDE3Nnww&ixlib=rb-4.1.0&q=80&w=1080"
-                      alt="Food Bank Volunteers"
-                      className="w-full h-56 object-cover rounded-2xl shadow-lg"
-                    />
-                  </div>
-                  <div className="col-span-1">
-                    <img 
-                      src="https://images.unsplash.com/photo-1722336762551-831c0bcc2b59?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjb21tdW5pdHklMjB2b2x1bnRlZXJzJTIwcGFja2luZyUyMGNsb3RoZXN8ZW58MXx8fHwxNzY2MzcwMTc2fDA&ixlib=rb-4.1.0&q=80&w=1080"
-                      alt="Clothing Assistance"
-                      className="w-full h-56 object-cover rounded-2xl shadow-lg"
-                    />
-                  </div>
-                  <div className="col-span-2">
-                    <img 
-                      src="https://images.unsplash.com/photo-1657558638549-9fd140b1ab5e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx2b2x1bnRlZXJzJTIwaGVscGluZyUyMGVsZGVybHl8ZW58MXx8fHwxNzY2MzcwMTc3fDA&ixlib=rb-4.1.0&q=80&w=1080"
-                      alt="Community Support"
-                      className="w-full h-48 object-cover rounded-2xl shadow-lg"
-                    />
-                  </div>
-                  <div className="col-span-1">
-                    <img 
-                      src="https://images.unsplash.com/photo-1758599668125-e154250f24bd?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx2b2x1bnRlZXJzJTIwdGVhbXdvcmslMjBjb21tdW5pdHl8ZW58MXx8fHwxNzY2MzcwMTc3fDA&ixlib=rb-4.1.0&q=80&w=1080"
-                      alt="Teamwork"
-                      className="w-full h-40 object-cover rounded-2xl shadow-lg"
-                    />
-                  </div>
-                  <div className="col-span-1">
-                    <img 
-                      src="https://images.unsplash.com/photo-1559027615-cd4628902d4a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx2b2x1bnRlZXJzJTIwaGFwcHklMjBjb21tdW5pdHl8ZW58MXx8fHwxNzM0NTY3ODk3fDA&ixlib=rb-4.1.0&q=80&w=1080"
-                      alt="Happy Volunteers"
-                      className="w-full h-40 object-cover rounded-2xl shadow-lg"
-                    />
-                  </div>
-                </div>
-              </>
-            )}
+            <h3 className="text-white text-2xl font-semibold mb-6">{infoTitle}</h3>
+            <p className="text-white/80 mb-8" dangerouslySetInnerHTML={{ __html: infoDescription }} />
+            <ImageMasonry images={images} layout={imageLayout} />
           </div>
 
           {/* Contact Form */}
           <div>
             <h3 className="text-white text-2xl font-semibold mb-6">
-              {formType === 'contact' ? 'Send us a message' : 'Volunteer Application'}
+              {isContact ? 'Send us a message' : 'Volunteer Application'}
             </h3>
             <form className="space-y-6" onSubmit={handleSubmit}>
               <div>
@@ -312,8 +307,8 @@ export function Contact() {
                 />
                 {errors.phone && <p className="text-red-500 text-sm mt-1">{errors.phone}</p>}
               </div>
-              
-              {formType === 'contact' ? (
+
+              {isContact ? (
                 <>
                   <div>
                     <label htmlFor="subject" className="block text-white/90 text-sm mb-2">Subject</label>
@@ -402,17 +397,15 @@ export function Contact() {
                   </div>
                 </>
               )}
-              
-              {/* Success Message */}
+
               {submitSuccess && (
                 <div className="p-4 rounded-lg bg-green-500/20 border border-green-500/40 text-white">
-                  {formType === 'contact'
+                  {isContact
                     ? 'Your message has been sent successfully! We will get back to you soon.'
                     : 'Your volunteer application has been submitted successfully! We will review it and get back to you soon.'}
                 </div>
               )}
 
-              {/* Error Message */}
               {submitError && (
                 <div className="p-4 rounded-lg bg-red-500/20 border border-red-500/40 text-white">
                   {submitError}
@@ -427,10 +420,10 @@ export function Contact() {
                 {isSubmitting ? (
                   <>
                     <Loader2 className="w-5 h-5 animate-spin" />
-                    {formType === 'contact' ? 'Sending...' : 'Submitting...'}
+                    {isContact ? 'Sending...' : 'Submitting...'}
                   </>
                 ) : (
-                  formType === 'contact' ? 'Send Message' : 'Submit Application'
+                  isContact ? 'Send Message' : 'Submit Application'
                 )}
               </button>
             </form>

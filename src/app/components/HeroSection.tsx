@@ -1,9 +1,21 @@
 import { Search, MapPin } from 'lucide-react';
 import { useState } from 'react';
+import { useCMSPage } from '../hooks/useCMSContent';
+import { EditableText, EditableRichText } from './editable';
 
 export function HeroSection() {
   const [searchQuery, setSearchQuery] = useState('');
   const [location, setLocation] = useState('');
+
+  const { getBlock } = useCMSPage('home');
+
+  // Get CMS content with fallbacks
+  const label = getBlock('hero', 'label') || "Australia's Adventist Community Service";
+  const title = getBlock('hero', 'title') || 'Discover Services. Find Support.';
+  const subtitle = getBlock('hero', 'subtitle') || "Search for community services, support programs, and resources offered by the Adventist Church across Australia. We're here to help you find the assistance you need.";
+  const searchPlaceholder = getBlock('hero', 'search_placeholder') || 'Search for services...';
+  const locationPlaceholder = getBlock('hero', 'location_placeholder') || 'Location';
+  const searchButtonText = getBlock('hero', 'search_button_text') || 'Search';
 
   return (
     <div className="relative min-h-[600px] flex items-center justify-center overflow-hidden">
@@ -21,14 +33,32 @@ export function HeroSection() {
 
       {/* Content */}
       <div className="relative z-10 max-w-4xl mx-auto px-6 py-32 text-center">
-        <p className="text-white/90 text-sm tracking-wider uppercase mb-4">Australia's Adventist Community Service</p>
-        <h1 className="text-white text-5xl md:text-6xl font-bold mb-6 leading-tight">
-          Discover Services.<br />
-          Find Support.
-        </h1>
-        <p className="text-white/90 text-lg mb-12 max-w-2xl mx-auto">
-          Search for community services, support programs, and resources offered by the Adventist Church across Australia. We're here to help you find the assistance you need.
-        </p>
+        <EditableText
+          pageId="home"
+          sectionId="hero"
+          blockKey="label"
+          content={label}
+          fallback="Australia's Adventist Community Service"
+          className="text-white/90 text-sm tracking-wider uppercase mb-4"
+          as="p"
+        />
+        <EditableText
+          pageId="home"
+          sectionId="hero"
+          blockKey="title"
+          content={title}
+          fallback="Discover Services. Find Support."
+          className="text-white text-5xl md:text-6xl font-bold mb-6 leading-tight"
+          as="h1"
+        />
+        <EditableRichText
+          pageId="home"
+          sectionId="hero"
+          blockKey="subtitle"
+          content={subtitle}
+          fallback="Search for community services, support programs, and resources offered by the Adventist Church across Australia. We're here to help you find the assistance you need."
+          className="text-white/90 text-lg mb-12 max-w-2xl mx-auto"
+        />
 
         {/* Search Bar */}
         <div className="bg-white rounded-2xl shadow-2xl p-3 flex flex-col md:flex-row gap-3 max-w-3xl mx-auto">
@@ -36,7 +66,7 @@ export function HeroSection() {
             <Search className="w-5 h-5 text-gray-400 flex-shrink-0" />
             <input
               type="text"
-              placeholder="Search for services..."
+              placeholder={searchPlaceholder}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="flex-1 bg-transparent outline-none text-gray-900 placeholder:text-gray-500"
@@ -46,14 +76,14 @@ export function HeroSection() {
             <MapPin className="w-5 h-5 text-gray-400 flex-shrink-0" />
             <input
               type="text"
-              placeholder="Location"
+              placeholder={locationPlaceholder}
               value={location}
               onChange={(e) => setLocation(e.target.value)}
               className="flex-1 bg-transparent outline-none text-gray-900 placeholder:text-gray-500"
             />
           </div>
           <button className="bg-gradient-to-r from-[#E8653F] to-[#F37B4E] text-white px-8 py-3 rounded-xl hover:shadow-lg transition-all font-medium">
-            Search
+            {searchButtonText}
           </button>
         </div>
       </div>

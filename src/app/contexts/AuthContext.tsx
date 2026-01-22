@@ -7,6 +7,7 @@ interface User {
   email: string;
   verified: boolean;
   avatar?: string;
+  permissions?: string[];
 }
 
 interface AuthContextType {
@@ -16,6 +17,7 @@ interface AuthContextType {
   login: (email: string, password: string, rememberMe?: boolean) => Promise<{ success: boolean; message: string }>;
   logout: () => void;
   checkAuth: () => Promise<void>;
+  hasPermission: (permission: string) => boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -38,7 +40,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
     try {
       const result = await AuthService.verifyAuth();
       if (result.success && result.data?.user) {
-        setUser(result.data.user);
+        setUser({
+          ...result.data.user,
+          permissions: result.data.permissions || [],
+        });
       } else {
         setUser(null);
         AuthService.removeToken();
@@ -51,6 +56,19 @@ export function AuthProvider({ children }: AuthProviderProps) {
       setLoading(false);
     }
   }, []);
+
+  const hasPermission = useCallback((permission: string): boolean => {
+    if (!user?.permissions) return false;
+    // Check for exact match or wildcard permissions
+    return user.permissions.some((p) => {
+      if (p === '*') return true;
+      if (p === permission) return true;
+      // Check for wildcard like "page_content.*"
+      const [resource, action] = permission.split('.');
+      if (p === `${resource}.*`) return true;
+      return false;
+    });
+  }, [user?.permissions]);
 
   useEffect(() => {
     checkAuth();
@@ -91,7 +109,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
       const result = await AuthService.login({ email, password, rememberMe });
 
       if (result.success && result.data?.user) {
-        setUser(result.data.user);
+        setUser({
+          ...result.data.user,
+          permissions: result.data.permissions || [],
+        });
         return { success: true, message: 'Login successful' };
       }
 
@@ -122,6 +143,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     login,
     logout,
     checkAuth,
+    hasPermission,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
