@@ -38,6 +38,7 @@ export function MediaSelector({
     if (isOpen && activeTab === 'library') {
       loadFiles();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen, activeTab]);
 
   useEffect(() => {

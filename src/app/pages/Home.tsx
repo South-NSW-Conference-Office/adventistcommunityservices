@@ -1,5 +1,6 @@
 import { HeroSection } from '../components/HeroSection';
 import { ServiceCard } from '../components/ServiceCard';
+import { Skeleton } from '../components/ui/skeleton';
 import { ClipboardCheck, GraduationCap, Heart } from 'lucide-react';
 import Masonry, { ResponsiveMasonry } from 'react-responsive-masonry';
 import {
@@ -9,6 +10,8 @@ import {
   ProcessStep,
   CMSImage,
 } from '../hooks/useCMSContent';
+import { useServices } from '../hooks/useServices';
+import { useTestimonies } from '../hooks/useTestimonies';
 import { EditableText, EditableRichText } from '../components/editable';
 
 const ICON_MAP = { ClipboardCheck, GraduationCap, Heart } as const;
@@ -43,6 +46,24 @@ const STATIC_DATA = {
   ] as CMSImage[],
 };
 
+const SKELETON_COUNT = 4;
+
+function ServiceCardSkeleton(): JSX.Element {
+  return (
+    <div className="animate-pulse">
+      <Skeleton className="h-56 bg-white/10 rounded-2xl mb-4" />
+      <Skeleton className="h-6 bg-white/10 rounded w-3/4 mb-2" />
+      <Skeleton className="h-4 bg-white/10 rounded w-full mb-2" />
+      <Skeleton className="h-4 bg-white/10 rounded w-2/3" />
+    </div>
+  );
+}
+
+function parseStaticLocation(location: string): { suburb: string; state: string } {
+  const [suburb = '', state = ''] = location.split(', ');
+  return { suburb, state };
+}
+
 interface ImageCardProps {
   image: CMSImage | undefined;
   className?: string;
@@ -71,6 +92,20 @@ function ImageCard({ image, className = '', textSize = 'base' }: ImageCardProps)
 
 export function Home(): JSX.Element {
   const { getBlock, getJSONBlock, isSectionEnabled } = useCMSPage('home');
+  const { services, loading: servicesLoading } = useServices();
+  const { testimonies: apiTestimonies } = useTestimonies();
+
+  // Map API testimonies to the Testimonial interface format, with fallback to CMS/static data
+  const cmsTestimonies = getJSONBlock<Testimonial[]>('testimonials', 'testimonials_data', STATIC_DATA.testimonials);
+  const testimoniesData: Testimonial[] = apiTestimonies.length > 0
+    ? apiTestimonies.map((t, index) => ({
+        id: index + 1,
+        name: t.name,
+        location: t.location,
+        review: t.review,
+        image: t.image.url,
+      }))
+    : cmsTestimonies;
 
   const cms = {
     services: {
@@ -102,7 +137,7 @@ export function Home(): JSX.Element {
       label: getBlock('testimonials', 'section_label') || 'Testimonials',
       title: getBlock('testimonials', 'section_title') || 'What Others Have to Say',
       description: getBlock('testimonials', 'section_description') || 'Hear from our wonderful volunteers about their experiences making a difference in the community.',
-      data: getJSONBlock<Testimonial[]>('testimonials', 'testimonials_data', STATIC_DATA.testimonials),
+      data: testimoniesData,
     },
   };
 
@@ -143,19 +178,40 @@ export function Home(): JSX.Element {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {cms.services.data.map((service) => {
-              const [suburb, state] = service.location.split(', ');
-              return (
+            {servicesLoading &&
+              Array.from({ length: SKELETON_COUNT }).map((_, index) => (
+                <ServiceCardSkeleton key={index} />
+              ))}
+
+            {!servicesLoading &&
+              services.length > 0 &&
+              services.slice(0, 4).map((service) => (
                 <ServiceCard
-                  key={service.id}
+                  key={service._id}
+                  id={service._id}
                   name={service.name}
                   descriptionShort={service.descriptionShort}
-                  locations={[{ address: { suburb, state } }]}
-                  capacity={{ maxParticipants: service.capacity }}
-                  primaryImage={{ url: service.image }}
+                  locations={service.locations}
+                  capacity={service.capacity}
+                  primaryImage={service.primaryImage}
                 />
-              );
-            })}
+              ))}
+
+            {!servicesLoading &&
+              services.length === 0 &&
+              cms.services.data.map((service) => {
+                const { suburb, state } = parseStaticLocation(service.location);
+                return (
+                  <ServiceCard
+                    key={service.id}
+                    name={service.name}
+                    descriptionShort={service.descriptionShort}
+                    locations={[{ address: { suburb, state } }]}
+                    capacity={{ maxParticipants: service.capacity }}
+                    primaryImage={{ url: service.image }}
+                  />
+                );
+              })}
           </div>
         </section>
       )}

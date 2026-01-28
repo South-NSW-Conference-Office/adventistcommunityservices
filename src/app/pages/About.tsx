@@ -9,7 +9,6 @@ import {
 } from '../hooks/useCMSContent';
 import { EditableText, EditableRichText, EditableImage } from '../components/editable';
 
-// Icon mapping for values section
 const VALUE_ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
   Heart,
   Users,
@@ -17,54 +16,42 @@ const VALUE_ICONS: Record<string, React.ComponentType<{ className?: string }>> =
   Award,
 };
 
-// Static fallback data
-const staticTestimonials: Testimonial[] = [
-  { id: 1, name: "Sarah Mitchell", location: "Sydney, NSW", review: "Volunteering with ACS has been one of the most rewarding experiences of my life. The team is incredibly supportive, and knowing that I'm making a real difference in people's lives keeps me coming back every week.", image: "https://images.unsplash.com/photo-1649589244330-09ca58e4fa64?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxwcm9mZXNzaW9uYWwlMjB3b21hbiUyMHBvcnRyYWl0fGVufDF8fHx8MTc2NjI3Nzk2Mnww&ixlib=rb-4.1.0&q=80&w=1080" },
-  { id: 2, name: "David Chen", location: "Melbourne, VIC", review: "The food bank program is amazing! I've been volunteering for 6 months and have met so many wonderful people. It's heartwarming to see the impact we make together.", image: "https://images.unsplash.com/photo-1738566061505-556830f8b8f5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxwcm9mZXNzaW9uYWwlMjBtYW4lMjBhc2lhbiUyMHBvcnRyYWl0fGVufDF8fHx8MTc2NjM3MDQ5Nnww&ixlib=rb-4.1.0&q=80&w=1080" },
-  { id: 3, name: "Emma Thompson", location: "Brisbane, QLD", review: "I started volunteering after retiring, and it's given me a new sense of purpose. The orientation was thorough, and everyone made me feel welcome from day one.", image: "https://images.unsplash.com/photo-1758686254563-5c5ab338c8b9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtYXR1cmUlMjB3b21hbiUyMHNtaWxpbmclMjBwb3J0cmFpdHxlbnwxfHx8fDE3NjYzNzA0OTh8MA&ixlib=rb-4.1.0&q=80&w=1080" },
-  { id: 4, name: "Michael Roberts", location: "Perth, WA", review: "As a corporate volunteer, I appreciate how flexible and organized ACS is. They make it easy to give back to the community even with a busy schedule.", image: "https://images.unsplash.com/photo-1737574821698-862e77f044c1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxidXNpbmVzc21hbiUyMHByb2Zlc3Npb25hbCUyMHBvcnRyYWl0fGVufDF8fHx8MTc2NjM3MDQ5N3ww&ixlib=rb-4.1.0&q=80&w=1080" },
-  { id: 5, name: "Lisa Anderson", location: "Adelaide, SA", review: "The emergency relief program has shown me the true meaning of community care. Every shift reminds me why this work is so important. Highly recommend volunteering here!", image: "https://images.unsplash.com/photo-1555396768-2a77b9e979c0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx3b21hbiUyMHZvbHVudGVlciUyMHBvcnRyYWl0fGVufDF8fHx8MTc2NjM0OTA0OHww&ixlib=rb-4.1.0&q=80&w=1080" },
-  { id: 6, name: "James Wilson", location: "Canberra, ACT", review: "Being part of the clothing assistance team has been incredible. The organization is professional, the mission is clear, and the impact is visible.", image: "https://images.unsplash.com/photo-1758639842438-718755aa57e4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx5b3VuZyUyMG1hbiUyMHByb2Zlc3Npb25hbCUyMHBvcnRyYWl0fGVufDF8fHx8MTc2NjI4Nzg5NXww&ixlib=rb-4.1.0&q=80&w=1080" },
-  { id: 7, name: "Rachel Green", location: "Hobart, TAS", review: "I love how ACS values each volunteer's unique skills and interests. They matched me with a role that perfectly fits my schedule and passion for helping others.", image: "https://images.unsplash.com/photo-1760551937527-2bc6cfe45180?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx3b21hbiUyMGNhc3VhbCUyMHBvcnRyYWl0JTIwc21pbGV8ZW58MXx8fHwxNzY2MzcwNDk4fDA&ixlib=rb-4.1.0&q=80&w=1080" },
-  { id: 8, name: "Thomas Brown", location: "Darwin, NT", review: "The training and support provided by ACS is exceptional. I felt prepared and confident to start volunteering from the very beginning.", image: "https://images.unsplash.com/photo-1640653583383-72b60809f273?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtYW4lMjBmcmllbmRseSUyMHBvcnRyYWl0JTIwc21pbGV8ZW58MXx8fHwxNzY2MzcwNDk4fDA&ixlib=rb-4.1.0&q=80&w=1080" },
-];
+const STATIC_DATA = {
+  testimonials: [
+    { id: 1, name: "Sarah Mitchell", location: "Sydney, NSW", review: "Volunteering with ACS has been one of the most rewarding experiences of my life. The team is incredibly supportive, and knowing that I'm making a real difference in people's lives keeps me coming back every week.", image: "https://images.unsplash.com/photo-1649589244330-09ca58e4fa64?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxwcm9mZXNzaW9uYWwlMjB3b21hbiUyMHBvcnRyYWl0fGVufDF8fHx8MTc2NjI3Nzk2Mnww&ixlib=rb-4.1.0&q=80&w=1080" },
+    { id: 2, name: "David Chen", location: "Melbourne, VIC", review: "The food bank program is amazing! I've been volunteering for 6 months and have met so many wonderful people. It's heartwarming to see the impact we make together.", image: "https://images.unsplash.com/photo-1738566061505-556830f8b8f5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxwcm9mZXNzaW9uYWwlMjBtYW4lMjBhc2lhbiUyMHBvcnRyYWl0fGVufDF8fHx8MTc2NjM3MDQ5Nnww&ixlib=rb-4.1.0&q=80&w=1080" },
+    { id: 3, name: "Emma Thompson", location: "Brisbane, QLD", review: "I started volunteering after retiring, and it's given me a new sense of purpose. The orientation was thorough, and everyone made me feel welcome from day one.", image: "https://images.unsplash.com/photo-1758686254563-5c5ab338c8b9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtYXR1cmUlMjB3b21hbiUyMHNtaWxpbmclMjBwb3J0cmFpdHxlbnwxfHx8fDE3NjYzNzA0OTh8MA&ixlib=rb-4.1.0&q=80&w=1080" },
+    { id: 4, name: "Michael Roberts", location: "Perth, WA", review: "As a corporate volunteer, I appreciate how flexible and organized ACS is. They make it easy to give back to the community even with a busy schedule.", image: "https://images.unsplash.com/photo-1737574821698-862e77f044c1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxidXNpbmVzc21hbiUyMHByb2Zlc3Npb25hbCUyMHBvcnRyYWl0fGVufDF8fHx8MTc2NjM3MDQ5N3ww&ixlib=rb-4.1.0&q=80&w=1080" },
+    { id: 5, name: "Lisa Anderson", location: "Adelaide, SA", review: "The emergency relief program has shown me the true meaning of community care. Every shift reminds me why this work is so important. Highly recommend volunteering here!", image: "https://images.unsplash.com/photo-1555396768-2a77b9e979c0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx3b21hbiUyMHZvbHVudGVlciUyMHBvcnRyYWl0fGVufDF8fHx8MTc2NjM0OTA0OHww&ixlib=rb-4.1.0&q=80&w=1080" },
+    { id: 6, name: "James Wilson", location: "Canberra, ACT", review: "Being part of the clothing assistance team has been incredible. The organization is professional, the mission is clear, and the impact is visible.", image: "https://images.unsplash.com/photo-1758639842438-718755aa57e4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx5b3VuZyUyMG1hbiUyMHByb2Zlc3Npb25hbCUyMHBvcnRyYWl0fGVufDF8fHx8MTc2NjI4Nzg5NXww&ixlib=rb-4.1.0&q=80&w=1080" },
+    { id: 7, name: "Rachel Green", location: "Hobart, TAS", review: "I love how ACS values each volunteer's unique skills and interests. They matched me with a role that perfectly fits my schedule and passion for helping others.", image: "https://images.unsplash.com/photo-1760551937527-2bc6cfe45180?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx3b21hbiUyMGNhc3VhbCUyMHBvcnRyYWl0JTIwc21pbGV8ZW58MXx8fHwxNzY2MzcwNDk4fDA&ixlib=rb-4.1.0&q=80&w=1080" },
+    { id: 8, name: "Thomas Brown", location: "Darwin, NT", review: "The training and support provided by ACS is exceptional. I felt prepared and confident to start volunteering from the very beginning.", image: "https://images.unsplash.com/photo-1640653583383-72b60809f273?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtYW4lMjBmcmllbmRseSUyMHBvcnRyYWl0JTIwc21pbGV8ZW58MXx8fHwxNzY2MzcwNDk4fDA&ixlib=rb-4.1.0&q=80&w=1080" },
+  ] as Testimonial[],
+  values: [
+    { icon: 'Heart', title: 'Compassion', description: 'We serve with genuine care and empathy for every individual' },
+    { icon: 'Users', title: 'Community', description: 'Building stronger communities through connection and support' },
+    { icon: 'Globe', title: 'Inclusivity', description: 'Welcoming everyone with dignity and respect' },
+    { icon: 'Award', title: 'Excellence', description: 'Delivering quality services with integrity and professionalism' },
+  ] as ValueItem[],
+  teamMembers: [
+    { image: 'https://images.unsplash.com/photo-1759709042164-0dd78a39028b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhdXN0cmFsaWElMjBoZWxwaW5nJTIwaGFuZHM8ZW58MXx8fHwxNzY2MTk2MTgzfDA&ixlib=rb-4.1.0&q=80&w=1080', title: 'National Director', department: 'Leadership Team', description: 'Guiding our vision and mission across Australia' },
+    { image: 'https://images.unsplash.com/photo-1638769314338-9ba8e1e69465?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhdXN0cmFsaWElMjBjaGFyaXR5JTIwd2FybXxlbnwxfHx8fDE3NjYxOTU4MzV8MA&ixlib=rb-4.1.0&q=80&w=1080', title: 'Program Coordinators', department: 'Service Delivery', description: 'Managing daily operations and community outreach' },
+    { image: 'https://images.unsplash.com/photo-1586210477035-c8d790403e35?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhdXN0cmFsaWElMjBjaHVyY2glMjBtaXNzaW9ufGVufDF8fHx8MTc2NjE5NjE4NHww&ixlib=rb-4.1.0&q=80&w=1080', title: 'Volunteer Team', department: 'Community Support', description: 'The heart of our service delivery' },
+  ] as TeamMember[],
+  storyImages: [
+    { url: 'https://images.unsplash.com/photo-1664799024654-9bc64fd66af1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhdXN0cmFsaWElMjBvdXRiYWNrJTIwbGFuZHNjYXBlfGVufDF8fHx8MTc2NjE5Njk2N3ww&ixlib=rb-4.1.0&q=80&w=1080', alt: 'Australian outback' },
+    { url: 'https://images.unsplash.com/photo-1443048361775-c3bab8add48e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzeWRuZXklMjBhdXN0cmFsaWElMjBjaXR5c2NhcGV8ZW58MXx8fHwxNzY2MTk2OTY3fDA&ixlib=rb-4.1.0&q=80&w=1080', alt: 'Sydney cityscape' },
+    { url: 'https://images.unsplash.com/photo-1510508050928-0d01634906dd?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhdXN0cmFsaWElMjBiZWFjaCUyMGNvYXN0YWx8ZW58MXx8fHwxNzY2MTk2OTY3fDA&ixlib=rb-4.1.0&q=80&w=1080', alt: 'Australian beach' },
+    { url: 'https://images.unsplash.com/photo-1743130940758-622b8e6b4140?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhdXN0cmFsaWElMjBjb21tdW5pdHklMjB2b2x1bnRlZXJzfGVufDF8fHx8MTc2NjE5Njk2Nnww&ixlib=rb-4.1.0&q=80&w=1080', alt: 'Community volunteers' },
+  ] as CMSImage[],
+};
 
-const staticValues: ValueItem[] = [
-  { icon: 'Heart', title: 'Compassion', description: 'We serve with genuine care and empathy for every individual' },
-  { icon: 'Users', title: 'Community', description: 'Building stronger communities through connection and support' },
-  { icon: 'Globe', title: 'Inclusivity', description: 'Welcoming everyone with dignity and respect' },
-  { icon: 'Award', title: 'Excellence', description: 'Delivering quality services with integrity and professionalism' },
-];
-
-const staticTeamMembers: TeamMember[] = [
-  { image: 'https://images.unsplash.com/photo-1759709042164-0dd78a39028b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhdXN0cmFsaWElMjBoZWxwaW5nJTIwaGFuZHM8ZW58MXx8fHwxNzY2MTk2MTgzfDA&ixlib=rb-4.1.0&q=80&w=1080', title: 'National Director', department: 'Leadership Team', description: 'Guiding our vision and mission across Australia' },
-  { image: 'https://images.unsplash.com/photo-1638769314338-9ba8e1e69465?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhdXN0cmFsaWElMjBjaGFyaXR5JTIwd2FybXxlbnwxfHx8fDE3NjYxOTU4MzV8MA&ixlib=rb-4.1.0&q=80&w=1080', title: 'Program Coordinators', department: 'Service Delivery', description: 'Managing daily operations and community outreach' },
-  { image: 'https://images.unsplash.com/photo-1586210477035-c8d790403e35?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhdXN0cmFsaWElMjBjaHVyY2glMjBtaXNzaW9ufGVufDF8fHx8MTc2NjE5NjE4NHww&ixlib=rb-4.1.0&q=80&w=1080', title: 'Volunteer Team', department: 'Community Support', description: 'The heart of our service delivery' },
-];
-
-const staticStoryImages: CMSImage[] = [
-  { url: 'https://images.unsplash.com/photo-1664799024654-9bc64fd66af1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhdXN0cmFsaWElMjBvdXRiYWNrJTIwbGFuZHNjYXBlfGVufDF8fHx8MTc2NjE5Njk2N3ww&ixlib=rb-4.1.0&q=80&w=1080', alt: 'Australian outback' },
-  { url: 'https://images.unsplash.com/photo-1443048361775-c3bab8add48e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzeWRuZXklMjBhdXN0cmFsaWElMjBjaXR5c2NhcGV8ZW58MXx8fHwxNzY2MTk2OTY3fDA&ixlib=rb-4.1.0&q=80&w=1080', alt: 'Sydney cityscape' },
-  { url: 'https://images.unsplash.com/photo-1510508050928-0d01634906dd?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhdXN0cmFsaWElMjBiZWFjaCUyMGNvYXN0YWx8ZW58MXx8fHwxNzY2MTk2OTY3fDA&ixlib=rb-4.1.0&q=80&w=1080', alt: 'Australian beach' },
-  { url: 'https://images.unsplash.com/photo-1743130940758-622b8e6b4140?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhdXN0cmFsaWElMjBjb21tdW5pdHklMjB2b2x1bnRlZXJzfGVufDF8fHx8MTc2NjE5Njk2Nnww&ixlib=rb-4.1.0&q=80&w=1080', alt: 'Community volunteers' },
-];
-
-// Story image grid layout configuration
 const STORY_IMAGE_GRID = [
   { className: 'col-span-1 row-span-2', heightClass: 'h-full' },
   { className: 'col-span-1', heightClass: 'h-full' },
   { className: 'col-span-1', heightClass: 'h-full' },
   { className: 'col-span-2', heightClass: 'h-48' },
 ];
-
-interface HTMLContentProps {
-  html: string;
-  className?: string;
-}
-
-function HTMLContent({ html, className }: HTMLContentProps): JSX.Element {
-  return <span className={className} dangerouslySetInnerHTML={{ __html: html }} />;
-}
 
 interface TestimonialCardProps {
   testimonial: Testimonial;
@@ -103,46 +90,47 @@ function TestimonialCard({ testimonial }: TestimonialCardProps): JSX.Element {
   );
 }
 
-export function About() {
+export function About(): JSX.Element {
   const { getBlock, getJSONBlock, isSectionEnabled } = useCMSPage('about');
 
-  // Hero section
-  const heroLabel = getBlock('hero', 'section_label') || 'About Us';
-  const heroTitle = getBlock('hero', 'title') || 'What Is Adventist Community Services?';
-  const heroSubtitle = getBlock('hero', 'subtitle') || "Adventist Community Services (ACS) is one of Australia's leading humanitarian organisations, providing compassionate assistance to people experiencing hardship and disadvantage across the nation.";
-  const heroImage = getBlock('hero', 'background_image') || 'https://images.unsplash.com/photo-1576897202707-f397683935d3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhdXN0cmFsaWElMjBjb21tdW5pdHklMjBoZWxwaW5nJTIwaGFuZHMlMjB0b2dldGhlcnxlbnwxfHx8fDE3NjYzNzI0NTF8MA&ixlib=rb-4.1.0&q=80&w=1080';
-
-  // What is ACS section
-  const whatIsAcsParagraph1 = getBlock('what-is-acs', 'paragraph_1') || 'As the official humanitarian arm of the Seventh-day Adventist Church in Australia, we operate community centres and programs in cities and towns throughout the country. Our services include emergency relief, food banks, clothing assistance, budgeting support, and personal care programs.';
-  const whatIsAcsParagraph2 = getBlock('what-is-acs', 'paragraph_2') || 'We believe everyone deserves dignity, respect, and practical support when they need it most. Through our network of dedicated staff and volunteers, we serve thousands of Australians each year, offering hope and help to build stronger, more resilient communities.';
-
-  // Our Story section
-  const storyTitle = getBlock('our-story', 'title') || 'Our Story';
-  const storyParagraph1 = getBlock('our-story', 'paragraph_1') || "For decades, Australia's Adventist Community Service has been a beacon of hope in communities across the nation. What started as a small volunteer effort has grown into a comprehensive network of services reaching thousands of Australians each year.";
-  const storyParagraph2 = getBlock('our-story', 'paragraph_2') || 'Our dedicated team of staff and volunteers work tirelessly to provide food, clothing, emergency relief, and emotional support to those facing hardship. We believe in addressing both immediate needs and empowering long-term positive change.';
-  const storyParagraph3 = getBlock('our-story', 'paragraph_3') || 'Every day, we witness the transformative power of community support and the resilience of the human spirit.';
-  const storyImages = getJSONBlock<CMSImage[]>('our-story', 'images_data', staticStoryImages);
-
-  // Mission section
-  const missionTitle = getBlock('mission', 'title') || 'Our Mission';
-  const missionContent = getBlock('mission', 'content') || "Australia's Adventist Community Service exists to demonstrate God's love through practical assistance to people in need, regardless of race, religion, gender or nationality.";
-
-  // Values section
-  const values = getJSONBlock<ValueItem[]>('values', 'values_data', staticValues);
-
-  // Team section
-  const teamTitle = getBlock('team', 'section_title') || 'Meet Our Team';
-  const teamDescription = getBlock('team', 'section_description') || 'Our passionate team of professionals and volunteers are committed to making a difference in communities across Australia.';
-  const teamMembers = getJSONBlock<TeamMember[]>('team', 'team_data', staticTeamMembers);
-
-  // Testimonials section
-  const testimonialsTitle = getBlock('testimonials', 'section_title') || 'Hear from Our Volunteers';
-  const testimonialsDescription = getBlock('testimonials', 'section_description') || 'Read about the experiences of our dedicated volunteers and how they are making a difference in their communities.';
-  const testimonials = getJSONBlock<Testimonial[]>('testimonials', 'testimonials_data', staticTestimonials);
-
-  const heroTitleParts = heroTitle.split(' ');
-  const heroTitleLine1 = heroTitleParts.slice(0, 2).join(' ');
-  const heroTitleLine2 = heroTitleParts.slice(2).join(' ');
+  const cms = {
+    hero: {
+      label: getBlock('hero', 'section_label') || 'About Us',
+      title: getBlock('hero', 'title') || 'What Is Adventist Community Services?',
+      subtitle: getBlock('hero', 'subtitle') || "Adventist Community Services (ACS) is one of Australia's leading humanitarian organisations, providing compassionate assistance to people experiencing hardship and disadvantage across the nation.",
+      image: getBlock('hero', 'background_image') || 'https://images.unsplash.com/photo-1576897202707-f397683935d3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhdXN0cmFsaWElMjBjb21tdW5pdHklMjBoZWxwaW5nJTIwaGFuZHMlMjB0b2dldGhlcnxlbnwxfHx8fDE3NjYzNzI0NTF8MA&ixlib=rb-4.1.0&q=80&w=1080',
+    },
+    whatIsAcs: {
+      paragraph1: getBlock('what-is-acs', 'paragraph_1') || 'As the official humanitarian arm of the Seventh-day Adventist Church in Australia, we operate community centres and programs in cities and towns throughout the country. Our services include emergency relief, food banks, clothing assistance, budgeting support, and personal care programs.',
+      paragraph2: getBlock('what-is-acs', 'paragraph_2') || 'We believe everyone deserves dignity, respect, and practical support when they need it most. Through our network of dedicated staff and volunteers, we serve thousands of Australians each year, offering hope and help to build stronger, more resilient communities.',
+    },
+    story: {
+      title: getBlock('our-story', 'title') || 'Our Story',
+      paragraph1: getBlock('our-story', 'paragraph_1') || "For decades, Australia's Adventist Community Service has been a beacon of hope in communities across the nation. What started as a small volunteer effort has grown into a comprehensive network of services reaching thousands of Australians each year.",
+      paragraph2: getBlock('our-story', 'paragraph_2') || 'Our dedicated team of staff and volunteers work tirelessly to provide food, clothing, emergency relief, and emotional support to those facing hardship. We believe in addressing both immediate needs and empowering long-term positive change.',
+      paragraph3: getBlock('our-story', 'paragraph_3') || 'Every day, we witness the transformative power of community support and the resilience of the human spirit.',
+      images: getJSONBlock<CMSImage[]>('our-story', 'images_data', STATIC_DATA.storyImages),
+    },
+    mission: {
+      title: getBlock('mission', 'title') || 'Our Mission',
+      content: getBlock('mission', 'content') || "Australia's Adventist Community Service exists to demonstrate God's love through practical assistance to people in need, regardless of race, religion, gender or nationality.",
+    },
+    values: {
+      title: getBlock('values', 'section_title') || 'Our Values',
+      description: getBlock('values', 'section_description') || 'The principles that guide everything we do.',
+      data: getJSONBlock<ValueItem[]>('values', 'values_data', STATIC_DATA.values),
+    },
+    team: {
+      title: getBlock('team', 'section_title') || 'Meet Our Team',
+      description: getBlock('team', 'section_description') || 'Our passionate team of professionals and volunteers are committed to making a difference in communities across Australia.',
+      members: getJSONBlock<TeamMember[]>('team', 'team_data', STATIC_DATA.teamMembers),
+    },
+    testimonials: {
+      title: getBlock('testimonials', 'section_title') || 'Hear from Our Volunteers',
+      description: getBlock('testimonials', 'section_description') || 'Read about the experiences of our dedicated volunteers and how they are making a difference in their communities.',
+      data: getJSONBlock<Testimonial[]>('testimonials', 'testimonials_data', STATIC_DATA.testimonials),
+    },
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#F44314] via-[#F97023] to-[#F98344]">
@@ -153,7 +141,7 @@ export function About() {
             pageId="about"
             sectionId="hero"
             blockKey="background_image"
-            src={heroImage}
+            src={cms.hero.image}
             alt="Community helping together"
             className="w-full h-full object-cover"
           />
@@ -164,7 +152,7 @@ export function About() {
                 pageId="about"
                 sectionId="hero"
                 blockKey="section_label"
-                content={heroLabel}
+                content={cms.hero.label}
                 fallback="About Us"
                 className="text-white/90 text-sm tracking-wider uppercase mb-4"
                 as="p"
@@ -173,7 +161,7 @@ export function About() {
                 pageId="about"
                 sectionId="hero"
                 blockKey="title"
-                content={heroTitle}
+                content={cms.hero.title}
                 fallback="What Is Adventist Community Services?"
                 className="text-white text-5xl md:text-6xl font-bold mb-6 leading-tight"
                 as="h1"
@@ -183,7 +171,7 @@ export function About() {
                   pageId="about"
                   sectionId="hero"
                   blockKey="subtitle"
-                  content={heroSubtitle}
+                  content={cms.hero.subtitle}
                   fallback="Adventist Community Services (ACS) is one of Australia's leading humanitarian organisations, providing compassionate assistance to people experiencing hardship and disadvantage across the nation."
                   className="text-white/90 text-lg leading-relaxed"
                 />
@@ -197,12 +185,22 @@ export function About() {
       {isSectionEnabled('what-is-acs') && (
         <div className="max-w-7xl mx-auto px-6 py-16">
           <div className="max-w-4xl">
-            <p className="text-white/80 mb-6 leading-relaxed">
-              <HTMLContent html={whatIsAcsParagraph1} />
-            </p>
-            <p className="text-white/80 leading-relaxed">
-              <HTMLContent html={whatIsAcsParagraph2} />
-            </p>
+            <EditableRichText
+              pageId="about"
+              sectionId="what-is-acs"
+              blockKey="paragraph_1"
+              content={cms.whatIsAcs.paragraph1}
+              fallback="As the official humanitarian arm of the Seventh-day Adventist Church in Australia, we operate community centres and programs in cities and towns throughout the country. Our services include emergency relief, food banks, clothing assistance, budgeting support, and personal care programs."
+              className="text-white/80 mb-6 leading-relaxed"
+            />
+            <EditableRichText
+              pageId="about"
+              sectionId="what-is-acs"
+              blockKey="paragraph_2"
+              content={cms.whatIsAcs.paragraph2}
+              fallback="We believe everyone deserves dignity, respect, and practical support when they need it most. Through our network of dedicated staff and volunteers, we serve thousands of Australians each year, offering hope and help to build stronger, more resilient communities."
+              className="text-white/80 leading-relaxed"
+            />
           </div>
         </div>
       )}
@@ -213,7 +211,7 @@ export function About() {
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div className="grid grid-cols-2 gap-3 h-full">
               {STORY_IMAGE_GRID.map((layout, index) => {
-                const image = storyImages[index];
+                const image = cms.story.images[index];
                 if (!image) return null;
                 return (
                   <div key={index} className={layout.className}>
@@ -228,15 +226,59 @@ export function About() {
             </div>
 
             <div>
-              <h3 className="text-white text-3xl font-bold mb-4">{storyTitle}</h3>
-              <p className="text-white/80 mb-4"><HTMLContent html={storyParagraph1} /></p>
-              <p className="text-white/80 mb-4"><HTMLContent html={storyParagraph2} /></p>
-              <p className="text-white/80 mb-12"><HTMLContent html={storyParagraph3} /></p>
+              <EditableText
+                pageId="about"
+                sectionId="our-story"
+                blockKey="title"
+                content={cms.story.title}
+                fallback="Our Story"
+                className="text-white text-3xl font-bold mb-4"
+                as="h3"
+              />
+              <EditableRichText
+                pageId="about"
+                sectionId="our-story"
+                blockKey="paragraph_1"
+                content={cms.story.paragraph1}
+                fallback="For decades, Australia's Adventist Community Service has been a beacon of hope in communities across the nation. What started as a small volunteer effort has grown into a comprehensive network of services reaching thousands of Australians each year."
+                className="text-white/80 mb-4"
+              />
+              <EditableRichText
+                pageId="about"
+                sectionId="our-story"
+                blockKey="paragraph_2"
+                content={cms.story.paragraph2}
+                fallback="Our dedicated team of staff and volunteers work tirelessly to provide food, clothing, emergency relief, and emotional support to those facing hardship. We believe in addressing both immediate needs and empowering long-term positive change."
+                className="text-white/80 mb-4"
+              />
+              <EditableRichText
+                pageId="about"
+                sectionId="our-story"
+                blockKey="paragraph_3"
+                content={cms.story.paragraph3}
+                fallback="Every day, we witness the transformative power of community support and the resilience of the human spirit."
+                className="text-white/80 mb-12"
+              />
 
               {isSectionEnabled('mission') && (
                 <>
-                  <h3 className="text-white text-3xl font-bold mb-4">{missionTitle}</h3>
-                  <p className="text-white/80"><HTMLContent html={missionContent} /></p>
+                  <EditableText
+                    pageId="about"
+                    sectionId="mission"
+                    blockKey="title"
+                    content={cms.mission.title}
+                    fallback="Our Mission"
+                    className="text-white text-3xl font-bold mb-4"
+                    as="h3"
+                  />
+                  <EditableRichText
+                    pageId="about"
+                    sectionId="mission"
+                    blockKey="content"
+                    content={cms.mission.content}
+                    fallback="Australia's Adventist Community Service exists to demonstrate God's love through practical assistance to people in need, regardless of race, religion, gender or nationality."
+                    className="text-white/80"
+                  />
                 </>
               )}
             </div>
@@ -247,8 +289,25 @@ export function About() {
       {/* Values Grid */}
       {isSectionEnabled('values') && (
         <div className="max-w-7xl mx-auto px-6 pb-24">
+          <EditableText
+            pageId="about"
+            sectionId="values"
+            blockKey="section_title"
+            content={cms.values.title}
+            fallback="Our Values"
+            className="text-white text-4xl font-bold text-center mb-4"
+            as="h2"
+          />
+          <EditableRichText
+            pageId="about"
+            sectionId="values"
+            blockKey="section_description"
+            content={cms.values.description}
+            fallback="The principles that guide everything we do."
+            className="text-white/70 text-center max-w-2xl mx-auto mb-12"
+          />
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {values.map((value, index) => {
+            {cms.values.data.map((value, index) => {
               const IconComponent = VALUE_ICONS[value.icon] || Heart;
               return (
                 <div key={index} className="text-center">
@@ -271,7 +330,7 @@ export function About() {
             pageId="about"
             sectionId="team"
             blockKey="section_title"
-            content={teamTitle}
+            content={cms.team.title}
             fallback="Meet Our Team"
             className="text-white text-4xl font-bold text-center mb-4"
             as="h2"
@@ -280,12 +339,12 @@ export function About() {
             pageId="about"
             sectionId="team"
             blockKey="section_description"
-            content={teamDescription}
+            content={cms.team.description}
             fallback="Our passionate team of professionals and volunteers are committed to making a difference in communities across Australia."
             className="text-white/70 text-center max-w-2xl mx-auto mb-12"
           />
           <div className="grid md:grid-cols-3 gap-8">
-            {teamMembers.map((member, index) => (
+            {cms.team.members.map((member, index) => (
               <div key={index} className="text-center">
                 <img
                   src={member.image}
@@ -304,13 +363,26 @@ export function About() {
       {/* Testimonials Section */}
       {isSectionEnabled('testimonials') && (
         <div className="max-w-7xl mx-auto px-6 pb-24">
-          <h2 className="text-white text-4xl font-bold text-center mb-4">{testimonialsTitle}</h2>
-          <p className="text-white/70 text-center max-w-2xl mx-auto mb-12">
-            <HTMLContent html={testimonialsDescription} />
-          </p>
+          <EditableText
+            pageId="about"
+            sectionId="testimonials"
+            blockKey="section_title"
+            content={cms.testimonials.title}
+            fallback="Hear from Our Volunteers"
+            className="text-white text-4xl font-bold text-center mb-4"
+            as="h2"
+          />
+          <EditableRichText
+            pageId="about"
+            sectionId="testimonials"
+            blockKey="section_description"
+            content={cms.testimonials.description}
+            fallback="Read about the experiences of our dedicated volunteers and how they are making a difference in their communities."
+            className="text-white/70 text-center max-w-2xl mx-auto mb-12"
+          />
           <ResponsiveMasonry columnsCountBreakPoints={{ 350: 1, 750: 2, 900: 3 }}>
             <Masonry gutter="24px">
-              {testimonials.map((testimonial) => (
+              {cms.testimonials.data.map((testimonial) => (
                 <TestimonialCard key={testimonial.id} testimonial={testimonial} />
               ))}
             </Masonry>

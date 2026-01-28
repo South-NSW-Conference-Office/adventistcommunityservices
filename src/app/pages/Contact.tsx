@@ -2,6 +2,7 @@ import { Loader2 } from 'lucide-react';
 import { useState, FormEvent } from 'react';
 import { contactApi, ContactFormData, VolunteerApplicationData } from '../services/contactApi';
 import { useCMSPage, CMSImage } from '../hooks/useCMSContent';
+import { EditableText, EditableRichText } from '../components/editable';
 
 type FormType = 'contact' | 'volunteer';
 
@@ -21,19 +22,32 @@ interface ImageMasonryProps {
   layout: ImageLayoutConfig[];
 }
 
-const staticContactImages: CMSImage[] = [
-  { url: 'https://images.unsplash.com/photo-1725021059875-8f7fd08c843a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhdXN0cmFsaWElMjBzeWRuZXklMjBvZmZpY2UlMjBidWlsZGluZ3xlbnwxfHx8fDE3NjYxOTgyMTh8MA&ixlib=rb-4.1.0&q=80&w=1080', alt: 'ACS Office Building' },
-  { url: 'https://images.unsplash.com/photo-1556761175-b413da4baf72?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxvZmZpY2UlMjByZWNlcHRpb24lMjBkZXNrfGVufDF8fHx8MTczNDU2Nzg5Nnww&ixlib=rb-4.1.0&q=80&w=1080', alt: 'Reception Area' },
-  { url: 'https://images.unsplash.com/photo-1497366216548-37526070297c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxvZmZpY2UlMjBtZWV0aW5nJTIwcm9vbXxlbnwxfHx8fDE3MzQ1Njc4OTZ8MA&ixlib=rb-4.1.0&q=80&w=1080', alt: 'Meeting Room' },
-];
+const INPUT_CLASS = 'w-full px-4 py-3 rounded-lg bg-white/10 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:border-white/40 transition-colors';
+const TEXTAREA_CLASS = `${INPUT_CLASS} resize-none`;
+const SELECT_OPTION_CLASS = 'bg-[#F44314]';
 
-const staticVolunteerImages: CMSImage[] = [
-  { url: 'https://images.unsplash.com/photo-1710092784814-4a6f158913b8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx2b2x1bnRlZXJzJTIwZm9vZCUyMGJhbmslMjBoZWxwaW5nfGVufDF8fHx8MTc2NjM3MDE3Nnww&ixlib=rb-4.1.0&q=80&w=1080', alt: 'Food Bank Volunteers' },
-  { url: 'https://images.unsplash.com/photo-1722336762551-831c0bcc2b59?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjb21tdW5pdHklMjB2b2x1bnRlZXJzJTIwcGFja2luZyUyMGNsb3RoZXN8ZW58MXx8fHwxNzY2MzcwMTc2fDA&ixlib=rb-4.1.0&q=80&w=1080', alt: 'Clothing Assistance' },
-  { url: 'https://images.unsplash.com/photo-1657558638549-9fd140b1ab5e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx2b2x1bnRlZXJzJTIwaGVscGluZyUyMGVsZGVybHl8ZW58MXx8fHwxNzY2MzcwMTc3fDA&ixlib=rb-4.1.0&q=80&w=1080', alt: 'Community Support' },
-  { url: 'https://images.unsplash.com/photo-1758599668125-e154250f24bd?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx2b2x1bnRlZXJzJTIwdGVhbXdvcmslMjBjb21tdW5pdHl8ZW58MXx8fHwxNzY2MzcwMTc3fDA&ixlib=rb-4.1.0&q=80&w=1080', alt: 'Teamwork' },
-  { url: 'https://images.unsplash.com/photo-1559027615-cd4628902d4a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx2b2x1bnRlZXJzJTIwaGFwcHklMjBjb21tdW5pdHl8ZW58MXx8fHwxNzM0NTY3ODk3fDA&ixlib=rb-4.1.0&q=80&w=1080', alt: 'Happy Volunteers' },
-];
+function getFormTypeButtonClass(isActive: boolean): string {
+  const baseClass = 'px-8 py-4 rounded-xl font-semibold transition-all shadow-lg';
+  if (isActive) {
+    return `${baseClass} bg-white text-[#F44314]`;
+  }
+  return `${baseClass} bg-white/10 border border-white/20 text-white hover:bg-white/20`;
+}
+
+const STATIC_DATA = {
+  contactImages: [
+    { url: 'https://images.unsplash.com/photo-1725021059875-8f7fd08c843a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhdXN0cmFsaWElMjBzeWRuZXklMjBvZmZpY2UlMjBidWlsZGluZ3xlbnwxfHx8fDE3NjYxOTgyMTh8MA&ixlib=rb-4.1.0&q=80&w=1080', alt: 'ACS Office Building' },
+    { url: 'https://images.unsplash.com/photo-1556761175-b413da4baf72?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxvZmZpY2UlMjByZWNlcHRpb24lMjBkZXNrfGVufDF8fHx8MTczNDU2Nzg5Nnww&ixlib=rb-4.1.0&q=80&w=1080', alt: 'Reception Area' },
+    { url: 'https://images.unsplash.com/photo-1497366216548-37526070297c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxvZmZpY2UlMjBtZWV0aW5nJTIwcm9vbXxlbnwxfHx8fDE3MzQ1Njc4OTZ8MA&ixlib=rb-4.1.0&q=80&w=1080', alt: 'Meeting Room' },
+  ] as CMSImage[],
+  volunteerImages: [
+    { url: 'https://images.unsplash.com/photo-1710092784814-4a6f158913b8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx2b2x1bnRlZXJzJTIwZm9vZCUyMGJhbmslMjBoZWxwaW5nfGVufDF8fHx8MTc2NjM3MDE3Nnww&ixlib=rb-4.1.0&q=80&w=1080', alt: 'Food Bank Volunteers' },
+    { url: 'https://images.unsplash.com/photo-1722336762551-831c0bcc2b59?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjb21tdW5pdHklMjB2b2x1bnRlZXJzJTIwcGFja2luZyUyMGNsb3RoZXN8ZW58MXx8fHwxNzY2MzcwMTc2fDA&ixlib=rb-4.1.0&q=80&w=1080', alt: 'Clothing Assistance' },
+    { url: 'https://images.unsplash.com/photo-1657558638549-9fd140b1ab5e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx2b2x1bnRlZXJzJTIwaGVscGluZyUyMGVsZGVybHl8ZW58MXx8fHwxNzY2MzcwMTc3fDA&ixlib=rb-4.1.0&q=80&w=1080', alt: 'Community Support' },
+    { url: 'https://images.unsplash.com/photo-1758599668125-e154250f24bd?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx2b2x1bnRlZXJzJTIwdGVhbXdvcmslMjBjb21tdW5pdHl8ZW58MXx8fHwxNzY2MzcwMTc3fDA&ixlib=rb-4.1.0&q=80&w=1080', alt: 'Teamwork' },
+    { url: 'https://images.unsplash.com/photo-1559027615-cd4628902d4a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx2b2x1bnRlZXJzJTIwaGFwcHklMjBjb21tdW5pdHl8ZW58MXx8fHwxNzM0NTY3ODk3fDA&ixlib=rb-4.1.0&q=80&w=1080', alt: 'Happy Volunteers' },
+  ] as CMSImage[],
+};
 
 const contactImageLayout: ImageLayoutConfig[] = [
   { colSpan: 2, height: 'h-48' },
@@ -118,18 +132,24 @@ export function Contact(): JSX.Element {
 
   const { getBlock, getJSONBlock } = useCMSPage('contact');
 
-  const heroLabel = getBlock('hero', 'section_label') || 'Contact Us';
-  const heroTitle = getBlock('hero', 'title') || 'Get In Touch';
-  const heroDescription1 = getBlock('hero', 'description_1') || "We'd love to hear from you. Whether you need assistance, have questions about our services, or want to join our team of dedicated volunteers, we're here to help.";
-  const heroDescription2 = getBlock('hero', 'description_2') || 'Our team is committed to responding to all inquiries promptly and connecting you with the right resources. Reach out today and become part of our community making a difference across Australia.';
-
-  const contactInfoTitle = getBlock('contact-info', 'title') || 'Contact Information';
-  const contactInfoDescription = getBlock('contact-info', 'description') || "Our offices are open to assist you with any inquiries, whether you need emergency support, have questions about our services, or want to learn more about how we can help. Adventist Community Services operates multiple locations across Australia, providing accessible support to communities in need with compassionate and professional staff. We've created a welcoming environment where everyone is treated with dignity and respect.";
-  const contactImages = getJSONBlock<CMSImage[]>('contact-info', 'images_data', staticContactImages);
-
-  const volunteerInfoTitle = getBlock('volunteer-info', 'title') || 'Why Volunteer With Us?';
-  const volunteerInfoDescription = getBlock('volunteer-info', 'description') || "Join a community of passionate individuals making a real difference across Australia, where you'll gain valuable experience, meet inspiring people, and contribute to meaningful change in your local community. We provide comprehensive training, flexible scheduling, and ongoing support to ensure your volunteer experience is rewarding and impactful. Whether you can commit to a few hours a week or regular shifts, we have opportunities that fit your lifestyle.";
-  const volunteerImages = getJSONBlock<CMSImage[]>('volunteer-info', 'images_data', staticVolunteerImages);
+  const cms = {
+    hero: {
+      label: getBlock('hero', 'section_label') || 'Contact Us',
+      title: getBlock('hero', 'title') || 'Get In Touch',
+      description1: getBlock('hero', 'description_1') || "We'd love to hear from you. Whether you need assistance, have questions about our services, or want to join our team of dedicated volunteers, we're here to help.",
+      description2: getBlock('hero', 'description_2') || 'Our team is committed to responding to all inquiries promptly and connecting you with the right resources. Reach out today and become part of our community making a difference across Australia.',
+    },
+    contactInfo: {
+      title: getBlock('contact-info', 'title') || 'Contact Information',
+      description: getBlock('contact-info', 'description') || "Our offices are open to assist you with any inquiries, whether you need emergency support, have questions about our services, or want to learn more about how we can help. Adventist Community Services operates multiple locations across Australia, providing accessible support to communities in need with compassionate and professional staff. We've created a welcoming environment where everyone is treated with dignity and respect.",
+      images: getJSONBlock<CMSImage[]>('contact-info', 'images_data', STATIC_DATA.contactImages),
+    },
+    volunteerInfo: {
+      title: getBlock('volunteer-info', 'title') || 'Why Volunteer With Us?',
+      description: getBlock('volunteer-info', 'description') || "Join a community of passionate individuals making a real difference across Australia, where you'll gain valuable experience, meet inspiring people, and contribute to meaningful change in your local community. We provide comprehensive training, flexible scheduling, and ongoing support to ensure your volunteer experience is rewarding and impactful. Whether you can commit to a few hours a week or regular shifts, we have opportunities that fit your lifestyle.",
+      images: getJSONBlock<CMSImage[]>('volunteer-info', 'images_data', STATIC_DATA.volunteerImages),
+    },
+  };
 
   function handleFormTypeChange(type: FormType): void {
     setFormType(type);
@@ -197,9 +217,7 @@ export function Contact(): JSX.Element {
   }
 
   const isContact = formType === 'contact';
-  const infoTitle = isContact ? contactInfoTitle : volunteerInfoTitle;
-  const infoDescription = isContact ? contactInfoDescription : volunteerInfoDescription;
-  const images = isContact ? contactImages : volunteerImages;
+  const currentInfo = isContact ? cms.contactInfo : cms.volunteerInfo;
   const imageLayout = isContact ? contactImageLayout : volunteerImageLayout;
 
   return (
@@ -220,32 +238,54 @@ export function Contact(): JSX.Element {
 
         {/* Content */}
         <div className="relative z-10 max-w-4xl mx-auto px-6 py-32 text-center">
-          <p className="text-white/90 text-sm tracking-wider uppercase mb-4">{heroLabel}</p>
-          <h1 className="text-white text-5xl md:text-6xl font-bold mb-6 leading-tight">
-            {heroTitle}
-          </h1>
-          <p className="text-white/90 text-lg mb-4 leading-relaxed max-w-3xl mx-auto" dangerouslySetInnerHTML={{ __html: heroDescription1 }} />
-          <p className="text-white/80 mb-10 leading-relaxed max-w-3xl mx-auto" dangerouslySetInnerHTML={{ __html: heroDescription2 }} />
+          <EditableText
+            pageId="contact"
+            sectionId="hero"
+            blockKey="section_label"
+            content={cms.hero.label}
+            fallback="Contact Us"
+            className="text-white/90 text-sm tracking-wider uppercase mb-4"
+            as="p"
+          />
+          <EditableText
+            pageId="contact"
+            sectionId="hero"
+            blockKey="title"
+            content={cms.hero.title}
+            fallback="Get In Touch"
+            className="text-white text-5xl md:text-6xl font-bold mb-6 leading-tight"
+            as="h1"
+          />
+          <div className="max-w-3xl mx-auto">
+            <EditableRichText
+              pageId="contact"
+              sectionId="hero"
+              blockKey="description_1"
+              content={cms.hero.description1}
+              fallback="We'd love to hear from you. Whether you need assistance, have questions about our services, or want to join our team of dedicated volunteers, we're here to help."
+              className="text-white/90 text-lg mb-4 leading-relaxed"
+            />
+            <EditableRichText
+              pageId="contact"
+              sectionId="hero"
+              blockKey="description_2"
+              content={cms.hero.description2}
+              fallback="Our team is committed to responding to all inquiries promptly and connecting you with the right resources. Reach out today and become part of our community making a difference across Australia."
+              className="text-white/80 mb-10 leading-relaxed"
+            />
+          </div>
 
           {/* Action Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <button
               onClick={() => handleFormTypeChange('contact')}
-              className={`px-8 py-4 rounded-xl font-semibold transition-all shadow-lg ${
-                isContact
-                  ? 'bg-white text-[#F44314]'
-                  : 'bg-white/10 border border-white/20 text-white hover:bg-white/20'
-              }`}
+              className={getFormTypeButtonClass(isContact)}
             >
               Contact Us
             </button>
             <button
               onClick={() => handleFormTypeChange('volunteer')}
-              className={`px-8 py-4 rounded-xl font-semibold transition-all shadow-lg ${
-                !isContact
-                  ? 'bg-white text-[#F44314]'
-                  : 'bg-white/10 border border-white/20 text-white hover:bg-white/20'
-              }`}
+              className={getFormTypeButtonClass(!isContact)}
             >
               Become a Volunteer
             </button>
@@ -258,9 +298,48 @@ export function Contact(): JSX.Element {
         <div className="grid md:grid-cols-2 gap-12">
           {/* Contact/Volunteer Information */}
           <div>
-            <h3 className="text-white text-2xl font-semibold mb-6">{infoTitle}</h3>
-            <p className="text-white/80 mb-8" dangerouslySetInnerHTML={{ __html: infoDescription }} />
-            <ImageMasonry images={images} layout={imageLayout} />
+            {isContact ? (
+              <>
+                <EditableText
+                  pageId="contact"
+                  sectionId="contact-info"
+                  blockKey="title"
+                  content={cms.contactInfo.title}
+                  fallback="Contact Information"
+                  className="text-white text-2xl font-semibold mb-6"
+                  as="h3"
+                />
+                <EditableRichText
+                  pageId="contact"
+                  sectionId="contact-info"
+                  blockKey="description"
+                  content={cms.contactInfo.description}
+                  fallback="Our offices are open to assist you with any inquiries, whether you need emergency support, have questions about our services, or want to learn more about how we can help."
+                  className="text-white/80 mb-8"
+                />
+              </>
+            ) : (
+              <>
+                <EditableText
+                  pageId="contact"
+                  sectionId="volunteer-info"
+                  blockKey="title"
+                  content={cms.volunteerInfo.title}
+                  fallback="Why Volunteer With Us?"
+                  className="text-white text-2xl font-semibold mb-6"
+                  as="h3"
+                />
+                <EditableRichText
+                  pageId="contact"
+                  sectionId="volunteer-info"
+                  blockKey="description"
+                  content={cms.volunteerInfo.description}
+                  fallback="Join a community of passionate individuals making a real difference across Australia."
+                  className="text-white/80 mb-8"
+                />
+              </>
+            )}
+            <ImageMasonry images={currentInfo.images} layout={imageLayout} />
           </div>
 
           {/* Contact Form */}
@@ -275,7 +354,7 @@ export function Contact(): JSX.Element {
                   type="text"
                   id="name"
                   name="name"
-                  className="w-full px-4 py-3 rounded-lg bg-white/10 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:border-white/40 transition-colors"
+                  className={INPUT_CLASS}
                   placeholder="Enter your name"
                   onChange={() => handleInputChange('name')}
                 />
@@ -288,7 +367,7 @@ export function Contact(): JSX.Element {
                   type="email"
                   id="email"
                   name="email"
-                  className="w-full px-4 py-3 rounded-lg bg-white/10 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:border-white/40 transition-colors"
+                  className={INPUT_CLASS}
                   placeholder="Enter your email"
                   onChange={() => handleInputChange('email')}
                 />
@@ -301,7 +380,7 @@ export function Contact(): JSX.Element {
                   type="tel"
                   id="phone"
                   name="phone"
-                  className="w-full px-4 py-3 rounded-lg bg-white/10 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:border-white/40 transition-colors"
+                  className={INPUT_CLASS}
                   placeholder="Enter your phone"
                   onChange={() => handleInputChange('phone')}
                 />
@@ -316,7 +395,7 @@ export function Contact(): JSX.Element {
                       type="text"
                       id="subject"
                       name="subject"
-                      className="w-full px-4 py-3 rounded-lg bg-white/10 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:border-white/40 transition-colors"
+                      className={INPUT_CLASS}
                       placeholder="How can we help?"
                       onChange={() => handleInputChange('subject')}
                     />
@@ -329,10 +408,10 @@ export function Contact(): JSX.Element {
                       id="message"
                       name="message"
                       rows={5}
-                      className="w-full px-4 py-3 rounded-lg bg-white/10 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:border-white/40 transition-colors resize-none"
+                      className={TEXTAREA_CLASS}
                       placeholder="Tell us more about your inquiry..."
                       onChange={() => handleInputChange('message')}
-                    ></textarea>
+                    />
                     {errors.message && <p className="text-red-500 text-sm mt-1">{errors.message}</p>}
                   </div>
                 </>
@@ -343,13 +422,13 @@ export function Contact(): JSX.Element {
                     <select
                       id="availability"
                       name="availability"
-                      className="w-full px-4 py-3 rounded-lg bg-white/10 border border-white/20 text-white focus:outline-none focus:border-white/40 transition-colors"
+                      className={INPUT_CLASS}
                       onChange={() => handleInputChange('availability')}
                     >
-                      <option value="" className="bg-[#F44314]">Select your availability</option>
-                      <option value="weekdays" className="bg-[#F44314]">Weekdays</option>
-                      <option value="weekends" className="bg-[#F44314]">Weekends</option>
-                      <option value="flexible" className="bg-[#F44314]">Flexible</option>
+                      <option value="" className={SELECT_OPTION_CLASS}>Select your availability</option>
+                      <option value="weekdays" className={SELECT_OPTION_CLASS}>Weekdays</option>
+                      <option value="weekends" className={SELECT_OPTION_CLASS}>Weekends</option>
+                      <option value="flexible" className={SELECT_OPTION_CLASS}>Flexible</option>
                     </select>
                     {errors.availability && <p className="text-red-500 text-sm mt-1">{errors.availability}</p>}
                   </div>
@@ -359,15 +438,15 @@ export function Contact(): JSX.Element {
                     <select
                       id="interests"
                       name="interests"
-                      className="w-full px-4 py-3 rounded-lg bg-white/10 border border-white/20 text-white focus:outline-none focus:border-white/40 transition-colors"
+                      className={INPUT_CLASS}
                       onChange={() => handleInputChange('interests')}
                     >
-                      <option value="" className="bg-[#F44314]">Select your interest</option>
-                      <option value="foodbank" className="bg-[#F44314]">Food Bank Services</option>
-                      <option value="clothing" className="bg-[#F44314]">Clothing Assistance</option>
-                      <option value="counseling" className="bg-[#F44314]">Counseling Support</option>
-                      <option value="emergency" className="bg-[#F44314]">Emergency Relief</option>
-                      <option value="admin" className="bg-[#F44314]">Administrative Support</option>
+                      <option value="" className={SELECT_OPTION_CLASS}>Select your interest</option>
+                      <option value="foodbank" className={SELECT_OPTION_CLASS}>Food Bank Services</option>
+                      <option value="clothing" className={SELECT_OPTION_CLASS}>Clothing Assistance</option>
+                      <option value="counseling" className={SELECT_OPTION_CLASS}>Counseling Support</option>
+                      <option value="emergency" className={SELECT_OPTION_CLASS}>Emergency Relief</option>
+                      <option value="admin" className={SELECT_OPTION_CLASS}>Administrative Support</option>
                     </select>
                     {errors.interests && <p className="text-red-500 text-sm mt-1">{errors.interests}</p>}
                   </div>
@@ -378,9 +457,9 @@ export function Contact(): JSX.Element {
                       id="experience"
                       name="experience"
                       rows={4}
-                      className="w-full px-4 py-3 rounded-lg bg-white/10 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:border-white/40 transition-colors resize-none"
+                      className={TEXTAREA_CLASS}
                       placeholder="Tell us about any relevant experience or skills..."
-                    ></textarea>
+                    />
                   </div>
 
                   <div>
@@ -389,10 +468,10 @@ export function Contact(): JSX.Element {
                       id="motivation"
                       name="motivation"
                       rows={4}
-                      className="w-full px-4 py-3 rounded-lg bg-white/10 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:border-white/40 transition-colors resize-none"
+                      className={TEXTAREA_CLASS}
                       placeholder="Share what motivates you to volunteer..."
                       onChange={() => handleInputChange('motivation')}
-                    ></textarea>
+                    />
                     {errors.motivation && <p className="text-red-500 text-sm mt-1">{errors.motivation}</p>}
                   </div>
                 </>
@@ -417,14 +496,10 @@ export function Contact(): JSX.Element {
                 disabled={isSubmitting}
                 className="w-full bg-white text-[#F44314] font-semibold py-3 px-6 rounded-lg hover:bg-white/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
               >
-                {isSubmitting ? (
-                  <>
-                    <Loader2 className="w-5 h-5 animate-spin" />
-                    {isContact ? 'Sending...' : 'Submitting...'}
-                  </>
-                ) : (
-                  isContact ? 'Send Message' : 'Submit Application'
-                )}
+                {isSubmitting && <Loader2 className="w-5 h-5 animate-spin" />}
+                {isSubmitting
+                  ? (isContact ? 'Sending...' : 'Submitting...')
+                  : (isContact ? 'Send Message' : 'Submit Application')}
               </button>
             </form>
           </div>

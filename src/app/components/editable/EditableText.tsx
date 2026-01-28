@@ -26,10 +26,16 @@ export function EditableText({
   const [isEditing, setIsEditing] = useState(false);
   const elementRef = useRef<HTMLElement>(null);
   const originalContentRef = useRef(content || fallback);
+  const isInitialMount = useRef(true);
 
   // Update local content when prop changes (e.g., after save)
   useEffect(() => {
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+      return;
+    }
     const newContent = content || fallback;
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setLocalContent(newContent);
     originalContentRef.current = newContent;
   }, [content, fallback]);

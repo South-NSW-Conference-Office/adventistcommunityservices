@@ -14,7 +14,7 @@ interface PageContentProps {
   /** Additional CSS classes */
   className?: string;
   /** HTML element to render as */
-  as?: keyof JSX.IntrinsicElements;
+  as?: React.ElementType;
 }
 
 /**
@@ -145,5 +145,3 @@ export function PageContentImage({
   return <img src={src || fallbackSrc} alt={alt} className={className} />;
 }
 
-// Re-export the hook for convenience
-export { usePageContent } from '../hooks/usePageContent';

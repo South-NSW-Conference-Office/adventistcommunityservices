@@ -64,7 +64,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       if (p === '*') return true;
       if (p === permission) return true;
       // Check for wildcard like "page_content.*"
-      const [resource, action] = permission.split('.');
+      const [resource] = permission.split('.');
       if (p === `${resource}.*`) return true;
       return false;
     });

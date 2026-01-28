@@ -210,7 +210,7 @@ export function useCMSPage(pageId: string): {
   isSectionEnabled: (sectionId: string) => boolean;
   refetch: () => Promise<void>;
 } {
-  const { content, loading, error, getBlock, getSection, refetch } =
+  const { content, loading, error, getBlock, refetch } =
     usePageContent(pageId);
 
   const getJSONBlock = <T>(

@@ -11,6 +11,7 @@ import { Teams } from './pages/Teams';
 import { TeamDetails } from './pages/TeamDetails';
 import { ComingSoon } from './pages/ComingSoon';
 import { ForgotPassword } from './pages/ForgotPassword';
+import { ResetPassword } from './pages/ResetPassword';
 import { Preview } from './pages/Preview';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { EditModeProvider } from './contexts/EditModeContext';
@@ -39,6 +40,7 @@ function AppContent() {
       <Routes>
         <Route path="/preview/:token" element={<Preview />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="*" element={<ComingSoon />} />
       </Routes>
     );

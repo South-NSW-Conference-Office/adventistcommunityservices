@@ -83,6 +83,8 @@ export function useMultiplePageContent(
     {}
   );
 
+  const pageIdsKey = pageIds.join(',');
+
   useEffect(() => {
     const fetchAll = async () => {
       const results: Record<string, PageContent | null> = {};
@@ -98,7 +100,8 @@ export function useMultiplePageContent(
     if (pageIds.length > 0) {
       fetchAll();
     }
-  }, [pageIds.join(',')]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pageIdsKey]);
 
   return contents;
 }

@@ -157,6 +157,34 @@ export class AuthService {
     }
   }
 
+  static async resetPassword(token: string, password: string): Promise<ForgotPasswordResponse> {
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/auth/reset-password`, {
+        method: 'POST',
+        headers: this.getAuthHeaders(),
+        body: JSON.stringify({ token, password }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.err || data.message || 'Failed to reset password');
+      }
+
+      return {
+        success: true,
+        message: data.message || 'Password has been reset successfully',
+      };
+    } catch (error) {
+      console.error('Reset password error:', error);
+      return {
+        success: false,
+        message: error instanceof Error ? error.message : 'Failed to reset password',
+        err: error instanceof Error ? error.message : 'Failed to reset password',
+      };
+    }
+  }
+
   static setToken(token: string): void {
     localStorage.setItem(this.TOKEN_KEY, token);
   }
