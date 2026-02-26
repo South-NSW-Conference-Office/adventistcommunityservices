@@ -220,6 +220,51 @@ export function ServiceDetails() {
               </div>
             )}
 
+            {/* Service Area Map */}
+            <div>
+              <h2 className="text-[#1F2937] text-2xl font-bold mb-4">Service Area</h2>
+              <div className="bg-[#F8F7F5] border border-gray-200 rounded-xl overflow-hidden">
+                {(() => {
+                  const loc = service.locations?.[0];
+                  const coords = loc?.coordinates;
+                  const suburb = loc?.address?.suburb || '';
+                  const state = loc?.address?.state || '';
+                  const query = coords
+                    ? `${coords.lat},${coords.lng}`
+                    : encodeURIComponent([suburb, state, 'Australia'].filter(Boolean).join(', '));
+                  const src = coords
+                    ? `https://www.openstreetmap.org/export/embed.html?bbox=${coords.lng - 0.05},${coords.lat - 0.03},${coords.lng + 0.05},${coords.lat + 0.03}&layer=mapnik&marker=${coords.lat},${coords.lng}`
+                    : `https://www.openstreetmap.org/export/embed.html?bbox=148.5,-36.0,152.5,-32.0&layer=mapnik`;
+                  return (
+                    <>
+                      <iframe
+                        src={src}
+                        className="w-full h-64 md:h-80 border-0"
+                        loading="lazy"
+                        title={`Map showing ${service.name} service area`}
+                      />
+                      <div className="p-4 flex items-center justify-between">
+                        <div>
+                          <p className="text-[#1F2937] font-medium text-sm">{locationShort}</p>
+                          {service.locations && service.locations.length > 1 && (
+                            <p className="text-gray-400 text-xs mt-1">{service.locations.length} locations</p>
+                          )}
+                        </div>
+                        <a
+                          href={`https://www.google.com/maps/search/?api=1&query=${query}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-[#F44314] text-sm font-semibold hover:underline"
+                        >
+                          Get Directions →
+                        </a>
+                      </div>
+                    </>
+                  );
+                })()}
+              </div>
+            </div>
+
             {/* Empty state prompts for church admins filling in their page */}
             {!service.descriptionLong && !service.descriptionShort && tags.length === 0 && gallery.length === 0 && (
               <div className="bg-[#F8F7F5] border border-dashed border-gray-300 rounded-2xl p-10 text-center">
