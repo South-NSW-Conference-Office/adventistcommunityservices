@@ -58,41 +58,46 @@ export function ServiceCard({
   const capacityText = formatCapacity(capacity);
 
   const content = (
-    <>
-      <div className="relative h-56 overflow-hidden rounded-2xl">
+    <div className="bg-white border border-gray-200 rounded-2xl shadow-md hover:shadow-lg transition-all duration-300 overflow-hidden h-full">
+      <div className="relative h-56 overflow-hidden">
         <img
           src={imageUrl}
           alt={name}
           className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
       </div>
 
-      <div className="pt-6">
-        <h3 className="text-white text-xl font-semibold mb-2">{name}</h3>
-        <p className="text-white/80 text-sm mb-4 line-clamp-2">
+      <div className="p-6">
+        <h3 className="text-gray-900 text-xl font-semibold mb-2">{name}</h3>
+        <p className="text-gray-600 text-sm mb-4 line-clamp-2">
           {descriptionShort || 'No description available'}
         </p>
 
-        <div className="flex items-center justify-between pt-4 border-t border-white/20">
-          <div className="flex items-center gap-2 text-white/70 text-sm">
+        <div className="flex items-center justify-between pt-4 border-t border-gray-200">
+          <div className="flex items-center gap-2 text-gray-500 text-sm">
             <MapPin className="w-4 h-4" />
             <span>{location}</span>
           </div>
-          <div className="flex items-center gap-2 text-white/70 text-sm">
+          <div className="flex items-center gap-2 text-gray-500 text-sm">
             <Users className="w-4 h-4" />
             <span>{capacityText}</span>
           </div>
         </div>
+        
+        <div className="mt-4">
+          <span className="text-[#F44314] font-semibold text-sm hover:text-[#d93a10] transition-colors">
+            Learn More →
+          </span>
+        </div>
       </div>
-    </>
+    </div>
   );
 
   if (id) {
     return (
       <Link
         to={`/services/${id}`}
-        className="group cursor-pointer transition-all hover:scale-[1.02] block"
+        className="group cursor-pointer transition-all hover:scale-[1.02] block h-full"
       >
         {content}
       </Link>
@@ -100,6 +105,6 @@ export function ServiceCard({
   }
 
   return (
-    <div className="group cursor-pointer transition-all hover:scale-[1.02]">{content}</div>
+    <div className="group cursor-pointer transition-all hover:scale-[1.02] h-full">{content}</div>
   );
 }

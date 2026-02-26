@@ -51,10 +51,10 @@ const SKELETON_COUNT = 4;
 function ServiceCardSkeleton(): JSX.Element {
   return (
     <div className="animate-pulse">
-      <Skeleton className="h-56 bg-white/10 rounded-2xl mb-4" />
-      <Skeleton className="h-6 bg-white/10 rounded w-3/4 mb-2" />
-      <Skeleton className="h-4 bg-white/10 rounded w-full mb-2" />
-      <Skeleton className="h-4 bg-white/10 rounded w-2/3" />
+      <Skeleton className="h-56 bg-gray-200 rounded-2xl mb-4" />
+      <Skeleton className="h-6 bg-gray-200 rounded w-3/4 mb-2" />
+      <Skeleton className="h-4 bg-gray-200 rounded w-full mb-2" />
+      <Skeleton className="h-4 bg-gray-200 rounded w-2/3" />
     </div>
   );
 }
@@ -75,7 +75,7 @@ function ImageCard({ image, className = '', textSize = 'base' }: ImageCardProps)
   const paddingClass = textSize === 'sm' ? 'p-4' : 'p-6';
 
   return (
-    <div className={`relative group rounded-2xl overflow-hidden shadow-lg cursor-pointer ${className}`}>
+    <div className={`relative group rounded-2xl overflow-hidden shadow-md cursor-pointer ${className}`}>
       <img
         src={image?.url}
         alt={image?.alt}
@@ -95,7 +95,6 @@ export function Home(): JSX.Element {
   const { services, loading: servicesLoading } = useServices();
   const { testimonies: apiTestimonies } = useTestimonies();
 
-  // Map API testimonies to the Testimonial interface format, with fallback to CMS/static data
   const cmsTestimonies = getJSONBlock<Testimonial[]>('testimonials', 'testimonials_data', STATIC_DATA.testimonials);
   const testimoniesData: Testimonial[] = apiTestimonies.length > 0
     ? apiTestimonies.map((t, index) => ({
@@ -128,7 +127,7 @@ export function Home(): JSX.Element {
     },
     process: {
       label: getBlock('process-steps', 'section_label') || 'Getting Started',
-      title: getBlock('process-steps', 'section_title') || 'How to Work With Us',
+      title: getBlock('process-steps', 'section_title') || 'How to Get Involved',
       description: getBlock('process-steps', 'section_description') || 'Join Adventist Community Services in just three simple steps and start making a difference today.',
       steps: getJSONBlock<ProcessStep[]>('process-steps', 'steps_data', STATIC_DATA.steps),
       ctaButton: getBlock('process-steps', 'cta_button') || 'Get Started Today',
@@ -145,268 +144,266 @@ export function Home(): JSX.Element {
     <div>
       <HeroSection />
 
-      {/* Services Section */}
+      {/* Services Section — white background */}
       {isSectionEnabled('services-preview') && (
-        <section className="max-w-7xl mx-auto px-6 py-16">
-          <div className="text-center mb-12">
-            <EditableText
-              pageId="home"
-              sectionId="services-preview"
-              blockKey="section_label"
-              content={cms.services.label}
-              fallback="Our Services"
-              className="text-white/70 text-sm tracking-wider uppercase mb-2"
-              as="p"
-            />
-            <EditableText
-              pageId="home"
-              sectionId="services-preview"
-              blockKey="section_title"
-              content={cms.services.title}
-              fallback="Available Community Services"
-              className="text-white text-4xl font-bold mb-4"
-              as="h2"
-            />
-            <EditableRichText
-              pageId="home"
-              sectionId="services-preview"
-              blockKey="section_description"
-              content={cms.services.description}
-              fallback="Explore our range of community support programs designed to help those in need across Australia."
-              className="text-white/80 max-w-2xl mx-auto"
-            />
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {servicesLoading &&
-              Array.from({ length: SKELETON_COUNT }).map((_, index) => (
-                <ServiceCardSkeleton key={index} />
-              ))}
-
-            {!servicesLoading &&
-              services.length > 0 &&
-              services.slice(0, 4).map((service) => (
-                <ServiceCard
-                  key={service._id}
-                  id={service._id}
-                  name={service.name}
-                  descriptionShort={service.descriptionShort}
-                  locations={service.locations}
-                  capacity={service.capacity}
-                  primaryImage={service.primaryImage}
-                />
-              ))}
-
-            {!servicesLoading &&
-              services.length === 0 &&
-              cms.services.data.map((service) => {
-                const { suburb, state } = parseStaticLocation(service.location);
-                return (
-                  <ServiceCard
-                    key={service.id}
-                    name={service.name}
-                    descriptionShort={service.descriptionShort}
-                    locations={[{ address: { suburb, state } }]}
-                    capacity={{ maxParticipants: service.capacity }}
-                    primaryImage={{ url: service.image }}
-                  />
-                );
-              })}
-          </div>
-        </section>
-      )}
-
-      {/* Volunteer Application Section */}
-      {isSectionEnabled('volunteer-cta') && (
-        <section className="max-w-7xl mx-auto px-6 py-16">
-          <div className="grid md:grid-cols-2 gap-12 items-center">
-            {/* Image Grid */}
-            <div className="order-2 md:order-1">
-              <div className="grid grid-cols-2 gap-4 h-[600px]">
-                <ImageCard image={cms.volunteer.images[0]} className="row-span-2" />
-                <ImageCard image={cms.volunteer.images[1]} textSize="sm" />
-                <ImageCard image={cms.volunteer.images[2]} textSize="sm" />
-                <ImageCard image={cms.volunteer.images[3]} className="col-span-2" />
-              </div>
-            </div>
-
-            {/* Content */}
-            <div className="order-1 md:order-2">
+        <section className="bg-white py-16">
+          <div className="max-w-7xl mx-auto px-6">
+            <div className="text-center mb-12">
               <EditableText
                 pageId="home"
-                sectionId="volunteer-cta"
+                sectionId="services-preview"
                 blockKey="section_label"
-                content={cms.volunteer.label}
-                fallback="Join Our Team"
-                className="text-white/70 text-sm tracking-wider uppercase mb-2"
+                content={cms.services.label}
+                fallback="Our Services"
+                className="text-[#F44314] text-sm font-semibold tracking-wider uppercase mb-2"
                 as="p"
               />
               <EditableText
                 pageId="home"
-                sectionId="volunteer-cta"
+                sectionId="services-preview"
                 blockKey="section_title"
-                content={cms.volunteer.title}
-                fallback="Become a Volunteer"
-                className="text-white text-4xl font-bold mb-4"
+                content={cms.services.title}
+                fallback="Available Community Services"
+                className="text-[#1F2937] text-4xl font-bold mb-4"
                 as="h2"
               />
-              {cms.volunteer.paragraphs.map((paragraph, index) => (
-                <EditableRichText
-                  key={index}
+              <EditableRichText
+                pageId="home"
+                sectionId="services-preview"
+                blockKey="section_description"
+                content={cms.services.description}
+                fallback="Explore our range of community support programs designed to help those in need across Australia."
+                className="text-gray-600 max-w-2xl mx-auto"
+              />
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              {servicesLoading &&
+                Array.from({ length: SKELETON_COUNT }).map((_, index) => (
+                  <ServiceCardSkeleton key={index} />
+                ))}
+
+              {!servicesLoading &&
+                services.length > 0 &&
+                services.slice(0, 4).map((service) => (
+                  <ServiceCard
+                    key={service._id}
+                    id={service._id}
+                    name={service.name}
+                    descriptionShort={service.descriptionShort}
+                    locations={service.locations}
+                    capacity={service.capacity}
+                    primaryImage={service.primaryImage}
+                  />
+                ))}
+
+              {!servicesLoading &&
+                services.length === 0 &&
+                cms.services.data.map((service) => {
+                  const { suburb, state } = parseStaticLocation(service.location);
+                  return (
+                    <ServiceCard
+                      key={service.id}
+                      name={service.name}
+                      descriptionShort={service.descriptionShort}
+                      locations={[{ address: { suburb, state } }]}
+                      capacity={{ maxParticipants: service.capacity }}
+                      primaryImage={{ url: service.image }}
+                    />
+                  );
+                })}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Volunteer Section — warm grey background */}
+      {isSectionEnabled('volunteer-cta') && (
+        <section className="bg-[#F8F7F5] py-16">
+          <div className="max-w-7xl mx-auto px-6">
+            <div className="grid md:grid-cols-2 gap-12 items-center">
+              {/* Image Grid */}
+              <div className="order-2 md:order-1">
+                <div className="grid grid-cols-2 gap-4 h-[600px]">
+                  <ImageCard image={cms.volunteer.images[0]} className="row-span-2" />
+                  <ImageCard image={cms.volunteer.images[1]} textSize="sm" />
+                  <ImageCard image={cms.volunteer.images[2]} textSize="sm" />
+                  <ImageCard image={cms.volunteer.images[3]} className="col-span-2" />
+                </div>
+              </div>
+
+              {/* Content */}
+              <div className="order-1 md:order-2">
+                <EditableText
                   pageId="home"
                   sectionId="volunteer-cta"
-                  blockKey={`paragraph_${index + 1}`}
-                  content={paragraph}
-                  fallback={paragraph}
-                  className={`text-white/80 ${index < 2 ? 'mb-6' : 'mb-8'}`}
+                  blockKey="section_label"
+                  content={cms.volunteer.label}
+                  fallback="Join Our Team"
+                  className="text-[#F44314] text-sm font-semibold tracking-wider uppercase mb-2"
+                  as="p"
                 />
-              ))}
+                <EditableText
+                  pageId="home"
+                  sectionId="volunteer-cta"
+                  blockKey="section_title"
+                  content={cms.volunteer.title}
+                  fallback="Become a Volunteer"
+                  className="text-[#1F2937] text-4xl font-bold mb-4"
+                  as="h2"
+                />
+                {cms.volunteer.paragraphs.map((paragraph, index) => (
+                  <EditableRichText
+                    key={index}
+                    pageId="home"
+                    sectionId="volunteer-cta"
+                    blockKey={`paragraph_${index + 1}`}
+                    content={paragraph}
+                    fallback={paragraph}
+                    className={`text-gray-600 ${index < 2 ? 'mb-6' : 'mb-8'}`}
+                  />
+                ))}
 
-              <div className="space-y-4">
-                <button className="w-full bg-white text-[#F44314] font-semibold py-4 px-8 rounded-lg hover:bg-white/90 transition-colors shadow-lg">
-                  {cms.volunteer.ctaPrimary}
-                </button>
-                <button className="w-full bg-white/10 border border-white/20 text-white font-semibold py-4 px-8 rounded-lg hover:bg-white/20 transition-colors">
-                  {cms.volunteer.ctaSecondary}
-                </button>
+                <div className="space-y-4">
+                  <button className="w-full bg-[#F44314] text-white font-semibold py-4 px-8 rounded-lg hover:bg-[#d93a10] transition-colors shadow-sm">
+                    {cms.volunteer.ctaPrimary}
+                  </button>
+                  <button className="w-full bg-white border border-gray-300 text-[#1F2937] font-semibold py-4 px-8 rounded-lg hover:bg-gray-50 transition-colors">
+                    {cms.volunteer.ctaSecondary}
+                  </button>
+                </div>
               </div>
             </div>
           </div>
         </section>
       )}
 
-      {/* Three Step Process Section */}
+      {/* Three Step Process — white background */}
       {isSectionEnabled('process-steps') && (
-        <section className="max-w-7xl mx-auto px-6 py-16">
-          <div className="text-center mb-16">
-            <EditableText
-              pageId="home"
-              sectionId="process-steps"
-              blockKey="section_label"
-              content={cms.process.label}
-              fallback="Getting Started"
-              className="text-white/70 text-sm tracking-wider uppercase mb-2"
-              as="p"
-            />
-            <EditableText
-              pageId="home"
-              sectionId="process-steps"
-              blockKey="section_title"
-              content={cms.process.title}
-              fallback="How to Work With Us"
-              className="text-white text-4xl font-bold mb-4"
-              as="h2"
-            />
-            <EditableRichText
-              pageId="home"
-              sectionId="process-steps"
-              blockKey="section_description"
-              content={cms.process.description}
-              fallback="Join Adventist Community Services in just three simple steps and start making a difference today."
-              className="text-white/80 max-w-2xl mx-auto"
-            />
-          </div>
+        <section className="bg-white py-16">
+          <div className="max-w-7xl mx-auto px-6">
+            <div className="text-center mb-16">
+              <EditableText
+                pageId="home"
+                sectionId="process-steps"
+                blockKey="section_label"
+                content={cms.process.label}
+                fallback="Getting Started"
+                className="text-[#F44314] text-sm font-semibold tracking-wider uppercase mb-2"
+                as="p"
+              />
+              <EditableText
+                pageId="home"
+                sectionId="process-steps"
+                blockKey="section_title"
+                content={cms.process.title}
+                fallback="How to Get Involved"
+                className="text-[#1F2937] text-4xl font-bold mb-4"
+                as="h2"
+              />
+              <EditableRichText
+                pageId="home"
+                sectionId="process-steps"
+                blockKey="section_description"
+                content={cms.process.description}
+                fallback="Join Adventist Community Services in just three simple steps and start making a difference today."
+                className="text-gray-600 max-w-2xl mx-auto"
+              />
+            </div>
 
-          <div className="grid md:grid-cols-3 gap-8">
-            {cms.process.steps.map((step, index) => {
-              const IconComponent = ICON_MAP[step.icon as keyof typeof ICON_MAP] || Heart;
-              return (
-                <div key={index} className="relative text-center">
-                  <div className="mb-6 flex justify-center">
-                    <div className="w-24 h-24 rounded-full bg-white/10 flex items-center justify-center backdrop-blur-sm border border-white/20">
-                      <IconComponent className="w-12 h-12 text-white" />
+            <div className="grid md:grid-cols-3 gap-8">
+              {cms.process.steps.map((step, index) => {
+                const IconComponent = ICON_MAP[step.icon as keyof typeof ICON_MAP] || Heart;
+                return (
+                  <div key={index} className="relative text-center">
+                    <div className="mb-6 flex justify-center">
+                      <div className="w-24 h-24 rounded-full bg-[#FFF1EE] flex items-center justify-center border border-[#F44314]/20">
+                        <IconComponent className="w-12 h-12 text-[#F44314]" />
+                      </div>
                     </div>
+                    <div className="absolute top-0 right-0 md:right-[-2rem] text-gray-100 text-8xl font-bold select-none">
+                      {step.number}
+                    </div>
+                    <h3 className="text-[#1F2937] text-2xl font-semibold mb-4">{step.title}</h3>
+                    <p className="text-gray-600">{step.description}</p>
                   </div>
-                  <div className="absolute top-0 right-0 md:right-[-2rem] text-white/20 text-8xl font-bold">
-                    {step.number}
-                  </div>
-                  <h3 className="text-white text-2xl font-semibold mb-4">{step.title}</h3>
-                  <p className="text-white/70">{step.description}</p>
-                </div>
-              );
-            })}
-          </div>
+                );
+              })}
+            </div>
 
-          <div className="text-center mt-12">
-            <button className="bg-white text-[#F44314] font-semibold py-4 px-12 rounded-lg hover:bg-white/90 transition-colors shadow-lg">
-              {cms.process.ctaButton}
-            </button>
+            <div className="text-center mt-12">
+              <button className="bg-[#F44314] text-white font-semibold py-4 px-12 rounded-lg hover:bg-[#d93a10] transition-colors shadow-sm">
+                {cms.process.ctaButton}
+              </button>
+            </div>
           </div>
         </section>
       )}
 
-      {/* Testimonials Section */}
+      {/* Testimonials — warm grey background */}
       {isSectionEnabled('testimonials') && (
-        <section className="max-w-7xl mx-auto px-6 py-16">
-          <div className="text-center mb-16">
-            <EditableText
-              pageId="home"
-              sectionId="testimonials"
-              blockKey="section_label"
-              content={cms.testimonials.label}
-              fallback="Testimonials"
-              className="text-white/70 text-sm tracking-wider uppercase mb-2"
-              as="p"
-            />
-            <EditableText
-              pageId="home"
-              sectionId="testimonials"
-              blockKey="section_title"
-              content={cms.testimonials.title}
-              fallback="What Others Have to Say"
-              className="text-white text-4xl font-bold mb-4"
-              as="h2"
-            />
-            <EditableRichText
-              pageId="home"
-              sectionId="testimonials"
-              blockKey="section_description"
-              content={cms.testimonials.description}
-              fallback="Hear from our wonderful volunteers about their experiences making a difference in the community."
-              className="text-white/80 max-w-2xl mx-auto"
-            />
-          </div>
+        <section className="bg-[#F8F7F5] py-16">
+          <div className="max-w-7xl mx-auto px-6">
+            <div className="text-center mb-16">
+              <EditableText
+                pageId="home"
+                sectionId="testimonials"
+                blockKey="section_label"
+                content={cms.testimonials.label}
+                fallback="Testimonials"
+                className="text-[#F44314] text-sm font-semibold tracking-wider uppercase mb-2"
+                as="p"
+              />
+              <EditableText
+                pageId="home"
+                sectionId="testimonials"
+                blockKey="section_title"
+                content={cms.testimonials.title}
+                fallback="What Others Have to Say"
+                className="text-[#1F2937] text-4xl font-bold mb-4"
+                as="h2"
+              />
+              <EditableRichText
+                pageId="home"
+                sectionId="testimonials"
+                blockKey="section_description"
+                content={cms.testimonials.description}
+                fallback="Hear from our wonderful volunteers about their experiences making a difference in the community."
+                className="text-gray-600 max-w-2xl mx-auto"
+              />
+            </div>
 
-          <ResponsiveMasonry columnsCountBreakPoints={{ 350: 1, 750: 2, 900: 3 }}>
-            <Masonry gutter="24px">
-              {cms.testimonials.data.map((testimonial) => (
-                <div
-                  key={testimonial.id}
-                  className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl p-6 hover:bg-white/15 transition-all duration-300 shadow-lg relative overflow-hidden group"
-                >
-                  <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700">
-                    <div
-                      className="absolute inset-0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 ease-in-out"
-                      style={{
-                        background: 'linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent)',
-                        width: '50%',
-                      }}
-                    />
-                  </div>
-
-                  <div className="flex items-center gap-4 mb-4 relative z-10">
-                    <img
-                      src={testimonial.image}
-                      alt={testimonial.name}
-                      className="w-16 h-16 rounded-full object-cover border-2 border-white/30"
-                    />
-                    <div>
-                      <h4 className="text-white font-semibold">{testimonial.name}</h4>
-                      <p className="text-white/60 text-sm">{testimonial.location}</p>
+            <ResponsiveMasonry columnsCountBreakPoints={{ 350: 1, 750: 2, 900: 3 }}>
+              <Masonry gutter="24px">
+                {cms.testimonials.data.map((testimonial) => (
+                  <div
+                    key={testimonial.id}
+                    className="bg-white border border-gray-200 rounded-2xl p-6 hover:shadow-md transition-all duration-300"
+                  >
+                    <div className="flex items-center gap-4 mb-4">
+                      <img
+                        src={testimonial.image}
+                        alt={testimonial.name}
+                        className="w-14 h-14 rounded-full object-cover border-2 border-gray-100"
+                      />
+                      <div>
+                        <h4 className="text-[#1F2937] font-semibold">{testimonial.name}</h4>
+                        <p className="text-gray-500 text-sm">{testimonial.location}</p>
+                      </div>
                     </div>
+                    <div className="mb-3">
+                      <svg className="w-8 h-8 text-[#F44314]/20" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" />
+                      </svg>
+                    </div>
+                    <p className="text-gray-700 leading-relaxed">
+                      {testimonial.review}
+                    </p>
                   </div>
-                  <div className="mb-4 relative z-10">
-                    <svg className="w-10 h-10 text-white/40" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" />
-                    </svg>
-                  </div>
-                  <p className="text-white/90 leading-relaxed relative z-10">
-                    {testimonial.review}
-                  </p>
-                </div>
-              ))}
-            </Masonry>
-          </ResponsiveMasonry>
+                ))}
+              </Masonry>
+            </ResponsiveMasonry>
+          </div>
         </section>
       )}
     </div>
