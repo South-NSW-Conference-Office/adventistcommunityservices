@@ -158,7 +158,10 @@ export function TeamDetails() {
               </div>
 
               {(() => {
-                const teamServices = allServices.filter(s => s.teamId?._id === team._id);
+                const teamId = id || team._id;
+                const teamServices = allServices.filter(s =>
+                  s.teamId?._id === teamId || s.teamId?.name === team.name
+                );
                 if (teamServices.length > 0) {
                   return (
                     <div className="grid md:grid-cols-2 gap-4">
