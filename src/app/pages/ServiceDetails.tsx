@@ -2,6 +2,7 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import { MapPin, Users, Clock, Phone, Mail, Calendar, ArrowLeft, Heart, RefreshCw, Globe, ChevronRight, ChevronLeft, Image as ImageIcon } from 'lucide-react';
 import { useState, useRef } from 'react';
 import { useServiceDetail, useServices } from '../hooks/useServices';
+import { ServiceRequestBanner } from '../components/ServiceRequestBanner';
 import type { ServiceLocation, ServiceCapacity, ServiceScheduling } from '../types/service.types';
 
 const DEFAULT_SERVICE_IMAGE = 'https://images.unsplash.com/photo-1559027615-cd4628902d4a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080';
@@ -412,6 +413,9 @@ export function ServiceDetails() {
           </div>
         );
       })()}
+
+      {/* ====== SERVICE REQUEST BANNER ====== */}
+      <ServiceRequestBanner contextName={teamName || service.name} teamId={service.teamId?._id} pageType="service" />
     </div>
   );
 }

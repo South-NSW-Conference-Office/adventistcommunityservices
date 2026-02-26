@@ -2,6 +2,7 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import { MapPin, Users, User, Building2, Clock, ArrowLeft, Heart, RefreshCw, Target, Calendar, ExternalLink, AlertTriangle } from 'lucide-react';
 import { useTeamDetail } from '../hooks/useTeams';
 import { useServices } from '../hooks/useServices';
+import { ServiceRequestBanner } from '../components/ServiceRequestBanner';
 import type { Team, TeamChurch, TeamLeader } from '../types/team.types';
 
 const DEFAULT_TEAM_IMAGE =
@@ -311,6 +312,9 @@ export function TeamDetails() {
           </div>
         </div>
       </div>
+
+      {/* ====== SERVICE REQUEST BANNER ====== */}
+      <ServiceRequestBanner contextName={team.name} teamId={id} pageType="team" />
 
       {/* ====== RECOMMENDED SERVICES — full width, dark panel, last before footer ====== */}
       <div className="bg-[#1F2937]">
