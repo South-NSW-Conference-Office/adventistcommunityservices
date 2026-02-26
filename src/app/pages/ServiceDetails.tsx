@@ -1,7 +1,7 @@
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { MapPin, Users, Clock, Phone, Mail, Calendar, ArrowLeft, Heart, RefreshCw, Globe, ChevronRight, ChevronLeft, Image as ImageIcon } from 'lucide-react';
-import { useState } from 'react';
-import { useServiceDetail } from '../hooks/useServices';
+import { useState, useRef } from 'react';
+import { useServiceDetail, useServices } from '../hooks/useServices';
 import type { ServiceLocation, ServiceCapacity, ServiceScheduling } from '../types/service.types';
 
 const DEFAULT_SERVICE_IMAGE = 'https://images.unsplash.com/photo-1559027615-cd4628902d4a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080';
@@ -50,8 +50,10 @@ export function ServiceDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { service, loading, error, refetch } = useServiceDetail(id);
+  const { services: allServices } = useServices();
   const [showBookingForm, setShowBookingForm] = useState(false);
   const [galleryIndex, setGalleryIndex] = useState(0);
+  const carouselRef = useRef<HTMLDivElement>(null);
 
   if (loading) {
     return <div className="min-h-screen bg-white flex items-center justify-center"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#F44314]"></div></div>;
@@ -340,6 +342,76 @@ export function ServiceDetails() {
           </div>
         )}
       </div>
+
+      {/* ====== Other Services by This Provider — carousel ====== */}
+      {(() => {
+        const teamId = service.teamId?._id;
+        const siblings = teamId
+          ? allServices.filter(s => s.teamId?._id === teamId && s._id !== service._id)
+          : [];
+        if (siblings.length === 0) return null;
+
+        const scroll = (dir: 'left' | 'right') => {
+          if (!carouselRef.current) return;
+          const amount = carouselRef.current.offsetWidth * 0.7;
+          carouselRef.current.scrollBy({ left: dir === 'left' ? -amount : amount, behavior: 'smooth' });
+        };
+
+        return (
+          <div className="bg-[#F8F7F5] border-t border-gray-200">
+            <div className="max-w-7xl mx-auto px-6 py-10">
+              <div className="flex items-center justify-between mb-6">
+                <div>
+                  <h2 className="text-[#1F2937] text-xl font-bold">More from {teamName || 'this team'}</h2>
+                  <p className="text-gray-400 text-sm mt-1">{siblings.length} other service{siblings.length !== 1 ? 's' : ''} available</p>
+                </div>
+                {siblings.length > 3 && (
+                  <div className="flex gap-2">
+                    <button onClick={() => scroll('left')} className="w-9 h-9 bg-white border border-gray-200 rounded-full flex items-center justify-center hover:bg-gray-50 transition-colors">
+                      <ChevronLeft className="w-5 h-5 text-gray-600" />
+                    </button>
+                    <button onClick={() => scroll('right')} className="w-9 h-9 bg-white border border-gray-200 rounded-full flex items-center justify-center hover:bg-gray-50 transition-colors">
+                      <ChevronRight className="w-5 h-5 text-gray-600" />
+                    </button>
+                  </div>
+                )}
+              </div>
+
+              <div ref={carouselRef} className="flex gap-4 overflow-x-auto scroll-smooth pb-2 -mx-1 px-1" style={{ scrollbarWidth: 'none' }}>
+                {siblings.map((sib) => {
+                  const sibImg = sib.primaryImage?.url || DEFAULT_SERVICE_IMAGE;
+                  const sibLoc = formatLocationShort(sib.locations);
+                  const sibType = formatUnderscoreString(sib.type);
+                  return (
+                    <Link
+                      key={sib._id}
+                      to={`/services/${sib._id}`}
+                      className="flex-shrink-0 w-72 bg-white border border-gray-200 rounded-xl overflow-hidden hover:shadow-md hover:border-gray-300 transition-all group"
+                    >
+                      <div className="relative h-40 overflow-hidden">
+                        <img src={sibImg} alt={sib.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                        {sibType && (
+                          <span className="absolute top-3 left-3 px-2.5 py-0.5 bg-[#FFF1EE] text-[#F44314] rounded-full text-xs font-semibold">{sibType}</span>
+                        )}
+                      </div>
+                      <div className="p-4">
+                        <h3 className="text-[#1F2937] font-semibold text-sm group-hover:text-[#F44314] transition-colors mb-1 truncate">{sib.name}</h3>
+                        <div className="flex items-center gap-1.5 text-gray-400 text-xs">
+                          <MapPin className="w-3 h-3" />
+                          <span>{sibLoc}</span>
+                        </div>
+                        {sib.descriptionShort && (
+                          <p className="text-gray-500 text-xs mt-2 line-clamp-2">{sib.descriptionShort}</p>
+                        )}
+                      </div>
+                    </Link>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+        );
+      })()}
     </div>
   );
 }
