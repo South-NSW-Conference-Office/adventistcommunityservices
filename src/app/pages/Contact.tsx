@@ -136,12 +136,12 @@ export function Contact(): JSX.Element {
     hero: {
       label: getBlock('hero', 'section_label') || 'Contact Us',
       title: getBlock('hero', 'title') || 'Get In Touch',
-      description1: getBlock('hero', 'description_1') || "We'd love to hear from you. Whether you need assistance, have questions about our services, or want to join our team of dedicated volunteers, we're here to help.",
+      description1: getBlock('hero', 'description_1') || "We'd love to hear from you. Whether you have questions about our services, want to connect with a local team, or are interested in volunteering, we're here for you.",
       description2: getBlock('hero', 'description_2') || 'Our team is committed to responding to all inquiries promptly and connecting you with the right resources. Reach out today and become part of our community making a difference across Australia.',
     },
     contactInfo: {
       title: getBlock('contact-info', 'title') || 'Contact Information',
-      description: getBlock('contact-info', 'description') || "Our offices are open to assist you with any inquiries, whether you need emergency support, have questions about our services, or want to learn more about how we can help. Adventist Community Services operates multiple locations across Australia, providing accessible support to communities in need with compassionate and professional staff. We've created a welcoming environment where everyone is treated with dignity and respect.",
+      description: getBlock('contact-info', 'description') || "Our offices are open to assist you with any inquiries, whether you have questions about our services, want to connect with a team, or are interested in what we offer. Adventist Community Services operates multiple locations across Australia, providing accessible services to communities with compassionate and professional staff. We've created a welcoming environment where everyone is treated with dignity and respect.",
       images: getJSONBlock<CMSImage[]>('contact-info', 'images_data', STATIC_DATA.contactImages),
     },
     volunteerInfo: {
@@ -262,7 +262,7 @@ export function Contact(): JSX.Element {
               sectionId="hero"
               blockKey="description_1"
               content={cms.hero.description1}
-              fallback="We'd love to hear from you. Whether you need assistance, have questions about our services, or want to join our team of dedicated volunteers, we're here to help."
+              fallback="We'd love to hear from you. Whether you have questions about our services, want to connect with a local team, or are interested in volunteering, we're here for you."
               className="text-white/90 text-lg mb-4 leading-relaxed"
             />
             <EditableRichText
@@ -314,7 +314,7 @@ export function Contact(): JSX.Element {
                   sectionId="contact-info"
                   blockKey="description"
                   content={cms.contactInfo.description}
-                  fallback="Our offices are open to assist you with any inquiries, whether you need emergency support, have questions about our services, or want to learn more about how we can help."
+                  fallback="Our offices are open to assist you with any inquiries, whether you have questions about our services, want to connect with a team, or are interested in what we offer."
                   className="text-white/80 mb-8"
                 />
               </>
@@ -396,7 +396,7 @@ export function Contact(): JSX.Element {
                       id="subject"
                       name="subject"
                       className={INPUT_CLASS}
-                      placeholder="How can we help?"
+                      placeholder="How can we assist you?"
                       onChange={() => handleInputChange('subject')}
                     />
                     {errors.subject && <p className="text-red-500 text-sm mt-1">{errors.subject}</p>}

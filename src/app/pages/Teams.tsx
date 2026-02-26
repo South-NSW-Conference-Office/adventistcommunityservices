@@ -25,7 +25,7 @@ export function Teams(): JSX.Element {
   const heroTitle = getBlock('hero', 'title') || 'Community Service Teams';
   const heroSubtitle =
     getBlock('hero', 'subtitle') ||
-    'Find a team near you. Every team is run by local volunteers making a difference in their community.';
+    'Browse community service teams by location. Every team is run by local volunteers ready to serve.';
 
   const { teams, loading, error, refetch } = useTeams();
   const [selectedChurch, setSelectedChurch] = useState('All Locations');
@@ -184,7 +184,7 @@ export function Teams(): JSX.Element {
                 <p className="text-[#1F2937] text-xl font-semibold mb-2">No teams found</p>
                 <p className="text-gray-500 mb-6">
                   {teams.length === 0
-                    ? "No teams have been listed yet. Be the first to register your community service team!"
+                    ? "No teams have been listed in this area yet. Check back soon as more teams join the platform."
                     : "Try adjusting your filters to find teams in other locations or categories."}
                 </p>
                 <button className="bg-[#F44314] text-white px-8 py-3 rounded-xl font-semibold hover:bg-[#d93a10] transition-colors">

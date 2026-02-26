@@ -97,23 +97,23 @@ export function About(): JSX.Element {
     hero: {
       label: getBlock('hero', 'section_label') || 'About Us',
       title: getBlock('hero', 'title') || 'What Is Adventist Community Services?',
-      subtitle: getBlock('hero', 'subtitle') || "Adventist Community Services (ACS) is one of Australia's leading humanitarian organisations, providing compassionate assistance to people experiencing hardship and disadvantage across the nation.",
+      subtitle: getBlock('hero', 'subtitle') || "Adventist Community Services (ACS) is one of Australia's leading humanitarian organisations, providing compassionate service to communities across the nation.",
       image: getBlock('hero', 'background_image') || 'https://images.unsplash.com/photo-1576897202707-f397683935d3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhdXN0cmFsaWElMjBjb21tdW5pdHklMjBoZWxwaW5nJTIwaGFuZHMlMjB0b2dldGhlcnxlbnwxfHx8fDE3NjYzNzI0NTF8MA&ixlib=rb-4.1.0&q=80&w=1080',
     },
     whatIsAcs: {
       paragraph1: getBlock('what-is-acs', 'paragraph_1') || 'As the official humanitarian arm of the Seventh-day Adventist Church in Australia, we operate community centres and programs in cities and towns throughout the country. Our services include emergency relief, food banks, clothing assistance, budgeting support, and personal care programs.',
-      paragraph2: getBlock('what-is-acs', 'paragraph_2') || 'We believe everyone deserves dignity, respect, and practical support when they need it most. Through our network of dedicated staff and volunteers, we serve thousands of Australians each year, offering hope and help to build stronger, more resilient communities.',
+      paragraph2: getBlock('what-is-acs', 'paragraph_2') || 'We believe everyone deserves dignity, respect, and access to quality community services. Through our network of dedicated staff and volunteers, we serve thousands of Australians each year, building stronger, more resilient communities.',
     },
     story: {
       title: getBlock('our-story', 'title') || 'Our Story',
       paragraph1: getBlock('our-story', 'paragraph_1') || "For decades, Australia's Adventist Community Service has been a beacon of hope in communities across the nation. What started as a small volunteer effort has grown into a comprehensive network of services reaching thousands of Australians each year.",
-      paragraph2: getBlock('our-story', 'paragraph_2') || 'Our dedicated team of staff and volunteers work tirelessly to provide food, clothing, emergency relief, and emotional support to those facing hardship. We believe in addressing both immediate needs and empowering long-term positive change.',
+      paragraph2: getBlock('our-story', 'paragraph_2') || 'Our dedicated team of staff and volunteers work tirelessly to provide food, clothing, emergency relief, and emotional support to communities across Australia. We believe in practical service that empowers long-term positive change.',
       paragraph3: getBlock('our-story', 'paragraph_3') || 'Every day, we witness the transformative power of community support and the resilience of the human spirit.',
       images: getJSONBlock<CMSImage[]>('our-story', 'images_data', STATIC_DATA.storyImages),
     },
     mission: {
       title: getBlock('mission', 'title') || 'Our Mission',
-      content: getBlock('mission', 'content') || "Australia's Adventist Community Service exists to demonstrate God's love through practical assistance to people in need, regardless of race, religion, gender or nationality.",
+      content: getBlock('mission', 'content') || "Australia's Adventist Community Service exists to demonstrate God's love through practical service to all people, regardless of race, religion, gender or nationality.",
     },
     values: {
       title: getBlock('values', 'section_title') || 'Our Values',
@@ -172,7 +172,7 @@ export function About(): JSX.Element {
                   sectionId="hero"
                   blockKey="subtitle"
                   content={cms.hero.subtitle}
-                  fallback="Adventist Community Services (ACS) is one of Australia's leading humanitarian organisations, providing compassionate assistance to people experiencing hardship and disadvantage across the nation."
+                  fallback="Adventist Community Services (ACS) is one of Australia's leading humanitarian organisations, providing compassionate service to communities across the nation."
                   className="text-white/90 text-lg leading-relaxed"
                 />
               </div>
@@ -198,7 +198,7 @@ export function About(): JSX.Element {
               sectionId="what-is-acs"
               blockKey="paragraph_2"
               content={cms.whatIsAcs.paragraph2}
-              fallback="We believe everyone deserves dignity, respect, and practical support when they need it most. Through our network of dedicated staff and volunteers, we serve thousands of Australians each year, offering hope and help to build stronger, more resilient communities."
+              fallback="We believe everyone deserves dignity, respect, and access to quality community services. Through our network of dedicated staff and volunteers, we serve thousands of Australians each year, building stronger, more resilient communities."
               className="text-white/80 leading-relaxed"
             />
           </div>
@@ -248,7 +248,7 @@ export function About(): JSX.Element {
                 sectionId="our-story"
                 blockKey="paragraph_2"
                 content={cms.story.paragraph2}
-                fallback="Our dedicated team of staff and volunteers work tirelessly to provide food, clothing, emergency relief, and emotional support to those facing hardship. We believe in addressing both immediate needs and empowering long-term positive change."
+                fallback="Our dedicated team of staff and volunteers work tirelessly to provide food, clothing, emergency relief, and emotional support to communities across Australia. We believe in practical service that empowers long-term positive change."
                 className="text-white/80 mb-4"
               />
               <EditableRichText
@@ -276,7 +276,7 @@ export function About(): JSX.Element {
                     sectionId="mission"
                     blockKey="content"
                     content={cms.mission.content}
-                    fallback="Australia's Adventist Community Service exists to demonstrate God's love through practical assistance to people in need, regardless of race, religion, gender or nationality."
+                    fallback="Australia's Adventist Community Service exists to demonstrate God's love through practical service to all people, regardless of race, religion, gender or nationality."
                     className="text-white/80"
                   />
                 </>

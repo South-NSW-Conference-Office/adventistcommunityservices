@@ -33,7 +33,7 @@ export function Services(): JSX.Element {
   const heroTitle = getBlock('hero', 'title') || 'Find a Service';
   const heroSubtitle =
     getBlock('hero', 'subtitle') ||
-    'Browse community services by type or search for what you need. Every service is run by a local team of volunteers.';
+    'Browse community services by type or search for what you\'re looking for. Every service is provided by a local team of volunteers.';
 
   const { serviceTypeCounts, filteredServices } = useMemo(() => {
     const typeCounts: Record<string, number> = {};

@@ -12,9 +12,9 @@ export function HeroSection() {
   const { getBlock } = useCMSPage('home');
 
   const label = getBlock('hero', 'label') || "Adventist Community Services Australia";
-  const title = getBlock('hero', 'title') || 'Find Help Near You';
-  const subtitle = getBlock('hero', 'subtitle') || 'Search community services across Australia by need, location, or postcode. We\'re here to connect you with support.';
-  const searchPlaceholder = getBlock('hero', 'search_placeholder') || 'What do you need help with?';
+  const title = getBlock('hero', 'title') || 'Find Services Near You';
+  const subtitle = getBlock('hero', 'subtitle') || 'Discover community services across Australia by location, type, or postcode. We\'re here to serve you.';
+  const searchPlaceholder = getBlock('hero', 'search_placeholder') || 'What are you looking for?';
   const locationPlaceholder = getBlock('hero', 'location_placeholder') || 'Suburb or postcode';
   const searchButtonText = getBlock('hero', 'search_button_text') || 'Search';
 
@@ -35,7 +35,7 @@ export function HeroSection() {
           sectionId="hero"
           blockKey="title"
           content={title}
-          fallback="Find Help Near You"
+          fallback="Find Services Near You"
           className="text-[#1F2937] text-5xl md:text-6xl font-bold mb-6 leading-tight"
           as="h1"
         />

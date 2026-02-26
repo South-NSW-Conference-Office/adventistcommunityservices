@@ -19,13 +19,13 @@ const STATIC_SERVICES: ServicePreview[] = [
   { id: 1, name: 'Food Bank Services', descriptionShort: 'Access nutritious food and essential supplies through our community food programs.', location: 'Sydney, NSW', capacity: 200, image: 'https://images.unsplash.com/photo-1759709042164-0dd78a39028b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhdXN0cmFsaWElMjBjb21tdW5pdHklMjBoZWxwfGVufDF8fHx8MTc2NjE5NTgzNHww&ixlib=rb-4.1.0&q=80&w=1080' },
   { id: 2, name: 'Clothing Assistance', descriptionShort: 'Find quality clothing and household items at affordable prices through our op shops.', location: 'Melbourne, VIC', capacity: 150, image: 'https://images.unsplash.com/photo-1711395588577-ed596848b04f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhdXN0cmFsaWElMjB2b2x1bnRlZXIlMjBvdXRiYWNrfGVufDF8fHx8MTc2NjE5NTgzNHww&ixlib=rb-4.1.0&q=80&w=1080' },
   { id: 3, name: 'Counseling & Support', descriptionShort: 'Confidential counseling and emotional support for individuals and families.', location: 'Brisbane, QLD', capacity: 50, image: 'https://images.unsplash.com/photo-1759709042164-0dd78a39028b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzeWRuZXklMjBjb21tdW5pdHklMjBzZXJ2aWNlfGVufDF8fHx8MTc2NjE5NTgzNXww&ixlib=rb-4.1.0&q=80&w=1080' },
-  { id: 4, name: 'Emergency Relief', descriptionShort: 'Immediate assistance during crisis situations including natural disasters and hardships.', location: 'Perth, WA', capacity: 100, image: 'https://images.unsplash.com/photo-1638769314338-9ba8e1e69465?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhdXN0cmFsaWElMjBjaGFyaXR5JTIwd2FybXxlbnwxfHx8fDE3NjYxOTU4MzV8MA&ixlib=rb-4.1.0&q=80&w=1080' },
+  { id: 4, name: 'Emergency Relief', descriptionShort: 'Coordinated support during natural disasters and emergency situations across Australia.', location: 'Perth, WA', capacity: 100, image: 'https://images.unsplash.com/photo-1638769314338-9ba8e1e69465?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhdXN0cmFsaWElMjBjaGFyaXR5JTIwd2FybXxlbnwxfHx8fDE3NjYxOTU4MzV8MA&ixlib=rb-4.1.0&q=80&w=1080' },
 ];
 
 const STATIC_STEPS: ProcessStep[] = [
   { number: '01', icon: 'ClipboardCheck', title: 'Register', description: 'Register your local community and set up your team profile. It only takes a few minutes to get started.' },
   { number: '02', icon: 'Users', title: 'Build Your Team', description: 'Add team members, assign roles, and describe the services your team provides to the community.' },
-  { number: '03', icon: 'Heart', title: 'Start Serving', description: 'Your team and services go live on the platform. People in your area can now find and contact you for help.' },
+  { number: '03', icon: 'Heart', title: 'Start Serving', description: 'Your team and services go live on the platform. People in your area can discover and connect with you.' },
 ];
 
 function ServiceCardSkeleton(): JSX.Element {
@@ -59,7 +59,7 @@ export function Home(): JSX.Element {
     process: {
       label: getBlock('process-steps', 'section_label') || 'List Your Team',
       title: getBlock('process-steps', 'section_title') || 'Get Your Team on the Platform',
-      description: getBlock('process-steps', 'section_description') || 'Three simple steps to showcase your community service team and reach people who need help.',
+      description: getBlock('process-steps', 'section_description') || 'Three simple steps to showcase your community service team and connect with your community.',
       steps: getJSONBlock<ProcessStep[]>('process-steps', 'steps_data', STATIC_STEPS),
       ctaButton: getBlock('process-steps', 'cta_button') || 'Register Your Team',
     },
@@ -151,7 +151,7 @@ export function Home(): JSX.Element {
             <p className="text-[#F44314] text-sm font-semibold tracking-wider uppercase mb-2">COMMUNITY TEAMS</p>
             <h2 className="text-[#1F2937] text-4xl font-bold mb-4">Newest Teams on the Platform</h2>
             <p className="text-gray-600 max-w-2xl mx-auto">
-              Local teams making a difference in their communities. Each team is run by volunteers who care about serving their neighbours.
+              Local teams serving their communities. Browse teams to see what services are available in your area.
             </p>
           </div>
 

@@ -74,7 +74,7 @@ function AppContent() {
             <div>
               <h3 className="text-white font-semibold mb-4">About ACS</h3>
               <p className="text-gray-400 text-sm">
-                Adventist Community Services provides support and assistance to communities across Australia.
+                Adventist Community Services — connecting communities with local service teams across Australia.
               </p>
             </div>
             <div>
