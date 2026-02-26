@@ -11,6 +11,7 @@ interface ServiceCardProps {
   locations?: ServiceLocation[];
   capacity?: ServiceCapacity;
   primaryImage?: ServiceImage;
+  teamName?: string;
 }
 
 /**
@@ -52,6 +53,7 @@ export function ServiceCard({
   locations,
   capacity,
   primaryImage,
+  teamName,
 }: ServiceCardProps) {
   const imageUrl = primaryImage?.url || DEFAULT_SERVICE_IMAGE;
   const location = formatLocation(locations);
@@ -84,7 +86,11 @@ export function ServiceCard({
           </div>
         </div>
         
-        <div className="mt-4">
+        {teamName && (
+          <p className="text-gray-400 text-xs mt-3">Run by <span className="font-medium text-gray-600">{teamName}</span></p>
+        )}
+
+        <div className="mt-3">
           <span className="text-[#F44314] font-semibold text-sm hover:text-[#d93a10] transition-colors">
             Learn More →
           </span>

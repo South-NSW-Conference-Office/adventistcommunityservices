@@ -150,19 +150,16 @@ export function Services(): JSX.Element {
               {filteredServices.map((service) => {
                 const teamName = getTeamName(service);
                 return (
-                  <div key={service._id}>
-                    <ServiceCard
-                      id={service._id}
-                      name={service.name}
-                      descriptionShort={service.descriptionShort}
-                      locations={service.locations}
-                      capacity={service.capacity}
-                      primaryImage={service.primaryImage}
-                    />
-                    {teamName && (
-                      <p className="mt-2 text-gray-500 text-sm px-1">Run by <span className="font-medium text-[#1F2937]">{teamName}</span></p>
-                    )}
-                  </div>
+                  <ServiceCard
+                    key={service._id}
+                    id={service._id}
+                    name={service.name}
+                    descriptionShort={service.descriptionShort}
+                    locations={service.locations}
+                    capacity={service.capacity}
+                    primaryImage={service.primaryImage}
+                    teamName={teamName}
+                  />
                 );
               })}
             </div>
