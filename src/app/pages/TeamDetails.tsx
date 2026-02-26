@@ -1,6 +1,7 @@
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { MapPin, Users, User, Building2, Clock, ArrowLeft, Heart, RefreshCw, Target, Calendar, ExternalLink, AlertTriangle } from 'lucide-react';
 import { useTeamDetail } from '../hooks/useTeams';
+import { useServices } from '../hooks/useServices';
 import type { Team, TeamChurch, TeamLeader } from '../types/team.types';
 
 const DEFAULT_TEAM_IMAGE =
@@ -44,6 +45,7 @@ export function TeamDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { team, loading, error, refetch } = useTeamDetail(id);
+  const { services: allServices } = useServices();
 
   if (loading) {
     return (
@@ -155,27 +157,61 @@ export function TeamDetails() {
                 </div>
               </div>
 
-              {tags.length > 0 ? (
-                <div className="grid md:grid-cols-2 gap-4">
-                  {tags.map((tag, index) => (
-                    <Link key={index} to={`/services?type=${tag}`} className="bg-white border border-gray-200 rounded-xl p-5 hover:shadow-md hover:border-[#F44314]/30 transition-all group">
-                      <div className="flex items-start gap-3">
-                        <div className="w-10 h-10 bg-[#FFF1EE] rounded-lg flex items-center justify-center flex-shrink-0">
-                          <Heart className="w-5 h-5 text-[#F44314]" />
+              {(() => {
+                const teamServices = allServices.filter(s => s.teamId?._id === team._id);
+                if (teamServices.length > 0) {
+                  return (
+                    <div className="grid md:grid-cols-2 gap-4">
+                      {teamServices.map((svc) => (
+                        <Link key={svc._id} to={`/services/${svc._id}`} className="bg-white border border-gray-200 rounded-xl overflow-hidden hover:shadow-md hover:border-[#F44314]/30 transition-all group">
+                          {svc.primaryImage?.url && (
+                            <div className="h-32 overflow-hidden">
+                              <img src={svc.primaryImage.url} alt={svc.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                            </div>
+                          )}
+                          <div className="p-4">
+                            <div className="flex items-start gap-3">
+                              <div className="w-9 h-9 bg-[#FFF1EE] rounded-lg flex items-center justify-center flex-shrink-0">
+                                <Heart className="w-4 h-4 text-[#F44314]" />
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <h3 className="text-[#1F2937] font-semibold text-sm group-hover:text-[#F44314] transition-colors truncate">{svc.name}</h3>
+                                {svc.type && <span className="text-gray-400 text-xs">{formatUnderscoreString(svc.type)}</span>}
+                                {svc.descriptionShort && <p className="text-gray-500 text-xs mt-1 line-clamp-2">{svc.descriptionShort}</p>}
+                              </div>
+                            </div>
+                          </div>
+                        </Link>
+                      ))}
+                    </div>
+                  );
+                }
+                // Fallback to tags if no services linked yet
+                if (tags.length > 0) {
+                  return (
+                    <div className="grid md:grid-cols-2 gap-4">
+                      {tags.map((tag, index) => (
+                        <div key={index} className="bg-white border border-gray-200 rounded-xl p-5">
+                          <div className="flex items-start gap-3">
+                            <div className="w-9 h-9 bg-[#FFF1EE] rounded-lg flex items-center justify-center flex-shrink-0">
+                              <Heart className="w-4 h-4 text-[#F44314]" />
+                            </div>
+                            <div>
+                              <h3 className="text-[#1F2937] font-semibold text-sm">{formatUnderscoreString(tag)}</h3>
+                              <p className="text-gray-400 text-xs mt-1">Details coming soon</p>
+                            </div>
+                          </div>
                         </div>
-                        <div className="flex-1">
-                          <h3 className="text-[#1F2937] font-semibold group-hover:text-[#F44314] transition-colors">{formatUnderscoreString(tag)}</h3>
-                          <p className="text-gray-500 text-sm mt-1">View service details →</p>
-                        </div>
-                      </div>
-                    </Link>
-                  ))}
-                </div>
-              ) : (
-                <div className="bg-gray-50 border border-gray-200 rounded-xl p-8 text-center">
-                  <p className="text-gray-400">This team hasn't listed their services yet.</p>
-                </div>
-              )}
+                      ))}
+                    </div>
+                  );
+                }
+                return (
+                  <div className="bg-gray-50 border border-gray-200 rounded-xl p-8 text-center">
+                    <p className="text-gray-400">This team hasn't listed their services yet.</p>
+                  </div>
+                );
+              })()}
 
               {/* Focus Areas */}
               {focus.length > 0 && (
