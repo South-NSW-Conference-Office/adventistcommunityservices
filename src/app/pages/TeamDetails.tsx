@@ -1,26 +1,30 @@
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { MapPin, Users, User, Building2, Clock, ArrowLeft, Heart, RefreshCw, Target, Calendar } from 'lucide-react';
+import { MapPin, Users, User, Building2, Clock, ArrowLeft, Heart, RefreshCw, Target, Calendar, ExternalLink, AlertTriangle } from 'lucide-react';
 import { useTeamDetail } from '../hooks/useTeams';
 import type { Team, TeamChurch, TeamLeader } from '../types/team.types';
 
 const DEFAULT_TEAM_IMAGE =
   'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080';
 
-const PAGE_BACKGROUND = 'min-h-screen bg-gradient-to-br from-[#F44314] via-[#F97023] to-[#F98344]';
-const STATE_CARD_STYLES = 'bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl p-12 max-w-md text-center';
+// Recommended community services — external resources near each team
+// In future this comes from the backend per-team, for now static examples
+const RECOMMENDED_SERVICES = [
+  { name: 'Lifeline Australia', type: 'Crisis Support', phone: '13 11 14', url: 'https://www.lifeline.org.au', desc: '24/7 crisis support and suicide prevention' },
+  { name: 'Beyond Blue', type: 'Mental Health', phone: '1300 22 4636', url: 'https://www.beyondblue.org.au', desc: 'Mental health information and support' },
+  { name: 'Foodbank Australia', type: 'Food Relief', url: 'https://www.foodbank.org.au', desc: 'Australia\'s largest food relief organisation' },
+  { name: '1800RESPECT', type: 'Domestic Violence', phone: '1800 737 732', url: 'https://www.1800respect.org.au', desc: 'National sexual assault, domestic and family violence counselling' },
+  { name: 'Salvation Army', type: 'Emergency Relief', phone: '13 72 58', url: 'https://www.salvationarmy.org.au', desc: 'Emergency relief, housing support, and financial counselling' },
+  { name: 'St Vincent de Paul', type: 'Community Support', phone: '13 18 12', url: 'https://www.vinnies.org.au', desc: 'Emergency relief, housing, and community programs' },
+  { name: 'Anglicare', type: 'Family Services', url: 'https://www.anglicare.org.au', desc: 'Family support, emergency relief, and aged care' },
+  { name: 'Red Cross Australia', type: 'Emergency & Disaster', phone: '1800 733 276', url: 'https://www.redcross.org.au', desc: 'Disaster relief, migration support, and community programs' },
+];
 
 function getCategoryBadgeColor(category?: string): string {
-  const normalizedCategory = category?.toLowerCase();
-  if (normalizedCategory === 'acs service' || normalizedCategory === 'acs') {
-    return 'bg-orange-500/20 text-orange-200';
-  }
-  if (normalizedCategory === 'communications') {
-    return 'bg-blue-500/20 text-blue-200';
-  }
-  if (normalizedCategory === 'general') {
-    return 'bg-gray-500/20 text-gray-200';
-  }
-  return 'bg-purple-500/20 text-purple-200';
+  const c = category?.toLowerCase();
+  if (c === 'acs service' || c === 'acs') return 'bg-[#FFF1EE] text-[#F44314]';
+  if (c === 'communications') return 'bg-blue-50 text-blue-600';
+  if (c === 'general') return 'bg-gray-100 text-gray-600';
+  return 'bg-purple-50 text-purple-600';
 }
 
 function isPopulatedChurch(churchId: Team['churchId']): churchId is TeamChurch {
@@ -33,10 +37,7 @@ function isPopulatedLeader(leaderId: Team['leaderId']): leaderId is TeamLeader {
 
 function formatUnderscoreString(value?: string): string {
   if (!value) return '';
-  return value
-    .split('_')
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(' ');
+  return value.split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
 }
 
 export function TeamDetails() {
@@ -46,31 +47,23 @@ export function TeamDetails() {
 
   if (loading) {
     return (
-      <div className={`${PAGE_BACKGROUND} flex items-center justify-center`}>
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white"></div>
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#F44314]"></div>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className={`${PAGE_BACKGROUND} flex items-center justify-center px-6`}>
-        <div className={STATE_CARD_STYLES}>
-          <p className="text-white text-xl mb-4">{error}</p>
+      <div className="min-h-screen bg-white flex items-center justify-center px-6">
+        <div className="bg-gray-50 border border-gray-200 rounded-2xl p-12 max-w-md text-center">
+          <p className="text-[#1F2937] text-xl mb-4">{error}</p>
           <div className="flex flex-col gap-3">
-            <button
-              onClick={() => refetch()}
-              className="inline-flex items-center justify-center gap-2 bg-white text-[#F44314] px-6 py-3 rounded-xl font-semibold hover:bg-white/90 transition-colors"
-            >
-              <RefreshCw className="w-5 h-5" />
-              Try Again
+            <button onClick={() => refetch()} className="inline-flex items-center justify-center gap-2 bg-[#F44314] text-white px-6 py-3 rounded-xl font-semibold hover:bg-[#d93a10]">
+              <RefreshCw className="w-5 h-5" /> Try Again
             </button>
-            <Link
-              to="/teams"
-              className="inline-flex items-center justify-center gap-2 text-white/90 hover:text-white transition-colors"
-            >
-              <ArrowLeft className="w-5 h-5" />
-              Back to Teams
+            <Link to="/teams" className="inline-flex items-center justify-center gap-2 text-gray-500 hover:text-[#1F2937]">
+              <ArrowLeft className="w-5 h-5" /> Back to Teams
             </Link>
           </div>
         </div>
@@ -80,15 +73,11 @@ export function TeamDetails() {
 
   if (!team) {
     return (
-      <div className={`${PAGE_BACKGROUND} flex items-center justify-center px-6`}>
-        <div className={STATE_CARD_STYLES}>
-          <p className="text-white text-xl mb-4">Team not found</p>
-          <Link
-            to="/teams"
-            className="inline-flex items-center gap-2 text-white/90 hover:text-white transition-colors"
-          >
-            <ArrowLeft className="w-5 h-5" />
-            Back to Teams
+      <div className="min-h-screen bg-white flex items-center justify-center px-6">
+        <div className="bg-gray-50 border border-gray-200 rounded-2xl p-12 max-w-md text-center">
+          <p className="text-[#1F2937] text-xl mb-4">Team not found</p>
+          <Link to="/teams" className="inline-flex items-center gap-2 text-gray-500 hover:text-[#1F2937]">
+            <ArrowLeft className="w-5 h-5" /> Back to Teams
           </Link>
         </div>
       </div>
@@ -96,261 +85,222 @@ export function TeamDetails() {
   }
 
   const imageUrl = team.banner?.url || team.profilePhoto?.url || DEFAULT_TEAM_IMAGE;
-  const churchName = isPopulatedChurch(team.churchId) ? team.churchId.name : 'Unknown Church';
+  const churchName = isPopulatedChurch(team.churchId) ? team.churchId.name : '';
   const leader = isPopulatedLeader(team.leaderId) ? team.leaderId : null;
   const memberCount = team.memberCount ?? 0;
   const category = team.category || team.type || 'Team';
   const tags = team.tags ?? [];
   const focus = team.metadata?.focus ?? [];
   const targetAudience = team.metadata?.targetAudience ?? [];
-  const ministry = formatUnderscoreString(team.metadata?.ministry);
   const meetingSchedule = team.metadata?.meetingSchedule;
   const serviceArea = team.metadata?.serviceArea;
 
   return (
-    <div className={PAGE_BACKGROUND}>
-      {/* Hero Image Section */}
-      <div className="relative h-[500px] overflow-hidden">
+    <div className="min-h-screen bg-white">
+      {/* ====== SECTION 1: HERO ====== */}
+      <div className="relative h-[400px] md:h-[500px] overflow-hidden">
         <img src={imageUrl} alt={team.name} className="w-full h-full object-cover" />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/20 via-30% via-transparent via-70% to-[#F44314]"></div>
+        <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/30 to-black/70"></div>
 
         {/* Back Button */}
         <div className="absolute top-24 left-0 right-0 z-10">
           <div className="max-w-7xl mx-auto px-6">
-            <button
-              onClick={() => navigate('/teams')}
-              className="flex items-center gap-2 text-white/90 hover:text-white transition-colors bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full border border-white/20"
-            >
-              <ArrowLeft className="w-5 h-5" />
-              Back to Teams
+            <button onClick={() => navigate('/teams')} className="flex items-center gap-2 text-white/90 hover:text-white bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full border border-white/20 transition-colors">
+              <ArrowLeft className="w-5 h-5" /> Back to Teams
             </button>
           </div>
         </div>
 
         {/* Title Overlay */}
-        <div className="absolute bottom-0 left-0 right-0 pb-12">
+        <div className="absolute bottom-0 left-0 right-0 pb-10">
           <div className="max-w-7xl mx-auto px-6">
             <div className="flex flex-wrap items-center gap-3 mb-4">
-              <span
-                className={`px-4 py-1.5 rounded-full text-sm font-medium backdrop-blur-sm ${getCategoryBadgeColor(category)}`}
-              >
-                {category}
-              </span>
-              {!team.isActive && (
-                <span className="px-4 py-1.5 rounded-full text-sm font-medium bg-red-500/20 text-red-200 backdrop-blur-sm">
-                  Inactive
-                </span>
-              )}
+              <span className={`px-4 py-1.5 rounded-full text-sm font-semibold ${getCategoryBadgeColor(category)}`}>{category}</span>
+              {!team.isActive && <span className="px-4 py-1.5 rounded-full text-sm font-medium bg-red-100 text-red-600">Inactive</span>}
             </div>
-            <h1 className="text-white text-5xl font-bold mb-4">{team.name}</h1>
-            <div className="flex flex-wrap items-center gap-4 text-white/90">
-              <div className="flex items-center gap-2">
-                <Building2 className="w-5 h-5" />
-                <span>{churchName}</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Users className="w-5 h-5" />
-                <span>
-                  {memberCount} {memberCount === 1 ? 'member' : 'members'}
-                </span>
-              </div>
-              {team.location && (
-                <div className="flex items-center gap-2">
-                  <MapPin className="w-5 h-5" />
-                  <span>{team.location}</span>
-                </div>
-              )}
+            <h1 className="text-white text-4xl md:text-5xl font-bold mb-3">{team.name}</h1>
+            <div className="flex flex-wrap items-center gap-4 text-white/90 text-sm">
+              {churchName && <div className="flex items-center gap-2"><Building2 className="w-4 h-4" /><span>{churchName}</span></div>}
+              <div className="flex items-center gap-2"><Users className="w-4 h-4" /><span>{memberCount} {memberCount === 1 ? 'member' : 'members'}</span></div>
+              {team.location && <div className="flex items-center gap-2"><MapPin className="w-4 h-4" /><span>{team.location}</span></div>}
             </div>
           </div>
         </div>
       </div>
 
-      {/* Content Section */}
-      <div className="max-w-7xl mx-auto px-6 py-16">
+      {/* Main Content */}
+      <div className="max-w-7xl mx-auto px-6 py-12">
         <div className="grid lg:grid-cols-3 gap-12">
-          {/* Main Content */}
-          <div className="lg:col-span-2 space-y-8">
-            {/* Description */}
+          {/* Left Column — Main */}
+          <div className="lg:col-span-2 space-y-12">
+            {/* About */}
+            {team.description && (
+              <div>
+                <h2 className="text-[#1F2937] text-2xl font-bold mb-4">About This Team</h2>
+                <p className="text-gray-600 text-lg leading-relaxed">{team.description}</p>
+              </div>
+            )}
+
+            {/* ====== SECTION 2: OUR SERVICES ====== */}
             <div>
-              <h2 className="text-white text-3xl font-semibold mb-4">About This Team</h2>
-              {team.description ? (
-                <p className="text-white/90 text-lg leading-relaxed">{team.description}</p>
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-[#1F2937] text-2xl font-bold">Our Services</h2>
+                {/* Emergency mode toggle — placeholder for backend implementation */}
+                <div className="flex items-center gap-2 text-sm text-gray-400">
+                  <AlertTriangle className="w-4 h-4" />
+                  <span>Emergency mode</span>
+                  <div className="w-10 h-5 bg-gray-200 rounded-full relative cursor-not-allowed" title="Coming soon — toggle to show disaster response services">
+                    <div className="w-4 h-4 bg-white rounded-full absolute left-0.5 top-0.5 shadow-sm"></div>
+                  </div>
+                </div>
+              </div>
+
+              {tags.length > 0 ? (
+                <div className="grid md:grid-cols-2 gap-4">
+                  {tags.map((tag, index) => (
+                    <div key={index} className="bg-white border border-gray-200 rounded-xl p-5 hover:shadow-md transition-shadow">
+                      <div className="flex items-start gap-3">
+                        <div className="w-10 h-10 bg-[#FFF1EE] rounded-lg flex items-center justify-center flex-shrink-0">
+                          <Heart className="w-5 h-5 text-[#F44314]" />
+                        </div>
+                        <div>
+                          <h3 className="text-[#1F2937] font-semibold">{formatUnderscoreString(tag)}</h3>
+                          <p className="text-gray-500 text-sm mt-1">Provided by this team</p>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               ) : (
-                <p className="text-white/80 leading-relaxed">
-                  Contact us for more information about this team.
-                </p>
+                <div className="bg-gray-50 border border-gray-200 rounded-xl p-8 text-center">
+                  <p className="text-gray-400">This team hasn't listed their services yet.</p>
+                </div>
+              )}
+
+              {/* Focus Areas */}
+              {focus.length > 0 && (
+                <div className="mt-6">
+                  <h3 className="text-[#1F2937] font-semibold mb-3">Focus Areas</h3>
+                  <div className="flex flex-wrap gap-2">
+                    {focus.map((item, i) => (
+                      <span key={i} className="px-3 py-1.5 bg-gray-100 text-gray-600 rounded-full text-sm">{formatUnderscoreString(item)}</span>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Target Audience */}
+              {targetAudience.length > 0 && (
+                <div className="mt-6">
+                  <h3 className="text-[#1F2937] font-semibold mb-3">Who We Serve</h3>
+                  <div className="flex flex-wrap gap-2">
+                    {targetAudience.map((a, i) => (
+                      <span key={i} className="px-3 py-1.5 bg-[#FFF1EE] text-[#F44314] rounded-full text-sm font-medium">{formatUnderscoreString(a)}</span>
+                    ))}
+                  </div>
+                </div>
               )}
             </div>
 
-            {/* Ministry Info */}
-            {ministry && (
-              <div>
-                <h2 className="text-white text-2xl font-semibold mb-4">Ministry</h2>
-                <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl p-4">
-                  <span className="text-white/90 text-lg">{ministry}</span>
-                </div>
-              </div>
-            )}
+            {/* ====== SECTION 3: RECOMMENDED SERVICES ====== */}
+            <div>
+              <h2 className="text-[#1F2937] text-2xl font-bold mb-2">Other Services We Recommend</h2>
+              <p className="text-gray-500 mb-6">We can't offer everything, but we know who can. These are trusted services available in the community.</p>
 
-            {/* Tags (What We Do) */}
-            {tags.length > 0 && (
-              <div>
-                <h2 className="text-white text-2xl font-semibold mb-4">What We Do</h2>
-                <div className="grid md:grid-cols-2 gap-3">
-                  {tags.map((tag, index) => (
-                    <div
-                      key={index}
-                      className="flex items-start gap-3 bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl p-4"
-                    >
-                      <Heart className="w-5 h-5 text-white flex-shrink-0 mt-0.5" />
-                      <span className="text-white/90">{tag}</span>
+              <div className="grid md:grid-cols-2 gap-4">
+                {RECOMMENDED_SERVICES.map((svc, i) => (
+                  <a
+                    key={i}
+                    href={svc.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="bg-white border border-gray-200 rounded-xl p-5 hover:shadow-md hover:border-gray-300 transition-all group"
+                  >
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-1">
+                          <h3 className="text-[#1F2937] font-semibold group-hover:text-[#F44314] transition-colors">{svc.name}</h3>
+                          <ExternalLink className="w-3.5 h-3.5 text-gray-300 group-hover:text-[#F44314] transition-colors" />
+                        </div>
+                        <span className="text-xs font-medium text-gray-400 uppercase tracking-wide">{svc.type}</span>
+                        <p className="text-gray-500 text-sm mt-2">{svc.desc}</p>
+                        {svc.phone && (
+                          <p className="text-[#F44314] font-semibold text-sm mt-2">{svc.phone}</p>
+                        )}
+                      </div>
                     </div>
-                  ))}
-                </div>
+                  </a>
+                ))}
               </div>
-            )}
 
-            {/* Focus Areas */}
-            {focus.length > 0 && (
-              <div>
-                <h2 className="text-white text-2xl font-semibold mb-4">Focus Areas</h2>
-                <div className="grid md:grid-cols-2 gap-3">
-                  {focus.map((item, index) => (
-                    <div
-                      key={index}
-                      className="flex items-start gap-3 bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl p-4"
-                    >
-                      <Target className="w-5 h-5 text-white flex-shrink-0 mt-0.5" />
-                      <span className="text-white/90">{formatUnderscoreString(item)}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Target Audience */}
-            {targetAudience.length > 0 && (
-              <div>
-                <h2 className="text-white text-2xl font-semibold mb-4">Who We Serve</h2>
-                <div className="flex flex-wrap gap-2">
-                  {targetAudience.map((audience, index) => (
-                    <span
-                      key={index}
-                      className="px-4 py-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full text-white/90"
-                    >
-                      {formatUnderscoreString(audience)}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            )}
+              <p className="text-gray-400 text-xs mt-4">
+                These are independent organisations. Listing does not imply endorsement or affiliation.
+              </p>
+            </div>
           </div>
 
-          {/* Sidebar */}
+          {/* Right Column — Sidebar */}
           <div className="lg:col-span-1">
             <div className="sticky top-24 space-y-6">
-              {/* Team Information */}
-              <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl p-6">
-                <h3 className="text-white text-xl font-semibold mb-4">Team Information</h3>
+              {/* Team Info Card */}
+              <div className="bg-[#F8F7F5] border border-gray-200 rounded-2xl p-6">
+                <h3 className="text-[#1F2937] text-lg font-bold mb-4">Team Information</h3>
                 <div className="space-y-4">
-                  {/* Church */}
-                  <div>
-                    <div className="flex items-center gap-2 text-white/70 mb-2">
-                      <Building2 className="w-4 h-4" />
-                      <span className="text-sm">Church</span>
+                  {churchName && (
+                    <div>
+                      <div className="flex items-center gap-2 text-gray-400 mb-1"><Building2 className="w-4 h-4" /><span className="text-xs uppercase tracking-wide">Organisation</span></div>
+                      <p className="text-[#1F2937] font-medium">{churchName}</p>
                     </div>
-                    <p className="text-white">{churchName}</p>
-                  </div>
-
-                  {/* Location */}
+                  )}
                   {team.location && (
                     <div>
-                      <div className="flex items-center gap-2 text-white/70 mb-2">
-                        <MapPin className="w-4 h-4" />
-                        <span className="text-sm">Location</span>
-                      </div>
-                      <p className="text-white">{team.location}</p>
+                      <div className="flex items-center gap-2 text-gray-400 mb-1"><MapPin className="w-4 h-4" /><span className="text-xs uppercase tracking-wide">Location</span></div>
+                      <p className="text-[#1F2937] font-medium">{team.location}</p>
                     </div>
                   )}
-
-                  {/* Service Area */}
                   {serviceArea && (
                     <div>
-                      <div className="flex items-center gap-2 text-white/70 mb-2">
-                        <MapPin className="w-4 h-4" />
-                        <span className="text-sm">Service Area</span>
-                      </div>
-                      <p className="text-white">{serviceArea}</p>
+                      <div className="flex items-center gap-2 text-gray-400 mb-1"><Target className="w-4 h-4" /><span className="text-xs uppercase tracking-wide">Service Area</span></div>
+                      <p className="text-[#1F2937] font-medium">{serviceArea}</p>
                     </div>
                   )}
-
-                  {/* Team Leader */}
                   {leader && (
                     <div>
-                      <div className="flex items-center gap-2 text-white/70 mb-2">
-                        <User className="w-4 h-4" />
-                        <span className="text-sm">Team Leader</span>
-                      </div>
-                      <p className="text-white">{leader.name}</p>
-                      {leader.email && (
-                        <a
-                          href={`mailto:${leader.email}`}
-                          className="text-white/70 text-sm hover:text-white transition-colors"
-                        >
-                          {leader.email}
-                        </a>
-                      )}
+                      <div className="flex items-center gap-2 text-gray-400 mb-1"><User className="w-4 h-4" /><span className="text-xs uppercase tracking-wide">Team Leader</span></div>
+                      <p className="text-[#1F2937] font-medium">{leader.name}</p>
+                      {leader.email && <a href={`mailto:${leader.email}`} className="text-[#F44314] text-sm hover:underline">{leader.email}</a>}
                     </div>
                   )}
-
-                  {/* Member Count */}
                   <div>
-                    <div className="flex items-center gap-2 text-white/70 mb-2">
-                      <Users className="w-4 h-4" />
-                      <span className="text-sm">Members</span>
-                    </div>
-                    <p className="text-white">
-                      {memberCount} {memberCount === 1 ? 'member' : 'members'}
-                    </p>
+                    <div className="flex items-center gap-2 text-gray-400 mb-1"><Users className="w-4 h-4" /><span className="text-xs uppercase tracking-wide">Members</span></div>
+                    <p className="text-[#1F2937] font-medium">{memberCount} {memberCount === 1 ? 'member' : 'members'}</p>
                   </div>
-
-                  {/* Meeting Schedule */}
                   {meetingSchedule && (
                     <div>
-                      <div className="flex items-center gap-2 text-white/70 mb-2">
-                        <Clock className="w-4 h-4" />
-                        <span className="text-sm">Meeting Schedule</span>
-                      </div>
-                      <p className="text-white">{meetingSchedule}</p>
+                      <div className="flex items-center gap-2 text-gray-400 mb-1"><Clock className="w-4 h-4" /><span className="text-xs uppercase tracking-wide">Schedule</span></div>
+                      <p className="text-[#1F2937] font-medium">{meetingSchedule}</p>
                     </div>
                   )}
-
-                  {/* Created Date */}
                   {team.createdAt && (
                     <div>
-                      <div className="flex items-center gap-2 text-white/70 mb-2">
-                        <Calendar className="w-4 h-4" />
-                        <span className="text-sm">Established</span>
-                      </div>
-                      <p className="text-white">
-                        {new Date(team.createdAt).toLocaleDateString('en-AU', {
-                          year: 'numeric',
-                          month: 'long',
-                        })}
-                      </p>
+                      <div className="flex items-center gap-2 text-gray-400 mb-1"><Calendar className="w-4 h-4" /><span className="text-xs uppercase tracking-wide">Established</span></div>
+                      <p className="text-[#1F2937] font-medium">{new Date(team.createdAt).toLocaleDateString('en-AU', { year: 'numeric', month: 'long' })}</p>
                     </div>
                   )}
                 </div>
               </div>
 
-              {/* Contact Button */}
+              {/* Contact CTA */}
               {leader?.email && (
-                <a
-                  href={`mailto:${leader.email}`}
-                  className="w-full block bg-white text-[#F44314] text-center py-4 rounded-xl font-semibold hover:bg-white/90 transition-colors"
-                >
-                  Contact Team Leader
+                <a href={`mailto:${leader.email}`} className="w-full block bg-[#F44314] text-white text-center py-4 rounded-xl font-semibold hover:bg-[#d93a10] transition-colors shadow-sm">
+                  Contact This Team
                 </a>
+              )}
+
+              {!leader?.email && (
+                <Link to="/contact" className="w-full block bg-[#F44314] text-white text-center py-4 rounded-xl font-semibold hover:bg-[#d93a10] transition-colors shadow-sm">
+                  Get in Touch
+                </Link>
               )}
             </div>
           </div>
