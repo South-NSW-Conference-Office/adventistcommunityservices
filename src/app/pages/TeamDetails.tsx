@@ -158,17 +158,17 @@ export function TeamDetails() {
               {tags.length > 0 ? (
                 <div className="grid md:grid-cols-2 gap-4">
                   {tags.map((tag, index) => (
-                    <div key={index} className="bg-white border border-gray-200 rounded-xl p-5 hover:shadow-md transition-shadow">
+                    <Link key={index} to={`/services?type=${tag}`} className="bg-white border border-gray-200 rounded-xl p-5 hover:shadow-md hover:border-[#F44314]/30 transition-all group">
                       <div className="flex items-start gap-3">
                         <div className="w-10 h-10 bg-[#FFF1EE] rounded-lg flex items-center justify-center flex-shrink-0">
                           <Heart className="w-5 h-5 text-[#F44314]" />
                         </div>
-                        <div>
-                          <h3 className="text-[#1F2937] font-semibold">{formatUnderscoreString(tag)}</h3>
-                          <p className="text-gray-500 text-sm mt-1">Provided by this team</p>
+                        <div className="flex-1">
+                          <h3 className="text-[#1F2937] font-semibold group-hover:text-[#F44314] transition-colors">{formatUnderscoreString(tag)}</h3>
+                          <p className="text-gray-500 text-sm mt-1">View service details →</p>
                         </div>
                       </div>
-                    </div>
+                    </Link>
                   ))}
                 </div>
               ) : (
