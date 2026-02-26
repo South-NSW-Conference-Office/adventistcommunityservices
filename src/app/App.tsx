@@ -72,9 +72,9 @@ function AppContent() {
         <div className="max-w-7xl mx-auto px-6 py-12">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div>
-              <h3 className="text-white font-semibold mb-4">About ACS</h3>
+              <h3 className="text-white font-semibold mb-4">About Adventist Community Services</h3>
               <p className="text-gray-400 text-sm">
-                Adventist Community Services — connecting communities with local service teams across Australia.
+                Connecting communities with local service teams across Australia. Here to Serve.
               </p>
             </div>
             <div>
@@ -82,18 +82,19 @@ function AppContent() {
               <ul className="space-y-2 text-sm">
                 <li><a href="/about" className="text-gray-400 hover:text-white transition-colors">About Us</a></li>
                 <li><a href="/services" className="text-gray-400 hover:text-white transition-colors">Services</a></li>
-                <li><a href="/about" className="text-gray-400 hover:text-white transition-colors">Get Involved</a></li>
-                <li><a href="/about" className="text-gray-400 hover:text-white transition-colors">List Your Team</a></li>
+                <li><a href="/teams" className="text-gray-400 hover:text-white transition-colors">Teams</a></li>
                 <li><a href="/contact" className="text-gray-400 hover:text-white transition-colors">Contact</a></li>
+                <li><a href="/about" className="text-gray-400 hover:text-white transition-colors">List Your Team</a></li>
               </ul>
             </div>
             <div>
               <h3 className="text-white font-semibold mb-4">Services</h3>
               <ul className="space-y-2 text-sm">
-                <li><a href="/services" className="text-gray-400 hover:text-white transition-colors">Food Bank</a></li>
-                <li><a href="/services" className="text-gray-400 hover:text-white transition-colors">Clothing</a></li>
-                <li><a href="/services" className="text-gray-400 hover:text-white transition-colors">Counseling</a></li>
-                <li><a href="/services" className="text-gray-400 hover:text-white transition-colors">Emergency Relief</a></li>
+                <li><a href="/services?type=op_shop" className="text-gray-400 hover:text-white transition-colors">Op Shops</a></li>
+                <li><a href="/services?type=food_pantry" className="text-gray-400 hover:text-white transition-colors">Food Pantry</a></li>
+                <li><a href="/services?type=counseling_service" className="text-gray-400 hover:text-white transition-colors">Counseling</a></li>
+                <li><a href="/services?type=disaster_response" className="text-gray-400 hover:text-white transition-colors">Disaster Response</a></li>
+                <li><a href="/services?type=emergency_shelter" className="text-gray-400 hover:text-white transition-colors">Emergency Shelter</a></li>
               </ul>
             </div>
             <div>

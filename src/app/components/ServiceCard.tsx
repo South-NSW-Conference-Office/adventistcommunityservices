@@ -105,6 +105,6 @@ export function ServiceCard({
   }
 
   return (
-    <div className="group cursor-pointer transition-all hover:scale-[1.02] h-full">{content}</div>
+    <div className="h-full">{content}</div>
   );
 }

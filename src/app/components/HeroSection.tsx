@@ -3,7 +3,16 @@ import { useState } from 'react';
 import { useCMSPage } from '../hooks/useCMSContent';
 import { EditableText, EditableRichText } from './editable';
 
-const CATEGORIES = ['Food', 'Clothing', 'Counseling', 'Emergency Relief', 'Housing', 'Financial Aid', 'Health', 'Education'];
+const CATEGORIES = [
+  { label: 'Op Shops', type: 'op_shop' },
+  { label: 'Food Pantry', type: 'food_pantry' },
+  { label: 'Soup Kitchen', type: 'soup_kitchen' },
+  { label: 'Disaster Response', type: 'disaster_response' },
+  { label: 'Health', type: 'health_program' },
+  { label: 'Counseling', type: 'counseling_service' },
+  { label: 'Shelter', type: 'emergency_shelter' },
+  { label: 'Education', type: 'education_program' },
+];
 
 export function HeroSection() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -78,12 +87,13 @@ export function HeroSection() {
         {/* Category Quick Links */}
         <div className="flex flex-wrap justify-center gap-2 mt-8">
           {CATEGORIES.map((cat) => (
-            <button
-              key={cat}
+            <a
+              key={cat.type}
+              href={`/services?type=${cat.type}`}
               className="px-4 py-2 rounded-full bg-white border border-gray-200 text-gray-600 text-sm font-medium hover:border-[#F44314] hover:text-[#F44314] transition-colors"
             >
-              {cat}
-            </button>
+              {cat.label}
+            </a>
           ))}
         </div>
       </div>
