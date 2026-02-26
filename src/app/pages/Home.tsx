@@ -190,67 +190,7 @@ export function Home(): JSX.Element {
         </div>
       </section>
 
-      {/* List Your Team Steps — white background */}
-      {isSectionEnabled('process-steps') && (
-        <section className="bg-white py-16">
-          <div className="max-w-7xl mx-auto px-6">
-            <div className="text-center mb-16">
-              <EditableText
-                pageId="home"
-                sectionId="process-steps"
-                blockKey="section_label"
-                content={cms.process.label}
-                fallback="List Your Team"
-                className="text-[#F44314] text-sm font-semibold tracking-wider uppercase mb-2"
-                as="p"
-              />
-              <EditableText
-                pageId="home"
-                sectionId="process-steps"
-                blockKey="section_title"
-                content={cms.process.title}
-                fallback="Get Your Team on the Platform"
-                className="text-[#1F2937] text-4xl font-bold mb-4"
-                as="h2"
-              />
-              <EditableRichText
-                pageId="home"
-                sectionId="process-steps"
-                blockKey="section_description"
-                content={cms.process.description}
-                fallback="Three simple steps to showcase your community service team."
-                className="text-gray-600 max-w-2xl mx-auto"
-              />
-            </div>
 
-            <div className="grid md:grid-cols-3 gap-8">
-              {cms.process.steps.map((step, index) => {
-                const IconComponent = ICON_MAP[step.icon as keyof typeof ICON_MAP] || Heart;
-                return (
-                  <div key={index} className="relative text-center">
-                    <div className="mb-6 flex justify-center">
-                      <div className="w-24 h-24 rounded-full bg-[#FFF1EE] flex items-center justify-center border border-[#F44314]/20">
-                        <IconComponent className="w-12 h-12 text-[#F44314]" />
-                      </div>
-                    </div>
-                    <div className="absolute top-0 right-0 md:right-[-2rem] text-gray-100 text-8xl font-bold select-none">
-                      {step.number}
-                    </div>
-                    <h3 className="text-[#1F2937] text-2xl font-semibold mb-4">{step.title}</h3>
-                    <p className="text-gray-600">{step.description}</p>
-                  </div>
-                );
-              })}
-            </div>
-
-            <div className="text-center mt-12">
-              <button className="bg-[#F44314] text-white font-semibold py-4 px-12 rounded-lg hover:bg-[#d93a10] transition-colors shadow-sm">
-                {cms.process.ctaButton}
-              </button>
-            </div>
-          </div>
-        </section>
-      )}
     </div>
   );
 }

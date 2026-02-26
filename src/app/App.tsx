@@ -83,6 +83,7 @@ function AppContent() {
                 <li><a href="/about" className="text-gray-400 hover:text-white transition-colors">About Us</a></li>
                 <li><a href="/services" className="text-gray-400 hover:text-white transition-colors">Services</a></li>
                 <li><a href="/about" className="text-gray-400 hover:text-white transition-colors">Get Involved</a></li>
+                <li><a href="/about" className="text-gray-400 hover:text-white transition-colors">List Your Team</a></li>
                 <li><a href="/contact" className="text-gray-400 hover:text-white transition-colors">Contact</a></li>
               </ul>
             </div>
