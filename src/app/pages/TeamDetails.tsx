@@ -202,36 +202,7 @@ export function TeamDetails() {
               )}
             </div>
 
-            {/* ====== SECTION 3: RECOMMENDED SERVICES (compact dark panel) ====== */}
-            <div className="bg-[#1F2937] rounded-2xl p-6 md:p-8">
-              <h3 className="text-white text-lg font-semibold mb-1">Other Services in the Area</h3>
-              <p className="text-gray-400 text-sm mb-5">Trusted community resources — not operated by us.</p>
 
-              <div className="divide-y divide-gray-700">
-                {RECOMMENDED_SERVICES.map((svc, i) => (
-                  <div key={i} className="py-3 flex items-center justify-between gap-4">
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2">
-                        <span className="text-white font-medium text-sm truncate">{svc.name}</span>
-                        <span className="text-gray-500 text-xs flex-shrink-0">· {svc.type}</span>
-                      </div>
-                      {svc.phone && <span className="text-gray-400 text-xs">{svc.phone}</span>}
-                    </div>
-                    <a
-                      href={svc.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-gray-400 hover:text-white transition-colors flex-shrink-0"
-                      title={`Visit ${svc.name}`}
-                    >
-                      <ExternalLink className="w-4 h-4" />
-                    </a>
-                  </div>
-                ))}
-              </div>
-
-              <p className="text-gray-600 text-xs mt-4">Independent organisations. Listing does not imply affiliation.</p>
-            </div>
           </div>
 
           {/* Right Column — Sidebar */}
@@ -299,6 +270,39 @@ export function TeamDetails() {
               )}
             </div>
           </div>
+        </div>
+      </div>
+
+      {/* ====== RECOMMENDED SERVICES — full width, dark panel, last before footer ====== */}
+      <div className="bg-[#1F2937]">
+        <div className="max-w-7xl mx-auto px-6 py-10">
+          <h3 className="text-white text-lg font-semibold mb-1">Other Services in the Area</h3>
+          <p className="text-gray-400 text-sm mb-5">Trusted community resources — not operated by us.</p>
+
+          <div className="divide-y divide-gray-700">
+            {RECOMMENDED_SERVICES.map((svc, i) => (
+              <div key={i} className="py-3 flex items-center justify-between gap-4">
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2">
+                    <span className="text-white font-medium text-sm truncate">{svc.name}</span>
+                    <span className="text-gray-500 text-xs flex-shrink-0">· {svc.type}</span>
+                  </div>
+                  {svc.phone && <span className="text-gray-400 text-xs">{svc.phone}</span>}
+                </div>
+                <a
+                  href={svc.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-gray-400 hover:text-white transition-colors flex-shrink-0"
+                  title={`Visit ${svc.name}`}
+                >
+                  <ExternalLink className="w-4 h-4" />
+                </a>
+              </div>
+            ))}
+          </div>
+
+          <p className="text-gray-600 text-xs mt-4">Independent organisations. Listing does not imply affiliation.</p>
         </div>
       </div>
     </div>
