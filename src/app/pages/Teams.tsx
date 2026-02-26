@@ -62,11 +62,11 @@ function getTeamLeaderName(team: { leaderId?: { name?: string } | string }): str
 export function Teams(): JSX.Element {
   const { getBlock } = useCMSPage('teams');
 
-  const heroLabel = getBlock('hero', 'section_label') || 'Our Teams';
-  const heroTitle = getBlock('hero', 'title') || 'Meet Our Service Teams';
+  const heroLabel = getBlock('hero', 'section_label') || 'Teams Directory';
+  const heroTitle = getBlock('hero', 'title') || 'Community Service Teams';
   const heroSubtitle =
     getBlock('hero', 'subtitle') ||
-    'Discover the dedicated teams across our churches working to serve the community. Connect with team leaders and learn about ongoing initiatives.';
+    'Browse community service teams by location and church. Each team shows their member count, services offered, and contact information to help you connect and get involved.';
 
   const { teams, loading, error, refetch } = useTeams();
   const [selectedChurch, setSelectedChurch] = useState('All Churches');
