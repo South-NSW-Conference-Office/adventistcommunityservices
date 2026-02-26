@@ -202,40 +202,35 @@ export function TeamDetails() {
               )}
             </div>
 
-            {/* ====== SECTION 3: RECOMMENDED SERVICES ====== */}
-            <div>
-              <h2 className="text-[#1F2937] text-2xl font-bold mb-2">Other Services We Recommend</h2>
-              <p className="text-gray-500 mb-6">We can't offer everything, but we know who can. These are trusted services available in the community.</p>
+            {/* ====== SECTION 3: RECOMMENDED SERVICES (compact dark panel) ====== */}
+            <div className="bg-[#1F2937] rounded-2xl p-6 md:p-8">
+              <h3 className="text-white text-lg font-semibold mb-1">Other Services in the Area</h3>
+              <p className="text-gray-400 text-sm mb-5">Trusted community resources — not operated by us.</p>
 
-              <div className="grid md:grid-cols-2 gap-4">
+              <div className="divide-y divide-gray-700">
                 {RECOMMENDED_SERVICES.map((svc, i) => (
-                  <a
-                    key={i}
-                    href={svc.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="bg-white border border-gray-200 rounded-xl p-5 hover:shadow-md hover:border-gray-300 transition-all group"
-                  >
-                    <div className="flex items-start justify-between gap-3">
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2 mb-1">
-                          <h3 className="text-[#1F2937] font-semibold group-hover:text-[#F44314] transition-colors">{svc.name}</h3>
-                          <ExternalLink className="w-3.5 h-3.5 text-gray-300 group-hover:text-[#F44314] transition-colors" />
-                        </div>
-                        <span className="text-xs font-medium text-gray-400 uppercase tracking-wide">{svc.type}</span>
-                        <p className="text-gray-500 text-sm mt-2">{svc.desc}</p>
-                        {svc.phone && (
-                          <p className="text-[#F44314] font-semibold text-sm mt-2">{svc.phone}</p>
-                        )}
+                  <div key={i} className="py-3 flex items-center justify-between gap-4">
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2">
+                        <span className="text-white font-medium text-sm truncate">{svc.name}</span>
+                        <span className="text-gray-500 text-xs flex-shrink-0">· {svc.type}</span>
                       </div>
+                      {svc.phone && <span className="text-gray-400 text-xs">{svc.phone}</span>}
                     </div>
-                  </a>
+                    <a
+                      href={svc.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-gray-400 hover:text-white transition-colors flex-shrink-0"
+                      title={`Visit ${svc.name}`}
+                    >
+                      <ExternalLink className="w-4 h-4" />
+                    </a>
+                  </div>
                 ))}
               </div>
 
-              <p className="text-gray-400 text-xs mt-4">
-                These are independent organisations. Listing does not imply endorsement or affiliation.
-              </p>
+              <p className="text-gray-600 text-xs mt-4">Independent organisations. Listing does not imply affiliation.</p>
             </div>
           </div>
 
