@@ -54,6 +54,7 @@ export async function getMediaFiles(params?: {
 
   const response = await fetch(url, {
     headers: getAuthHeaders(),
+    credentials: 'include',
   });
 
   if (!response.ok) {

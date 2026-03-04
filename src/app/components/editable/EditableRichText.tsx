@@ -4,6 +4,32 @@ import { useEditMode } from '../../contexts/EditModeContext';
 import { InlineRichTextEditor } from './InlineRichTextEditor';
 import { cn } from '../ui/utils';
 
+// Restrict iframe sources to trusted video platforms only.
+// This hook runs once at module load time (not per-render) to avoid duplicate registrations.
+if (typeof window !== 'undefined') {
+  DOMPurify.addHook('afterSanitizeAttributes', (node) => {
+    if (node.tagName === 'IFRAME') {
+      const src = node.getAttribute('src') || '';
+      const allowedDomains = [
+        'youtube.com',
+        'www.youtube.com',
+        'youtube-nocookie.com',
+        'www.youtube-nocookie.com',
+        'player.vimeo.com',
+      ];
+      try {
+        const url = new URL(src);
+        if (!allowedDomains.includes(url.hostname)) {
+          node.remove();
+        }
+      } catch {
+        // Invalid URL -- remove the iframe
+        node.remove();
+      }
+    }
+  });
+}
+
 interface EditableRichTextProps {
   pageId: string;
   sectionId: string;

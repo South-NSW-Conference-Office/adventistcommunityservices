@@ -1,4 +1,5 @@
 import { useState, useMemo } from 'react';
+import DOMPurify from 'dompurify';
 import { ServiceCard } from '../components/ServiceCard';
 import { MapPin, Filter, RefreshCw } from 'lucide-react';
 import { useServices } from '../hooks/useServices';
@@ -51,7 +52,7 @@ function HeroSection({ label, title, subtitle, showFullDecorations = false }: He
         {subtitle && (
           <p
             className="text-white/90 text-lg leading-relaxed max-w-3xl mx-auto"
-            dangerouslySetInnerHTML={{ __html: subtitle }}
+            dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(subtitle) }}
           />
         )}
       </div>

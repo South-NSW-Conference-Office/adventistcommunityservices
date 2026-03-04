@@ -60,7 +60,16 @@ function pluralize(count: number, singular: string, plural: string): string {
 }
 
 function getWebsiteUrl(website: string): string {
-  return website.startsWith('http') ? website : `https://${website}`;
+  const url = website.startsWith('http') ? website : `https://${website}`;
+  try {
+    const parsed = new URL(url);
+    if (!['http:', 'https:'].includes(parsed.protocol)) {
+      return '#';
+    }
+    return parsed.toString();
+  } catch {
+    return '#';
+  }
 }
 
 interface InfoCardProps {

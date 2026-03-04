@@ -2,6 +2,32 @@ import { usePageContent } from '../hooks/usePageContent';
 import DOMPurify from 'dompurify';
 import React from 'react';
 
+// Restrict iframe sources to trusted video platforms only.
+// This hook runs once at module load time (not per-render) to avoid duplicate registrations.
+if (typeof window !== 'undefined') {
+  DOMPurify.addHook('afterSanitizeAttributes', (node) => {
+    if (node.tagName === 'IFRAME') {
+      const src = node.getAttribute('src') || '';
+      const allowedDomains = [
+        'youtube.com',
+        'www.youtube.com',
+        'youtube-nocookie.com',
+        'www.youtube-nocookie.com',
+        'player.vimeo.com',
+      ];
+      try {
+        const url = new URL(src);
+        if (!allowedDomains.includes(url.hostname)) {
+          node.remove();
+        }
+      } catch {
+        // Invalid URL -- remove the iframe
+        node.remove();
+      }
+    }
+  });
+}
+
 interface PageContentProps {
   /** Page ID to fetch content from */
   pageId: string;

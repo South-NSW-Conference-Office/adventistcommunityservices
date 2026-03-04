@@ -1,4 +1,5 @@
 import { useState, useMemo } from 'react';
+import DOMPurify from 'dompurify';
 import { TeamCard } from '../components/TeamCard';
 import { Filter, RefreshCw, Search, Building2 } from 'lucide-react';
 import { useTeams } from '../hooks/useTeams';
@@ -21,7 +22,7 @@ function HeroSection({ label, title, subtitle }: { label: string; title: string;
         {subtitle && (
           <p
             className="text-white/90 text-lg leading-relaxed max-w-3xl mx-auto"
-            dangerouslySetInnerHTML={{ __html: subtitle }}
+            dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(subtitle) }}
           />
         )}
       </div>
