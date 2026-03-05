@@ -16,19 +16,24 @@ export const CONFERENCE_PATHS: Record<string, string> = {
 
 // Internal conference boundary lines (drawn as strokes, not fills)
 // These show where conferences split within states
+// Coordinates traced from the official SDA conference boundary map
 export const BOUNDARY_LINES: Record<string, string> = {
-  qld_split: "M 194.16,72 L 236,72 L 242,70 L 248,68 L 252,66",  // NQ / SQ border
-  nsw_split: "M 194.16,155 L 230,155 L 245,153 L 255,150 L 262,148",  // NNSW / SNSW border
+  // NQ / SQ border — runs near Tropic of Capricorn (~Rockhampton on coast)
+  // From NT/QLD border eastward across QLD to the coast near Gladstone/Rockhampton
+  qld_split: "M 173.41,80 L 185,80 L 195,79 L 205,78 L 215,77 L 225,75 L 230,73 L 235,70 L 237,68",
+  // NNSW / SNSW border — runs near Newcastle/Hunter Valley latitude
+  // From SA/NSW border eastward across NSW to the coast near Newcastle
+  nsw_split: "M 194.16,165 L 210,164 L 225,162 L 235,160 L 245,158 L 252,155 L 256,152",
 };
 
 // Label positions in SVG viewBox coordinates
 export const CONFERENCE_LABELS: Record<string, { x: number; y: number; name: string }> = {
-  wa: { x: 62, y: 145, name: "Western Australian\nConference" },
-  sa: { x: 153, y: 148, name: "South Australian\nConference" },
-  nq: { x: 148, y: 65, name: "North Australian\nConference" },
-  sq: { x: 228, y: 90, name: "South Queensland\nConference" },
-  vic: { x: 222, y: 200, name: "Victorian\nConference" },
-  tas: { x: 230, y: 240, name: "Tasmanian\nConference" },
-  nnsw: { x: 252, y: 140, name: "North NSW\nConference" },
-  snsw: { x: 245, y: 168, name: "South NSW\nConference" },
+  wa: { x: 62, y: 120, name: "Western Australian\nConference" },
+  sa: { x: 150, y: 150, name: "South Australian\nConference" },
+  nq: { x: 155, y: 55, name: "Northern Australian\nConference" },
+  sq: { x: 220, y: 95, name: "South Queensland\nConference" },
+  vic: { x: 230, y: 200, name: "Victorian\nConference" },
+  tas: { x: 232, y: 242, name: "Tasmanian\nConference" },
+  nnsw: { x: 248, y: 148, name: "North NSW\nConference" },
+  snsw: { x: 235, y: 180, name: "South NSW\nConference" },
 };
