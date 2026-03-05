@@ -34,18 +34,6 @@ function AppContent() {
     );
   }
 
-  // Show coming soon / login page if not authenticated
-  if (!isAuthenticated) {
-    return (
-      <Routes>
-        <Route path="/preview/:token" element={<Preview />} />
-        <Route path="/forgot-password" element={<ForgotPassword />} />
-        <Route path="/reset-password" element={<ResetPassword />} />
-        <Route path="*" element={<ComingSoon />} />
-      </Routes>
-    );
-  }
-
   return (
     <div className="min-h-screen bg-white">
       <Header onLogout={logout} isAuthenticated={isAuthenticated} />
