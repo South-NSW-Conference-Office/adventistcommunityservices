@@ -52,24 +52,22 @@ export function Home(): JSX.Element {
 
   return (
     <div>
-      <HeroSection />
-
-      {/* Conference Map Section */}
-      <section className="bg-gradient-to-b from-[#1F2937] to-[#111827] py-16">
-        <div className="max-w-5xl mx-auto px-6">
-          <div className="text-center mb-8">
+      {/* Conference Map — THE hero */}
+      <section className="bg-gradient-to-b from-[#1F2937] to-[#111827] py-12 md:py-16">
+        <div className="max-w-4xl mx-auto px-6">
+          <div className="text-center mb-6">
             <p className="text-[#F44314] font-semibold text-sm uppercase tracking-widest mb-3">
-              Browse by Region
+              Here to Serve
             </p>
-            <h2 className="text-white text-3xl md:text-4xl font-bold mb-4">
-              Find Services in Your Area
-            </h2>
-            <p className="text-gray-400 max-w-2xl mx-auto text-lg">
-              Select your conference to discover local community services
+            <h1 className="text-white text-3xl md:text-5xl font-bold mb-3">
+              Adventist Community Services
+            </h1>
+            <p className="text-gray-400 max-w-2xl mx-auto text-base md:text-lg">
+              Select your conference to find local services
             </p>
           </div>
 
-          <ConferenceMap className="mb-6" />
+          <ConferenceMap className="mb-4" />
 
           <div className="text-center">
             <p className="text-sm text-gray-500">
@@ -82,6 +80,8 @@ export function Home(): JSX.Element {
           </div>
         </div>
       </section>
+
+      <HeroSection />
 
       {/* Services Section — white background */}
       {isSectionEnabled('services-preview') && (
