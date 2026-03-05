@@ -17,22 +17,10 @@ import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { EditModeProvider } from './contexts/EditModeContext';
 import { EditModeFloatingButton, EditModeSaveBar } from './components/editable';
 import { Toaster } from './components/ui/sonner';
-import { Loader2 } from 'lucide-react';
+// import { Loader2 } from 'lucide-react';
 
 function AppContent() {
-  const { isAuthenticated, loading, logout } = useAuth();
-
-  // Show loading spinner while checking auth
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-white flex items-center justify-center">
-        <div className="flex flex-col items-center gap-4">
-          <Loader2 className="w-12 h-12 text-[#F44314] animate-spin" />
-          <p className="text-gray-500 text-lg">Loading...</p>
-        </div>
-      </div>
-    );
-  }
+  const { isAuthenticated, logout } = useAuth();
 
   return (
     <div className="min-h-screen bg-white">
