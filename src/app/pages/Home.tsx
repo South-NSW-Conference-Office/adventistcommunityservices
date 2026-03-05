@@ -1,3 +1,5 @@
+import { useState } from 'react';
+import { Search, MapPin } from 'lucide-react';
 import { HeroSection } from '../components/HeroSection';
 import { InteractiveConferenceMap } from '../components/InteractiveConferenceMap';
 import { ServiceCard } from '../components/ServiceCard';
@@ -37,6 +39,8 @@ function parseStaticLocation(location: string): { suburb: string; state: string 
 }
 
 export function Home(): JSX.Element {
+  const [searchQuery, setSearchQuery] = useState('');
+  const [location, setLocation] = useState('');
   const { getBlock, getJSONBlock, isSectionEnabled } = useCMSPage('home');
   const { services, loading: servicesLoading } = useServices();
   const { teams, loading: teamsLoading } = useTeams();
@@ -64,9 +68,49 @@ export function Home(): JSX.Element {
             <h1 className="text-[#1F2937] text-3xl md:text-5xl font-bold mb-4 leading-tight whitespace-nowrap">
               Adventist<br />Community Services
             </h1>
-            <p className="text-gray-600 text-base md:text-lg">
+            <p className="text-gray-600 text-base md:text-lg mb-6">
               Select your conference to find local services
             </p>
+
+            {/* Search Bar */}
+            <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-2 flex flex-row items-center gap-2">
+              <div className="flex-1 flex items-center gap-2 px-3 py-2.5 bg-gray-50 rounded-xl min-w-0">
+                <Search className="w-4 h-4 text-gray-400 flex-shrink-0" />
+                <input
+                  type="text"
+                  placeholder="Service..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="flex-1 bg-transparent outline-none text-gray-900 placeholder:text-gray-400 text-sm min-w-0"
+                />
+              </div>
+              <div className="flex-1 flex items-center gap-2 px-3 py-2.5 bg-gray-50 rounded-xl min-w-0">
+                <MapPin className="w-4 h-4 text-gray-400 flex-shrink-0" />
+                <input
+                  type="text"
+                  placeholder="Postcode"
+                  value={location}
+                  onChange={(e) => setLocation(e.target.value)}
+                  className="flex-1 bg-transparent outline-none text-gray-900 placeholder:text-gray-400 text-sm min-w-0"
+                />
+              </div>
+              <button className="bg-[#F44314] text-white px-4 py-2.5 rounded-xl hover:bg-[#d93a10] transition-colors font-semibold shadow-sm text-sm flex-shrink-0">
+                <Search className="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* Category badges */}
+            <div className="flex flex-wrap gap-1.5 mt-3">
+              {['Op Shops', 'Food Pantry', 'Soup Kitchen', 'Disaster Response', 'Health', 'Counseling', 'Shelter', 'Education'].map((cat) => (
+                <a
+                  key={cat}
+                  href={`/services?type=${cat.toLowerCase().replace(/ /g, '_')}`}
+                  className="px-2 py-0.5 rounded-full bg-white/80 border border-gray-200 text-gray-500 text-[10px] font-medium hover:border-[#F44314] hover:text-[#F44314] transition-colors"
+                >
+                  {cat}
+                </a>
+              ))}
+            </div>
           </div>
           {/* Map — takes the rest */}
           <div className="flex-1 w-full min-w-0">
@@ -74,8 +118,6 @@ export function Home(): JSX.Element {
           </div>
         </div>
       </section>
-
-      <HeroSection />
 
       {/* Services Section — white background */}
       {isSectionEnabled('services-preview') && (
