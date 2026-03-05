@@ -4,10 +4,12 @@ import type { PendingChange } from '../types/editMode.types';
 
 const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
-// Debug helper
+// Debug helper - gated behind development mode to prevent leaking sensitive data in production
 const DEBUG_PREFIX = '[CMS DEBUG]';
 function debug(...args: unknown[]) {
-  console.log(DEBUG_PREFIX, ...args);
+  if (import.meta.env.DEV) {
+    console.log(DEBUG_PREFIX, ...args);
+  }
 }
 
 interface UpdatePageResponse {
@@ -41,9 +43,9 @@ export async function getPageForEdit(
 
   try {
     const headers = getAuthHeaders();
-    debug('Request headers:', JSON.stringify(headers));
+    debug('Request headers present:', Object.keys(headers));
 
-    const response = await fetch(url, { headers });
+    const response = await fetch(url, { headers, credentials: 'include' });
     debug('Response status:', response.status, response.statusText);
 
     if (!response.ok) {
@@ -125,6 +127,7 @@ async function createPageFromChanges(
       method: 'POST',
       headers: getAuthHeaders(),
       body: JSON.stringify(requestBody),
+      credentials: 'include',
     });
 
     debug('Create response status:', response.status, response.statusText);
@@ -250,6 +253,7 @@ export async function updatePageContent(
       method: 'PUT',
       headers: getAuthHeaders(),
       body: JSON.stringify(requestBody),
+      credentials: 'include',
     });
 
     debug('Update response status:', response.status, response.statusText);
@@ -303,6 +307,7 @@ export async function publishPageContent(
       method: 'POST',
       headers: getAuthHeaders(),
       body: JSON.stringify(requestBody),
+      credentials: 'include',
     });
 
     debug('Publish response status:', response.status, response.statusText);

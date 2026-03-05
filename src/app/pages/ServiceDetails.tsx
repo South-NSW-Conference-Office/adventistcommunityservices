@@ -1,4 +1,4 @@
-import { useParams, Link, useNavigate } from 'react-router-dom';
+﻿import { useParams, Link, useNavigate } from 'react-router-dom';
 import { MapPin, Users, Clock, Phone, Mail, Calendar, ArrowLeft, Heart, RefreshCw, Globe, ChevronRight, ChevronLeft, Image as ImageIcon } from 'lucide-react';
 import { useState, useRef } from 'react';
 import { useServiceDetail, useServices } from '../hooks/useServices';
@@ -38,7 +38,7 @@ function getScheduleEntries(scheduling?: ServiceScheduling): { day: string; time
     .filter((d) => d.isEnabled && d.timeSlots.length > 0)
     .map((d) => ({
       day: DAY_NAMES[d.dayOfWeek],
-      time: d.timeSlots.map(s => `${s.startTime} – ${s.endTime}`).join(', '),
+      time: d.timeSlots.map(s => `${s.startTime} ΓÇô ${s.endTime}`).join(', '),
     }));
 }
 
@@ -124,7 +124,7 @@ export function ServiceDetails() {
       <div className="max-w-7xl mx-auto px-6 py-8">
         {/* Top Section: Gallery + Info side by side */}
         <div className="grid lg:grid-cols-5 gap-8 mb-10">
-          {/* Photo Gallery — 3 cols */}
+          {/* Photo Gallery ΓÇö 3 cols */}
           <div className="lg:col-span-3">
             {/* Main Image */}
             <div className="relative rounded-2xl overflow-hidden bg-gray-100 aspect-[16/10]">
@@ -172,7 +172,7 @@ export function ServiceDetails() {
             )}
           </div>
 
-          {/* Info Panel — 2 cols (Google Maps listing style) */}
+          {/* Info Panel ΓÇö 2 cols (Google Maps listing style) */}
           <div className="lg:col-span-2 space-y-6">
             <div>
               <h1 className="text-[#1F2937] text-2xl md:text-3xl font-bold mb-2">{service.name}</h1>
@@ -203,7 +203,7 @@ export function ServiceDetails() {
                       ))}
                     </div>
                   ) : (
-                    <p className="text-gray-400 text-sm">Hours not set — contact team for availability</p>
+                    <p className="text-gray-400 text-sm">Hours not set ΓÇö contact team for availability</p>
                   )}
                 </div>
               </div>
@@ -344,7 +344,7 @@ export function ServiceDetails() {
         )}
       </div>
 
-      {/* ====== Other Services by This Provider — carousel ====== */}
+      {/* ====== Other Services by This Provider ΓÇö carousel ====== */}
       {(() => {
         const teamId = service.teamId?._id;
         const siblings = teamId

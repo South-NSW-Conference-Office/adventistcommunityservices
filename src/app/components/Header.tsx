@@ -26,8 +26,12 @@ export function Header({ onLogout, isAuthenticated = false }: HeaderProps) {
 
           {/* Navigation */}
           <nav className="hidden md:flex items-center gap-8">
+            <Link to="/" className="text-gray-700 hover:text-[#F44314] transition-colors font-medium">Home</Link>
+            <Link to="/about" className="text-gray-700 hover:text-[#F44314] transition-colors font-medium">About</Link>
             <Link to="/services" className="text-gray-700 hover:text-[#F44314] transition-colors font-medium">Services</Link>
+            <Link to="/churches" className="text-gray-700 hover:text-[#F44314] transition-colors font-medium">Churches</Link>
             <Link to="/teams" className="text-gray-700 hover:text-[#F44314] transition-colors font-medium">Teams</Link>
+            <Link to="/contact" className="text-gray-700 hover:text-[#F44314] transition-colors font-medium">Contact</Link>
           </nav>
 
           {/* Actions */}
@@ -53,8 +57,12 @@ export function Header({ onLogout, isAuthenticated = false }: HeaderProps) {
         {/* Mobile nav */}
         {mobileOpen && (
           <nav className="md:hidden pt-4 pb-2 border-t border-gray-100 mt-3 flex flex-col gap-3">
+            <Link to="/" onClick={() => setMobileOpen(false)} className="text-gray-700 hover:text-[#F44314] font-medium py-2">Home</Link>
+            <Link to="/about" onClick={() => setMobileOpen(false)} className="text-gray-700 hover:text-[#F44314] font-medium py-2">About</Link>
             <Link to="/services" onClick={() => setMobileOpen(false)} className="text-gray-700 hover:text-[#F44314] font-medium py-2">Services</Link>
+            <Link to="/churches" onClick={() => setMobileOpen(false)} className="text-gray-700 hover:text-[#F44314] font-medium py-2">Churches</Link>
             <Link to="/teams" onClick={() => setMobileOpen(false)} className="text-gray-700 hover:text-[#F44314] font-medium py-2">Teams</Link>
+            <Link to="/contact" onClick={() => setMobileOpen(false)} className="text-gray-700 hover:text-[#F44314] font-medium py-2">Contact</Link>
           </nav>
         )}
       </div>

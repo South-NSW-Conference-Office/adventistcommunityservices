@@ -60,7 +60,7 @@ export function ServiceCard({
   const capacityText = formatCapacity(capacity);
 
   const content = (
-    <div className="bg-white border border-gray-200 rounded-2xl shadow-md hover:shadow-lg transition-all duration-300 overflow-hidden h-full">
+    <div className="bg-white border border-gray-200 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden h-full">
       <div className="relative h-56 overflow-hidden">
         <img
           src={imageUrl}
@@ -70,7 +70,7 @@ export function ServiceCard({
       </div>
 
       <div className="p-6">
-        <h3 className="text-gray-900 text-xl font-semibold mb-2">{name}</h3>
+        <h3 className="text-[#1F2937] text-xl font-semibold mb-2">{name}</h3>
         <p className="text-gray-600 text-sm mb-4 line-clamp-2">
           {descriptionShort || 'No description available'}
         </p>

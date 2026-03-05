@@ -1,4 +1,4 @@
-import { useParams, Link, useNavigate } from 'react-router-dom';
+﻿import { useParams, Link, useNavigate } from 'react-router-dom';
 import { MapPin, Users, User, Building2, Clock, ArrowLeft, Heart, RefreshCw, Target, Calendar, ExternalLink, AlertTriangle } from 'lucide-react';
 import { useTeamDetail } from '../hooks/useTeams';
 import { useServices } from '../hooks/useServices';
@@ -8,7 +8,7 @@ import type { Team, TeamChurch, TeamLeader } from '../types/team.types';
 const DEFAULT_TEAM_IMAGE =
   'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080';
 
-// Recommended community services — external resources near each team
+// Recommended community services ΓÇö external resources near each team
 // In future this comes from the backend per-team, for now static examples
 const RECOMMENDED_SERVICES = [
   { name: 'Lifeline Australia', type: 'Crisis Support', phone: '13 11 14', url: 'https://www.lifeline.org.au', desc: '24/7 crisis support and suicide prevention' },
@@ -134,7 +134,7 @@ export function TeamDetails() {
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-6 py-12">
         <div className="grid lg:grid-cols-3 gap-12">
-          {/* Left Column — Main */}
+          {/* Left Column ΓÇö Main */}
           <div className="lg:col-span-2 space-y-12">
             {/* About */}
             {team.description && (
@@ -148,11 +148,11 @@ export function TeamDetails() {
             <div>
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-[#1F2937] text-2xl font-bold">Our Services</h2>
-                {/* Emergency mode toggle — placeholder for backend implementation */}
+                {/* Emergency mode toggle ΓÇö placeholder for backend implementation */}
                 <div className="flex items-center gap-2 text-sm text-gray-400">
                   <AlertTriangle className="w-4 h-4" />
                   <span>Emergency mode</span>
-                  <div className="w-10 h-5 bg-gray-200 rounded-full relative cursor-not-allowed" title="Coming soon — toggle to show disaster response services">
+                  <div className="w-10 h-5 bg-gray-200 rounded-full relative cursor-not-allowed" title="Coming soon ΓÇö toggle to show disaster response services">
                     <div className="w-4 h-4 bg-white rounded-full absolute left-0.5 top-0.5 shadow-sm"></div>
                   </div>
                 </div>
@@ -245,7 +245,7 @@ export function TeamDetails() {
 
           </div>
 
-          {/* Right Column — Sidebar */}
+          {/* Right Column ΓÇö Sidebar */}
           <div className="lg:col-span-1">
             <div className="sticky top-24 space-y-6">
               {/* Team Info Card */}
@@ -316,11 +316,11 @@ export function TeamDetails() {
       {/* ====== SERVICE REQUEST BANNER ====== */}
       <ServiceRequestBanner contextName={team.name} teamId={id} pageType="team" />
 
-      {/* ====== RECOMMENDED SERVICES — full width, dark panel, last before footer ====== */}
+      {/* ====== RECOMMENDED SERVICES ΓÇö full width, dark panel, last before footer ====== */}
       <div className="bg-[#1F2937]">
         <div className="max-w-7xl mx-auto px-6 py-10">
           <h3 className="text-white text-lg font-semibold mb-1">Other Services in the Area</h3>
-          <p className="text-gray-400 text-sm mb-5">Trusted community resources — not operated by us.</p>
+          <p className="text-gray-400 text-sm mb-5">Trusted community resources ΓÇö not operated by us.</p>
 
           <div className="divide-y divide-gray-700">
             {RECOMMENDED_SERVICES.map((svc, i) => (
@@ -328,7 +328,7 @@ export function TeamDetails() {
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
                     <span className="text-white font-medium text-sm truncate">{svc.name}</span>
-                    <span className="text-gray-500 text-xs flex-shrink-0">· {svc.type}</span>
+                    <span className="text-gray-500 text-xs flex-shrink-0">┬╖ {svc.type}</span>
                   </div>
                   {svc.phone && <span className="text-gray-400 text-xs">{svc.phone}</span>}
                 </div>

@@ -1,32 +1,23 @@
 import { HeroSection } from '../components/HeroSection';
+import { ConferenceMap } from '../components/ConferenceMap';
 import { ServiceCard } from '../components/ServiceCard';
 import { TeamCard } from '../components/TeamCard';
-import { ConferenceMap } from '../components/ConferenceMap';
 import { Skeleton } from '../components/ui/skeleton';
-import { ClipboardCheck, Users, Heart } from 'lucide-react';
+import { Users } from 'lucide-react';
 import {
   useCMSPage,
   ServicePreview,
-  ProcessStep,
 } from '../hooks/useCMSContent';
 import { useServices } from '../hooks/useServices';
 import { useTeams } from '../hooks/useTeams';
 import { EditableText, EditableRichText } from '../components/editable';
 import { Link } from 'react-router-dom';
 
-const ICON_MAP = { ClipboardCheck, Users, Heart } as const;
-
 const STATIC_SERVICES: ServicePreview[] = [
   { id: 1, name: 'Food Bank Services', descriptionShort: 'Access nutritious food and essential supplies through our community food programs.', location: 'Sydney, NSW', capacity: 200, image: 'https://images.unsplash.com/photo-1759709042164-0dd78a39028b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhdXN0cmFsaWElMjBjb21tdW5pdHklMjBoZWxwfGVufDF8fHx8MTc2NjE5NTgzNHww&ixlib=rb-4.1.0&q=80&w=1080' },
   { id: 2, name: 'Clothing Assistance', descriptionShort: 'Find quality clothing and household items at affordable prices through our op shops.', location: 'Melbourne, VIC', capacity: 150, image: 'https://images.unsplash.com/photo-1711395588577-ed596848b04f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhdXN0cmFsaWElMjB2b2x1bnRlZXIlMjBvdXRiYWNrfGVufDF8fHx8MTc2NjE5NTgzNHww&ixlib=rb-4.1.0&q=80&w=1080' },
   { id: 3, name: 'Counseling & Support', descriptionShort: 'Confidential counseling and emotional support for individuals and families.', location: 'Brisbane, QLD', capacity: 50, image: 'https://images.unsplash.com/photo-1759709042164-0dd78a39028b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzeWRuZXklMjBjb21tdW5pdHklMjBzZXJ2aWNlfGVufDF8fHx8MTc2NjE5NTgzNXww&ixlib=rb-4.1.0&q=80&w=1080' },
   { id: 4, name: 'Emergency Relief', descriptionShort: 'Coordinated support during natural disasters and emergency situations across Australia.', location: 'Perth, WA', capacity: 100, image: 'https://images.unsplash.com/photo-1638769314338-9ba8e1e69465?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhdXN0cmFsaWElMjBjaGFyaXR5JTIwd2FybXxlbnwxfHx8fDE3NjYxOTU4MzV8MA&ixlib=rb-4.1.0&q=80&w=1080' },
-];
-
-const STATIC_STEPS: ProcessStep[] = [
-  { number: '01', icon: 'ClipboardCheck', title: 'Register', description: 'Register your local community and set up your team profile. It only takes a few minutes to get started.' },
-  { number: '02', icon: 'Users', title: 'Build Your Team', description: 'Add team members, assign roles, and describe the services your team provides to the community.' },
-  { number: '03', icon: 'Heart', title: 'Start Serving', description: 'Your team and services go live on the platform. People in your area can discover and connect with you.' },
 ];
 
 function ServiceCardSkeleton(): JSX.Element {
@@ -57,29 +48,24 @@ export function Home(): JSX.Element {
       description: getBlock('services-preview', 'section_description') || 'Explore community support programs across Australia. Each service is run by a local team of dedicated volunteers.',
       data: getJSONBlock<ServicePreview[]>('services-preview', 'services_data', STATIC_SERVICES),
     },
-    process: {
-      label: getBlock('process-steps', 'section_label') || 'List Your Team',
-      title: getBlock('process-steps', 'section_title') || 'Get Your Team on the Platform',
-      description: getBlock('process-steps', 'section_description') || 'Three simple steps to showcase your community service team and connect with your community.',
-      steps: getJSONBlock<ProcessStep[]>('process-steps', 'steps_data', STATIC_STEPS),
-      ctaButton: getBlock('process-steps', 'cta_button') || 'Register Your Team',
-    },
   };
 
   return (
     <div>
-      {/* Hero — Conference Map */}
-      <section className="bg-gradient-to-b from-[#1F2937] to-[#111827] pt-12 pb-16">
+      <HeroSection />
+
+      {/* Conference Map Section */}
+      <section className="bg-gradient-to-b from-[#1F2937] to-[#111827] py-16">
         <div className="max-w-5xl mx-auto px-6">
           <div className="text-center mb-8">
             <p className="text-[#F44314] font-semibold text-sm uppercase tracking-widest mb-3">
-              Here to Serve
+              Browse by Region
             </p>
-            <h1 className="text-white text-4xl md:text-5xl font-bold mb-4">
-              Adventist Community Services
-            </h1>
+            <h2 className="text-white text-3xl md:text-4xl font-bold mb-4">
+              Find Services in Your Area
+            </h2>
             <p className="text-gray-400 max-w-2xl mx-auto text-lg">
-              Find local services across Australia — select your conference below
+              Select your conference to discover local community services
             </p>
           </div>
 
@@ -88,10 +74,7 @@ export function Home(): JSX.Element {
           <div className="text-center">
             <p className="text-sm text-gray-500">
               Grey areas coming soon —{' '}
-              <a 
-                href="mailto:acs@adventist.org.au" 
-                className="text-[#F44314] hover:underline"
-              >
+              <a href="mailto:acs@adventist.org.au" className="text-[#F44314] hover:underline">
                 contact ACS
               </a>{' '}
               to activate your conference
@@ -220,7 +203,6 @@ export function Home(): JSX.Element {
           </div>
         </div>
       </section>
-
 
     </div>
   );

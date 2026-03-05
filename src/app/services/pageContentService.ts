@@ -47,7 +47,9 @@ export interface AllPagesResponse {
  */
 export async function getPageContent(pageId: string): Promise<PageContent | null> {
   try {
-    const response = await fetch(`${API_BASE}/api/page-content/${pageId}`);
+    const response = await fetch(`${API_BASE}/api/page-content/${pageId}`, {
+      credentials: 'include',
+    });
 
     if (!response.ok) {
       if (response.status === 404) {
@@ -69,7 +71,9 @@ export async function getPageContent(pageId: string): Promise<PageContent | null
  */
 export async function getAllPageContent(): Promise<PageContent[]> {
   try {
-    const response = await fetch(`${API_BASE}/api/page-content`);
+    const response = await fetch(`${API_BASE}/api/page-content`, {
+      credentials: 'include',
+    });
 
     if (!response.ok) {
       throw new Error(`Failed to fetch page content: ${response.status}`);

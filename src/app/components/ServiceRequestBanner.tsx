@@ -1,8 +1,8 @@
-import { useState } from 'react';
+﻿import { useState } from 'react';
 import { Lightbulb, Send, Check } from 'lucide-react';
 
 interface ServiceRequestBannerProps {
-  /** Team or service name — used in the placeholder and stored with the submission */
+  /** Team or service name ΓÇö used in the placeholder and stored with the submission */
   contextName?: string;
   /** Team ID to route the feedback to */
   teamId?: string;
@@ -20,7 +20,7 @@ export function ServiceRequestBanner({ contextName, teamId, pageType = 'team' }:
     e.preventDefault();
     if (!request.trim()) return;
 
-    // TODO: POST to backend — store as service request linked to teamId
+    // TODO: POST to backend ΓÇö store as service request linked to teamId
     // For now, log it (Bem will build the endpoint)
     console.log('Service request:', { request, location, teamId, contextName, pageType });
 
@@ -40,7 +40,7 @@ export function ServiceRequestBanner({ contextName, teamId, pageType = 'team' }:
           <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
             <Check className="w-4 h-4 text-green-600" />
           </div>
-          <p className="text-green-800 font-medium text-sm">Thanks — your suggestion has been shared with the team.</p>
+          <p className="text-green-800 font-medium text-sm">Thanks ΓÇö your suggestion has been shared with the team.</p>
         </div>
       </div>
     );

@@ -8,7 +8,7 @@ function DecorativeCircles({ showSmallCircles = false }: { showSmallCircles?: bo
   return (
     <div className="absolute inset-0">
       <div className="absolute top-20 right-20 w-96 h-96 rounded-full bg-white/5 blur-3xl" />
-      <div className="absolute bottom-0 left-0 w-[600px] h-[600px] rounded-full bg-white/10 blur-3xl" />
+      <div className="absolute bottom-0 left-0 w-[600px] h-[600px] rounded-full bg-gray-50 blur-3xl" />
       {showSmallCircles && (
         <>
           <div className="absolute top-1/2 right-1/4 w-2 h-2 rounded-full bg-white/30" />
@@ -33,11 +33,11 @@ function HeroSection({ label, title, subtitle, showSmallCircles = false }: HeroS
         <DecorativeCircles showSmallCircles={showSmallCircles} />
       </div>
       <div className="relative z-10 max-w-4xl mx-auto px-6 py-32 text-center">
-        <p className="text-white/90 text-sm tracking-wider uppercase mb-4">{label}</p>
-        <h1 className="text-white text-5xl md:text-6xl font-bold mb-6 leading-tight">{title}</h1>
+        <p className="text-[#F44314] text-sm font-semibold tracking-wider uppercase mb-4">{label}</p>
+        <h1 className="text-[#1F2937] text-5xl md:text-6xl font-bold mb-6 leading-tight">{title}</h1>
         {subtitle && (
           <p
-            className="text-white/90 text-lg leading-relaxed max-w-3xl mx-auto"
+            className="text-gray-600 text-lg leading-relaxed max-w-3xl mx-auto"
             dangerouslySetInnerHTML={{ __html: subtitle }}
           />
         )}
@@ -57,7 +57,7 @@ function PageWrapper({ children }: { children: React.ReactNode }): JSX.Element {
 function StatusCard({ children }: { children: React.ReactNode }): JSX.Element {
   return (
     <div className="text-center py-16">
-      <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl p-12 max-w-md mx-auto">
+      <div className="bg-white border border-gray-200 shadow-sm rounded-2xl p-12 max-w-md mx-auto">
         {children}
       </div>
     </div>
@@ -122,7 +122,7 @@ export function Churches(): JSX.Element {
         <HeroSection label={heroLabel} title={heroTitle} />
         <div className="max-w-7xl mx-auto px-6 pb-24">
           <StatusCard>
-            <p className="text-white text-lg mb-4">{error}</p>
+            <p className="text-[#1F2937] text-lg mb-4">{error}</p>
             <button
               onClick={() => refetch()}
               className="inline-flex items-center gap-2 bg-white text-[#F44314] px-6 py-3 rounded-xl font-semibold hover:bg-white/90 transition-colors"
@@ -145,8 +145,8 @@ export function Churches(): JSX.Element {
         {/* Filters */}
         <div className="mb-12">
           <div className="flex items-center gap-3 mb-6">
-            <Filter className="w-5 h-5 text-white" />
-            <h2 className="text-white text-2xl font-semibold">Filter Churches</h2>
+            <Filter className="w-5 h-5 text-[#F44314]" />
+            <h2 className="text-[#1F2937] text-2xl font-semibold">Filter Churches</h2>
           </div>
 
           <div className="grid md:grid-cols-2 gap-6">
@@ -162,7 +162,7 @@ export function Churches(): JSX.Element {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search by name, pastor, or ACS coordinator..."
-                className="w-full px-4 py-3 rounded-xl bg-white/10 backdrop-blur-sm border border-white/20 text-white placeholder-white/50 focus:outline-none focus:border-white/40 transition-colors"
+                className="w-full px-4 py-3 rounded-xl bg-white border border-gray-200 shadow-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#F44314] transition-colors"
               />
             </div>
 
@@ -179,10 +179,10 @@ export function Churches(): JSX.Element {
                 id="state"
                 value={selectedState}
                 onChange={(e) => setSelectedState(e.target.value)}
-                className="w-full px-4 py-3 rounded-xl bg-white/10 backdrop-blur-sm border border-white/20 text-white focus:outline-none focus:border-white/40 transition-colors"
+                className="w-full px-4 py-3 rounded-xl bg-white border border-gray-200 shadow-sm text-gray-900 focus:outline-none focus:border-[#F44314] transition-colors"
               >
                 {states.map((state) => (
-                  <option key={state} value={state} className="bg-[#F44314] text-white">
+                  <option key={state} value={state} className="bg-white text-gray-900">
                     {state}
                   </option>
                 ))}
@@ -194,7 +194,7 @@ export function Churches(): JSX.Element {
           <div className="mt-6">
             <p className="text-white/80">
               Showing{' '}
-              <span className="font-semibold text-white">{filteredChurches.length}</span> church
+              <span className="font-semibold text-[#F44314]">{filteredChurches.length}</span> church
               {filteredChurches.length !== 1 ? 'es' : ''}
               {selectedState !== 'All States' && ` in ${selectedState}`}
               {searchQuery && ` matching "${searchQuery}"`}
@@ -211,8 +211,8 @@ export function Churches(): JSX.Element {
           </div>
         ) : (
           <StatusCard>
-            <p className="text-white text-lg mb-2">No churches found</p>
-            <p className="text-white/70 text-sm">
+            <p className="text-[#1F2937] text-lg mb-2">No churches found</p>
+            <p className="text-gray-600 text-sm">
               Try adjusting your filters to find churches in other states or with different search
               terms.
             </p>

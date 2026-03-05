@@ -42,14 +42,14 @@ export function Services(): JSX.Element {
     SERVICE_TYPES.forEach(type => { typeCounts[type.value] = 0; });
 
     services.forEach(service => {
-      const sType = service.type || service.category;
+      const sType = service.type;
       if (sType && typeCounts[sType] !== undefined) {
         typeCounts[sType]++;
       }
     });
 
     const filtered = services.filter(service => {
-      const typeMatch = !selectedType || service.type === selectedType || service.category === selectedType;
+      const typeMatch = !selectedType || service.type === selectedType;
       const searchMatch = !searchQuery ||
         service.name.toLowerCase().includes(searchLower) ||
         (service.descriptionShort && service.descriptionShort.toLowerCase().includes(searchLower)) ||

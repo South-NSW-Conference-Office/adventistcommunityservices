@@ -17,7 +17,7 @@ import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { EditModeProvider } from './contexts/EditModeContext';
 import { EditModeFloatingButton, EditModeSaveBar } from './components/editable';
 import { Toaster } from './components/ui/sonner';
-// import { Loader2 } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
 
 function AppContent() {
   const { isAuthenticated, logout } = useAuth();
@@ -36,6 +36,10 @@ function AppContent() {
         <Route path="/teams" element={<Teams />} />
         <Route path="/teams/:id" element={<TeamDetails />} />
         <Route path="/contact" element={<Contact />} />
+        <Route path="/preview/:token" element={<Preview />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
+        <Route path="/coming-soon" element={<ComingSoon />} />
       </Routes>
 
       {/* Edit Mode UI */}

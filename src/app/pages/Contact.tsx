@@ -22,7 +22,7 @@ interface ImageMasonryProps {
   layout: ImageLayoutConfig[];
 }
 
-const INPUT_CLASS = 'w-full px-4 py-3 rounded-lg bg-white/10 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:border-white/40 transition-colors';
+const INPUT_CLASS = 'w-full px-4 py-3 rounded-lg bg-gray-50 border border-gray-200 text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#F44314] transition-colors';
 const TEXTAREA_CLASS = `${INPUT_CLASS} resize-none`;
 const SELECT_OPTION_CLASS = 'bg-[#F44314]';
 
@@ -31,7 +31,7 @@ function getFormTypeButtonClass(isActive: boolean): string {
   if (isActive) {
     return `${baseClass} bg-white text-[#F44314]`;
   }
-  return `${baseClass} bg-white/10 border border-white/20 text-white hover:bg-white/20`;
+  return `${baseClass} bg-gray-50 border border-gray-200 text-gray-700 hover:bg-gray-100`;
 }
 
 const STATIC_DATA = {
@@ -221,7 +221,7 @@ export function Contact(): JSX.Element {
   const imageLayout = isContact ? contactImageLayout : volunteerImageLayout;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#F44314] via-[#F97023] to-[#F98344]">
+    <div className="min-h-screen bg-white">
       {/* Hero Section */}
       <div className="relative min-h-[600px] flex items-center justify-center overflow-hidden">
         {/* Gradient Background with decorative circles */}
@@ -244,7 +244,7 @@ export function Contact(): JSX.Element {
             blockKey="section_label"
             content={cms.hero.label}
             fallback="Contact Us"
-            className="text-white/90 text-sm tracking-wider uppercase mb-4"
+            className="text-[#F44314] text-sm font-semibold tracking-wider uppercase mb-4"
             as="p"
           />
           <EditableText
@@ -253,7 +253,7 @@ export function Contact(): JSX.Element {
             blockKey="title"
             content={cms.hero.title}
             fallback="Get In Touch"
-            className="text-white text-5xl md:text-6xl font-bold mb-6 leading-tight"
+            className="text-[#1F2937] text-5xl md:text-6xl font-bold mb-6 leading-tight"
             as="h1"
           />
           <div className="max-w-3xl mx-auto">
@@ -263,7 +263,7 @@ export function Contact(): JSX.Element {
               blockKey="description_1"
               content={cms.hero.description1}
               fallback="We'd love to hear from you. Whether you have questions about our services, want to connect with a local team, or are interested in volunteering, we're here for you."
-              className="text-white/90 text-lg mb-4 leading-relaxed"
+              className="text-gray-600 text-lg mb-4 leading-relaxed"
             />
             <EditableRichText
               pageId="contact"
@@ -271,7 +271,7 @@ export function Contact(): JSX.Element {
               blockKey="description_2"
               content={cms.hero.description2}
               fallback="Our team is committed to responding to all inquiries promptly and connecting you with the right resources. Reach out today and become part of our community making a difference across Australia."
-              className="text-white/80 mb-10 leading-relaxed"
+              className="text-gray-700 mb-10 leading-relaxed"
             />
           </div>
 
@@ -306,7 +306,7 @@ export function Contact(): JSX.Element {
                   blockKey="title"
                   content={cms.contactInfo.title}
                   fallback="Contact Information"
-                  className="text-white text-2xl font-semibold mb-6"
+                  className="text-[#1F2937] text-2xl font-semibold mb-6"
                   as="h3"
                 />
                 <EditableRichText
@@ -315,7 +315,7 @@ export function Contact(): JSX.Element {
                   blockKey="description"
                   content={cms.contactInfo.description}
                   fallback="Our offices are open to assist you with any inquiries, whether you have questions about our services, want to connect with a team, or are interested in what we offer."
-                  className="text-white/80 mb-8"
+                  className="text-gray-700 mb-8"
                 />
               </>
             ) : (
@@ -326,7 +326,7 @@ export function Contact(): JSX.Element {
                   blockKey="title"
                   content={cms.volunteerInfo.title}
                   fallback="Why Volunteer With Us?"
-                  className="text-white text-2xl font-semibold mb-6"
+                  className="text-[#1F2937] text-2xl font-semibold mb-6"
                   as="h3"
                 />
                 <EditableRichText
@@ -335,7 +335,7 @@ export function Contact(): JSX.Element {
                   blockKey="description"
                   content={cms.volunteerInfo.description}
                   fallback="Join a community of passionate individuals making a real difference across Australia."
-                  className="text-white/80 mb-8"
+                  className="text-gray-700 mb-8"
                 />
               </>
             )}
@@ -344,12 +344,12 @@ export function Contact(): JSX.Element {
 
           {/* Contact Form */}
           <div>
-            <h3 className="text-white text-2xl font-semibold mb-6">
+            <h3 className="text-[#1F2937] text-2xl font-semibold mb-6">
               {isContact ? 'Send us a message' : 'Volunteer Application'}
             </h3>
             <form className="space-y-6" onSubmit={handleSubmit}>
               <div>
-                <label htmlFor="name" className="block text-white/90 text-sm mb-2">Full Name</label>
+                <label htmlFor="name" className="block text-gray-700 text-sm mb-2">Full Name</label>
                 <input
                   type="text"
                   id="name"
@@ -362,7 +362,7 @@ export function Contact(): JSX.Element {
               </div>
 
               <div>
-                <label htmlFor="email" className="block text-white/90 text-sm mb-2">Email Address</label>
+                <label htmlFor="email" className="block text-gray-700 text-sm mb-2">Email Address</label>
                 <input
                   type="email"
                   id="email"
@@ -375,7 +375,7 @@ export function Contact(): JSX.Element {
               </div>
 
               <div>
-                <label htmlFor="phone" className="block text-white/90 text-sm mb-2">Phone Number</label>
+                <label htmlFor="phone" className="block text-gray-700 text-sm mb-2">Phone Number</label>
                 <input
                   type="tel"
                   id="phone"
@@ -390,7 +390,7 @@ export function Contact(): JSX.Element {
               {isContact ? (
                 <>
                   <div>
-                    <label htmlFor="subject" className="block text-white/90 text-sm mb-2">Subject</label>
+                    <label htmlFor="subject" className="block text-gray-700 text-sm mb-2">Subject</label>
                     <input
                       type="text"
                       id="subject"
@@ -403,7 +403,7 @@ export function Contact(): JSX.Element {
                   </div>
 
                   <div>
-                    <label htmlFor="message" className="block text-white/90 text-sm mb-2">Message</label>
+                    <label htmlFor="message" className="block text-gray-700 text-sm mb-2">Message</label>
                     <textarea
                       id="message"
                       name="message"
@@ -418,7 +418,7 @@ export function Contact(): JSX.Element {
               ) : (
                 <>
                   <div>
-                    <label htmlFor="availability" className="block text-white/90 text-sm mb-2">Availability</label>
+                    <label htmlFor="availability" className="block text-gray-700 text-sm mb-2">Availability</label>
                     <select
                       id="availability"
                       name="availability"
@@ -434,7 +434,7 @@ export function Contact(): JSX.Element {
                   </div>
 
                   <div>
-                    <label htmlFor="interests" className="block text-white/90 text-sm mb-2">Areas of Interest</label>
+                    <label htmlFor="interests" className="block text-gray-700 text-sm mb-2">Areas of Interest</label>
                     <select
                       id="interests"
                       name="interests"
@@ -452,7 +452,7 @@ export function Contact(): JSX.Element {
                   </div>
 
                   <div>
-                    <label htmlFor="experience" className="block text-white/90 text-sm mb-2">Relevant Experience (Optional)</label>
+                    <label htmlFor="experience" className="block text-gray-700 text-sm mb-2">Relevant Experience (Optional)</label>
                     <textarea
                       id="experience"
                       name="experience"
@@ -463,7 +463,7 @@ export function Contact(): JSX.Element {
                   </div>
 
                   <div>
-                    <label htmlFor="motivation" className="block text-white/90 text-sm mb-2">Why do you want to volunteer with us?</label>
+                    <label htmlFor="motivation" className="block text-gray-700 text-sm mb-2">Why do you want to volunteer with us?</label>
                     <textarea
                       id="motivation"
                       name="motivation"
@@ -478,7 +478,7 @@ export function Contact(): JSX.Element {
               )}
 
               {submitSuccess && (
-                <div className="p-4 rounded-lg bg-green-500/20 border border-green-500/40 text-white">
+                <div className="p-4 rounded-lg bg-green-50 border border-green-200 text-green-800">
                   {isContact
                     ? 'Your message has been sent successfully! We will get back to you soon.'
                     : 'Your volunteer application has been submitted successfully! We will review it and get back to you soon.'}
@@ -486,7 +486,7 @@ export function Contact(): JSX.Element {
               )}
 
               {submitError && (
-                <div className="p-4 rounded-lg bg-red-500/20 border border-red-500/40 text-white">
+                <div className="p-4 rounded-lg bg-red-50 border border-red-200 text-red-800">
                   {submitError}
                 </div>
               )}

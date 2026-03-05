@@ -59,33 +59,24 @@ interface TestimonialCardProps {
 
 function TestimonialCard({ testimonial }: TestimonialCardProps): JSX.Element {
   return (
-    <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl p-6 hover:bg-white/15 transition-all duration-300 shadow-lg relative overflow-hidden group">
-      <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700">
-        <div
-          className="absolute inset-0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 ease-in-out"
-          style={{
-            background: 'linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent)',
-            width: '50%',
-          }}
-        />
-      </div>
-      <div className="flex items-center gap-4 mb-4 relative z-10">
+    <div className="bg-white border border-gray-200 rounded-2xl p-6 hover:shadow-md transition-all duration-300 shadow-sm">
+      <div className="flex items-center gap-4 mb-4">
         <img
           src={testimonial.image}
           alt={testimonial.name}
-          className="w-16 h-16 rounded-full object-cover border-2 border-white/30"
+          className="w-16 h-16 rounded-full object-cover border-2 border-gray-200"
         />
         <div>
-          <h4 className="text-white font-semibold">{testimonial.name}</h4>
-          <p className="text-white/60 text-sm">{testimonial.location}</p>
+          <h4 className="text-[#1F2937] font-semibold">{testimonial.name}</h4>
+          <p className="text-gray-500 text-sm">{testimonial.location}</p>
         </div>
       </div>
-      <div className="mb-4 relative z-10">
-        <svg className="w-10 h-10 text-white/40" fill="currentColor" viewBox="0 0 24 24">
+      <div className="mb-4">
+        <svg className="w-10 h-10 text-[#F44314]/30" fill="currentColor" viewBox="0 0 24 24">
           <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" />
         </svg>
       </div>
-      <p className="text-white/90 leading-relaxed relative z-10">{testimonial.review}</p>
+      <p className="text-gray-700 leading-relaxed">{testimonial.review}</p>
     </div>
   );
 }
@@ -133,7 +124,7 @@ export function About(): JSX.Element {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#F44314] via-[#F97023] to-[#F98344]">
+    <div className="min-h-screen bg-white">
       {/* Hero Image Section */}
       {isSectionEnabled('hero') && (
         <div className="relative h-[500px] overflow-hidden">
@@ -145,7 +136,7 @@ export function About(): JSX.Element {
             alt="Community helping together"
             className="w-full h-full object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/20 via-30% via-transparent via-70% to-[#F44314]" />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/30 to-black/60" />
           <div className="absolute bottom-0 left-0 right-0 pb-12">
             <div className="max-w-7xl mx-auto px-6">
               <EditableText
@@ -191,7 +182,7 @@ export function About(): JSX.Element {
               blockKey="paragraph_1"
               content={cms.whatIsAcs.paragraph1}
               fallback="As the official humanitarian arm of the Seventh-day Adventist Church in Australia, we operate community centres and programs in cities and towns throughout the country. Our services include emergency relief, food banks, clothing assistance, budgeting support, and personal care programs."
-              className="text-white/80 mb-6 leading-relaxed"
+              className="text-gray-700 mb-6 leading-relaxed"
             />
             <EditableRichText
               pageId="about"
@@ -199,7 +190,7 @@ export function About(): JSX.Element {
               blockKey="paragraph_2"
               content={cms.whatIsAcs.paragraph2}
               fallback="We believe everyone deserves dignity, respect, and access to quality community services. Through our network of dedicated staff and volunteers, we serve thousands of Australians each year, building stronger, more resilient communities."
-              className="text-white/80 leading-relaxed"
+              className="text-gray-700 leading-relaxed"
             />
           </div>
         </div>
@@ -232,7 +223,7 @@ export function About(): JSX.Element {
                 blockKey="title"
                 content={cms.story.title}
                 fallback="Our Story"
-                className="text-white text-3xl font-bold mb-4"
+                className="text-[#1F2937] text-3xl font-bold mb-4"
                 as="h3"
               />
               <EditableRichText
@@ -241,7 +232,7 @@ export function About(): JSX.Element {
                 blockKey="paragraph_1"
                 content={cms.story.paragraph1}
                 fallback="For decades, Australia's Adventist Community Service has been a beacon of hope in communities across the nation. What started as a small volunteer effort has grown into a comprehensive network of services reaching thousands of Australians each year."
-                className="text-white/80 mb-4"
+                className="text-gray-700 mb-4"
               />
               <EditableRichText
                 pageId="about"
@@ -249,7 +240,7 @@ export function About(): JSX.Element {
                 blockKey="paragraph_2"
                 content={cms.story.paragraph2}
                 fallback="Our dedicated team of staff and volunteers work tirelessly to provide food, clothing, emergency relief, and emotional support to communities across Australia. We believe in practical service that empowers long-term positive change."
-                className="text-white/80 mb-4"
+                className="text-gray-700 mb-4"
               />
               <EditableRichText
                 pageId="about"
@@ -257,7 +248,7 @@ export function About(): JSX.Element {
                 blockKey="paragraph_3"
                 content={cms.story.paragraph3}
                 fallback="Every day, we witness the transformative power of community support and the resilience of the human spirit."
-                className="text-white/80 mb-12"
+                className="text-gray-700 mb-12"
               />
 
               {isSectionEnabled('mission') && (
@@ -268,7 +259,7 @@ export function About(): JSX.Element {
                     blockKey="title"
                     content={cms.mission.title}
                     fallback="Our Mission"
-                    className="text-white text-3xl font-bold mb-4"
+                    className="text-[#1F2937] text-3xl font-bold mb-4"
                     as="h3"
                   />
                   <EditableRichText
@@ -277,7 +268,7 @@ export function About(): JSX.Element {
                     blockKey="content"
                     content={cms.mission.content}
                     fallback="Australia's Adventist Community Service exists to demonstrate God's love through practical service to all people, regardless of race, religion, gender or nationality."
-                    className="text-white/80"
+                    className="text-gray-700"
                   />
                 </>
               )}
@@ -295,7 +286,7 @@ export function About(): JSX.Element {
             blockKey="section_title"
             content={cms.values.title}
             fallback="Our Values"
-            className="text-white text-4xl font-bold text-center mb-4"
+            className="text-[#1F2937] text-4xl font-bold text-center mb-4"
             as="h2"
           />
           <EditableRichText
@@ -304,18 +295,18 @@ export function About(): JSX.Element {
             blockKey="section_description"
             content={cms.values.description}
             fallback="The principles that guide everything we do."
-            className="text-white/70 text-center max-w-2xl mx-auto mb-12"
+            className="text-gray-600 text-center max-w-2xl mx-auto mb-12"
           />
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             {cms.values.data.map((value, index) => {
               const IconComponent = VALUE_ICONS[value.icon] || Heart;
               return (
                 <div key={index} className="text-center">
-                  <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-[#F44314] to-[#F97023] rounded-full mb-4">
-                    <IconComponent className="w-8 h-8 text-white" />
+                  <div className="inline-flex items-center justify-center w-16 h-16 bg-[#F44314]/10 rounded-full mb-4">
+                    <IconComponent className="w-8 h-8 text-[#F44314]" />
                   </div>
-                  <h3 className="text-white font-semibold mb-2">{value.title}</h3>
-                  <p className="text-white/70 text-sm">{value.description}</p>
+                  <h3 className="text-[#1F2937] font-semibold mb-2">{value.title}</h3>
+                  <p className="text-gray-500 text-sm">{value.description}</p>
                 </div>
               );
             })}
@@ -332,7 +323,7 @@ export function About(): JSX.Element {
             blockKey="section_title"
             content={cms.team.title}
             fallback="Meet Our Team"
-            className="text-white text-4xl font-bold text-center mb-4"
+            className="text-[#1F2937] text-4xl font-bold text-center mb-4"
             as="h2"
           />
           <EditableRichText
@@ -341,7 +332,7 @@ export function About(): JSX.Element {
             blockKey="section_description"
             content={cms.team.description}
             fallback="Our passionate team of professionals and volunteers are committed to making a difference in communities across Australia."
-            className="text-white/70 text-center max-w-2xl mx-auto mb-12"
+            className="text-gray-600 text-center max-w-2xl mx-auto mb-12"
           />
           <div className="grid md:grid-cols-3 gap-8">
             {cms.team.members.map((member, index) => (
@@ -351,9 +342,9 @@ export function About(): JSX.Element {
                   alt={member.title}
                   className="w-48 h-48 rounded-full object-cover mx-auto mb-4 shadow-lg"
                 />
-                <h3 className="text-white font-semibold text-xl mb-1">{member.title}</h3>
-                <p className="text-white/70 text-sm mb-2">{member.department}</p>
-                <p className="text-white/60 text-sm">{member.description}</p>
+                <h3 className="text-[#1F2937] font-semibold text-xl mb-1">{member.title}</h3>
+                <p className="text-gray-500 text-sm mb-2">{member.department}</p>
+                <p className="text-gray-500 text-sm">{member.description}</p>
               </div>
             ))}
           </div>
@@ -369,7 +360,7 @@ export function About(): JSX.Element {
             blockKey="section_title"
             content={cms.testimonials.title}
             fallback="Hear from Our Volunteers"
-            className="text-white text-4xl font-bold text-center mb-4"
+            className="text-[#1F2937] text-4xl font-bold text-center mb-4"
             as="h2"
           />
           <EditableRichText
@@ -378,7 +369,7 @@ export function About(): JSX.Element {
             blockKey="section_description"
             content={cms.testimonials.description}
             fallback="Read about the experiences of our dedicated volunteers and how they are making a difference in their communities."
-            className="text-white/70 text-center max-w-2xl mx-auto mb-12"
+            className="text-gray-600 text-center max-w-2xl mx-auto mb-12"
           />
           <ResponsiveMasonry columnsCountBreakPoints={{ 350: 1, 750: 2, 900: 3 }}>
             <Masonry gutter="24px">
