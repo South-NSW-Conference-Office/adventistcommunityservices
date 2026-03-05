@@ -30,7 +30,7 @@ const DEFAULT_CHURCH_IMAGE =
   'https://images.unsplash.com/photo-1438032005730-c779502df39b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080';
 
 const GRADIENT_BG = 'min-h-screen bg-gradient-to-br from-[#F44314] via-[#F97023] to-[#F98344]';
-const CARD_STYLES = 'bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl p-4';
+const CARD_STYLES = 'bg-white border border-gray-200 shadow-sm rounded-xl p-4';
 
 const OUTREACH_LABELS: Record<OutreachFocusType, string> = {
   food_assistance: 'Food Assistance',
@@ -60,16 +60,7 @@ function pluralize(count: number, singular: string, plural: string): string {
 }
 
 function getWebsiteUrl(website: string): string {
-  const url = website.startsWith('http') ? website : `https://${website}`;
-  try {
-    const parsed = new URL(url);
-    if (!['http:', 'https:'].includes(parsed.protocol)) {
-      return '#';
-    }
-    return parsed.toString();
-  } catch {
-    return '#';
-  }
+  return website.startsWith('http') ? website : `https://${website}`;
 }
 
 interface InfoCardProps {
@@ -100,8 +91,8 @@ function ServiceTimeCard({ icon, label, service }: ServiceTimeCardProps): JSX.El
   const timeDisplay = service.day ? `${service.day} ${service.time || 'Contact for time'}` : service.time || 'Contact for time';
   return (
     <InfoCard icon={icon} label={label}>
-      <p className="text-white text-lg font-semibold">{timeDisplay}</p>
-      {service.description && <p className="text-white/70 text-sm mt-1">{service.description}</p>}
+      <p className="text-[#1F2937] text-lg font-semibold">{timeDisplay}</p>
+      {service.description && <p className="text-gray-600 text-sm mt-1">{service.description}</p>}
     </InfoCard>
   );
 }
@@ -120,13 +111,13 @@ function LeadershipCard({ title, leader, icon: Icon, highlight = false }: Leader
         <Icon className={`w-4 h-4 ${highlight ? 'text-orange-400' : ''}`} />
         <span>{title}</span>
       </div>
-      <p className="text-white font-medium mb-2">{leader.name}</p>
-      {leader.title && <p className="text-white/60 text-sm mb-2">{leader.title}</p>}
+      <p className="text-[#1F2937] font-medium mb-2">{leader.name}</p>
+      {leader.title && <p className="text-gray-500 text-sm mb-2">{leader.title}</p>}
       <div className="space-y-1">
         {leader.phone && (
           <a
             href={`tel:${leader.phone}`}
-            className="flex items-center gap-2 text-white/70 text-sm hover:text-white transition-colors"
+            className="flex items-center gap-2 text-gray-500 text-sm hover:text-[#F44314] transition-colors"
           >
             <Phone className="w-3 h-3" />
             {leader.phone}
@@ -135,7 +126,7 @@ function LeadershipCard({ title, leader, icon: Icon, highlight = false }: Leader
         {leader.email && (
           <a
             href={`mailto:${leader.email}`}
-            className="flex items-center gap-2 text-white/70 text-sm hover:text-white transition-colors"
+            className="flex items-center gap-2 text-gray-500 text-sm hover:text-[#F44314] transition-colors"
           >
             <Mail className="w-3 h-3" />
             <span className="truncate">{leader.email}</span>
@@ -155,8 +146,8 @@ interface PageStateProps {
 function PageState({ message, showRefresh, onRefresh }: PageStateProps): JSX.Element {
   return (
     <div className={`${GRADIENT_BG} flex items-center justify-center px-6`}>
-      <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl p-12 max-w-md text-center">
-        <p className="text-white text-xl mb-4">{message}</p>
+      <div className="bg-white border border-gray-200 shadow-sm rounded-2xl p-12 max-w-md text-center">
+        <p className="text-[#1F2937] text-xl mb-4">{message}</p>
         <div className="flex flex-col gap-3">
           {showRefresh && onRefresh && (
             <button
@@ -169,7 +160,7 @@ function PageState({ message, showRefresh, onRefresh }: PageStateProps): JSX.Ele
           )}
           <Link
             to="/churches"
-            className="inline-flex items-center justify-center gap-2 text-white/90 hover:text-white transition-colors"
+            className="inline-flex items-center justify-center gap-2 text-gray-600 hover:text-[#F44314] transition-colors"
           >
             <ArrowLeft className="w-5 h-5" />
             Back to Churches
@@ -194,12 +185,12 @@ function ContactItem({ icon: Icon, label, value, href, external }: ContactItemPr
       href={href}
       target={external ? '_blank' : undefined}
       rel={external ? 'noopener noreferrer' : undefined}
-      className="text-white hover:text-white/80 transition-colors break-all"
+      className="text-[#F44314] hover:text-[#d93a10] transition-colors break-all"
     >
       {value}
     </a>
   ) : (
-    <p className="text-white">{value}</p>
+    <p className="text-[#1F2937]">{value}</p>
   );
 
   return (
@@ -222,8 +213,8 @@ interface StatItemProps {
 function StatItem({ count, singular, plural }: StatItemProps): JSX.Element {
   return (
     <div className="text-center">
-      <p className="text-white text-3xl font-bold">{count}</p>
-      <p className="text-white/70 text-sm">{pluralize(count, singular, plural)}</p>
+      <p className="text-[#1F2937] text-3xl font-bold">{count}</p>
+      <p className="text-gray-600 text-sm">{pluralize(count, singular, plural)}</p>
     </div>
   );
 }
@@ -304,7 +295,7 @@ export function ChurchDetails(): JSX.Element {
           <div className="max-w-7xl mx-auto px-6">
             <button
               onClick={() => navigate('/churches')}
-              className="flex items-center gap-2 text-white/90 hover:text-white transition-colors bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full border border-white/20"
+              className="flex items-center gap-2 text-gray-600 hover:text-[#F44314] transition-colors bg-white border border-gray-200 shadow-sm-sm px-4 py-2 rounded-full border border-gray-200"
             >
               <ArrowLeft className="w-5 h-5" />
               Back to Churches
@@ -315,7 +306,7 @@ export function ChurchDetails(): JSX.Element {
         {/* Title Overlay */}
         <div className="absolute bottom-0 left-0 right-0 pb-12">
           <div className="max-w-7xl mx-auto px-6">
-            <h1 className="text-white text-5xl font-bold mb-4">{church.name}</h1>
+            <h1 className="text-[#1F2937] text-5xl font-bold mb-4">{church.name}</h1>
             <div className="flex flex-wrap items-center gap-4 text-white/90">
               <div className="flex items-center gap-2">
                 <MapPin className="w-5 h-5" />
@@ -344,7 +335,7 @@ export function ChurchDetails(): JSX.Element {
             {/* Service Times */}
             {hasServiceTimes && (
               <div>
-                <h2 className="text-white text-3xl font-semibold mb-4">Service Times</h2>
+                <h2 className="text-[#1F2937] text-3xl font-semibold mb-4">Service Times</h2>
                 <div className="grid md:grid-cols-2 gap-4">
                   {sabbathSchool && <ServiceTimeCard icon={Clock} label="Sabbath School" service={sabbathSchool} />}
                   {worship && <ServiceTimeCard icon={Clock} label="Worship Service" service={worship} />}
@@ -353,13 +344,13 @@ export function ChurchDetails(): JSX.Element {
                 </div>
                 {specialServices.length > 0 && (
                   <div className="mt-4">
-                    <h3 className="text-white text-xl font-semibold mb-3">Special Services</h3>
+                    <h3 className="text-[#1F2937] text-xl font-semibold mb-3">Special Services</h3>
                     <div className="space-y-2">
                       {specialServices.map((service, index) => (
                         <div key={index} className={CARD_STYLES}>
-                          <p className="text-white font-medium">{service.name}</p>
-                          {service.schedule && <p className="text-white/70 text-sm">{service.schedule}</p>}
-                          {service.description && <p className="text-white/60 text-sm mt-1">{service.description}</p>}
+                          <p className="text-[#1F2937] font-medium">{service.name}</p>
+                          {service.schedule && <p className="text-gray-600 text-sm">{service.schedule}</p>}
+                          {service.description && <p className="text-gray-500 text-sm mt-1">{service.description}</p>}
                         </div>
                       ))}
                     </div>
@@ -371,12 +362,12 @@ export function ChurchDetails(): JSX.Element {
             {/* Facilities */}
             {hasFacilities && (
               <div>
-                <h2 className="text-white text-3xl font-semibold mb-4">Our Facilities</h2>
+                <h2 className="text-[#1F2937] text-3xl font-semibold mb-4">Our Facilities</h2>
                 <div className="grid md:grid-cols-2 gap-4">
                   {sanctuary && (
                     <InfoCard icon={Building2} label="Sanctuary">
                       {sanctuary.capacity && (
-                        <p className="text-white text-lg font-semibold">{sanctuary.capacity} seats</p>
+                        <p className="text-[#1F2937] text-lg font-semibold">{sanctuary.capacity} seats</p>
                       )}
                       <div className="flex flex-wrap gap-2 mt-2">
                         {sanctuary.hasAV && (
@@ -394,20 +385,20 @@ export function ChurchDetails(): JSX.Element {
                   )}
                   {classrooms.length > 0 && (
                     <InfoCard icon={Users} label="Classrooms">
-                      <p className="text-white text-lg font-semibold">{classrooms.length} rooms available</p>
+                      <p className="text-[#1F2937] text-lg font-semibold">{classrooms.length} rooms available</p>
                     </InfoCard>
                   )}
                   {kitchen?.available && (
                     <InfoCard icon={Utensils} label="Kitchen">
-                      <p className="text-white text-lg font-semibold">Available</p>
-                      {kitchen.capacity && <p className="text-white/70 text-sm">Capacity: {kitchen.capacity}</p>}
+                      <p className="text-[#1F2937] text-lg font-semibold">Available</p>
+                      {kitchen.capacity && <p className="text-gray-600 text-sm">Capacity: {kitchen.capacity}</p>}
                     </InfoCard>
                   )}
                   {parking && (parking.spaces || parking.handicapSpaces) && (
                     <InfoCard icon={Car} label="Parking">
-                      {parking.spaces && <p className="text-white text-lg font-semibold">{parking.spaces} spaces</p>}
+                      {parking.spaces && <p className="text-[#1F2937] text-lg font-semibold">{parking.spaces} spaces</p>}
                       {parking.handicapSpaces && (
-                        <p className="text-white/70 text-sm">{parking.handicapSpaces} handicap spaces</p>
+                        <p className="text-gray-600 text-sm">{parking.handicapSpaces} handicap spaces</p>
                       )}
                     </InfoCard>
                   )}
@@ -417,7 +408,7 @@ export function ChurchDetails(): JSX.Element {
                     {otherFacilities.map((facility, index) => (
                       <span
                         key={index}
-                        className="px-3 py-1 rounded-full text-sm bg-white/10 text-white/90 border border-white/20"
+                        className="px-3 py-1 rounded-full text-sm bg-gray-50 text-white/90 border border-gray-200"
                       >
                         {facility}
                       </span>
@@ -430,7 +421,7 @@ export function ChurchDetails(): JSX.Element {
             {/* Leadership */}
             {hasLeadership && (
               <div>
-                <h2 className="text-white text-3xl font-semibold mb-4">Leadership Team</h2>
+                <h2 className="text-[#1F2937] text-3xl font-semibold mb-4">Leadership Team</h2>
                 <div className="grid md:grid-cols-2 gap-4">
                   {pastors.map((pastor, index) => (
                     <LeadershipCard
@@ -453,10 +444,10 @@ export function ChurchDetails(): JSX.Element {
             {/* Outreach */}
             {hasOutreach && (
               <div>
-                <h2 className="text-white text-3xl font-semibold mb-4">Community Outreach</h2>
+                <h2 className="text-[#1F2937] text-3xl font-semibold mb-4">Community Outreach</h2>
                 {outreachFocus.length > 0 && (
                   <div className="mb-4">
-                    <h3 className="text-white/90 text-lg font-medium mb-3">Focus Areas</h3>
+                    <h3 className="text-gray-600 text-lg font-medium mb-3">Focus Areas</h3>
                     <div className="flex flex-wrap gap-2">
                       {outreachFocus.map((focus, index) => (
                         <span
@@ -471,13 +462,13 @@ export function ChurchDetails(): JSX.Element {
                 )}
                 {serviceArea && (
                   <div className={CARD_STYLES}>
-                    <h3 className="text-white/90 text-lg font-medium mb-2">Service Area</h3>
+                    <h3 className="text-gray-600 text-lg font-medium mb-2">Service Area</h3>
                     {serviceArea.radius && <p className="text-white/70">Serving within {serviceArea.radius} miles</p>}
                     {serviceArea.communities && serviceArea.communities.length > 0 && (
-                      <p className="text-white/70 mt-1">Communities: {serviceArea.communities.join(', ')}</p>
+                      <p className="text-gray-600 mt-1">Communities: {serviceArea.communities.join(', ')}</p>
                     )}
                     {serviceArea.specialPopulations && serviceArea.specialPopulations.length > 0 && (
-                      <p className="text-white/70 mt-1">Special focus: {serviceArea.specialPopulations.join(', ')}</p>
+                      <p className="text-gray-600 mt-1">Special focus: {serviceArea.specialPopulations.join(', ')}</p>
                     )}
                   </div>
                 )}
@@ -489,8 +480,8 @@ export function ChurchDetails(): JSX.Element {
           <div className="lg:col-span-1">
             <div className="sticky top-24 space-y-6">
               {/* Contact Information */}
-              <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl p-6">
-                <h3 className="text-white text-xl font-semibold mb-4">Contact Information</h3>
+              <div className="bg-white border border-gray-200 shadow-sm rounded-2xl p-6">
+                <h3 className="text-[#1F2937] text-xl font-semibold mb-4">Contact Information</h3>
                 <div className="space-y-4">
                   <ContactItem icon={MapPin} label="Address" value={address} />
                   <ContactItem
@@ -508,8 +499,8 @@ export function ChurchDetails(): JSX.Element {
 
               {/* Statistics */}
               {(teamCount > 0 || serviceCount > 0) && (
-                <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl p-6">
-                  <h3 className="text-white text-xl font-semibold mb-4">At a Glance</h3>
+                <div className="bg-white border border-gray-200 shadow-sm rounded-2xl p-6">
+                  <h3 className="text-[#1F2937] text-xl font-semibold mb-4">At a Glance</h3>
                   <div className="grid grid-cols-2 gap-4">
                     {teamCount > 0 && <StatItem count={teamCount} singular="Team" plural="Teams" />}
                     {serviceCount > 0 && <StatItem count={serviceCount} singular="Service" plural="Services" />}
@@ -532,7 +523,7 @@ export function ChurchDetails(): JSX.Element {
                     href={getWebsiteUrl(website)}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-full block bg-white/10 backdrop-blur-sm border border-white/20 text-white text-center py-4 rounded-xl font-semibold hover:bg-white/20 transition-colors"
+                    className="w-full block bg-white border border-gray-200 shadow-sm text-gray-700 text-center py-4 rounded-xl font-semibold hover:bg-white/20 transition-colors"
                   >
                     Visit Website
                   </a>
@@ -542,7 +533,7 @@ export function ChurchDetails(): JSX.Element {
                     href={`https://www.google.com/maps/search/?api=1&query=${church.location.coordinates.latitude},${church.location.coordinates.longitude}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-full block bg-white/10 backdrop-blur-sm border border-white/20 text-white text-center py-4 rounded-xl font-semibold hover:bg-white/20 transition-colors"
+                    className="w-full block bg-white border border-gray-200 shadow-sm text-gray-700 text-center py-4 rounded-xl font-semibold hover:bg-white/20 transition-colors"
                   >
                     Get Directions
                   </a>

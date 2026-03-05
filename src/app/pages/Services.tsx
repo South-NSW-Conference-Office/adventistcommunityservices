@@ -1,240 +1,194 @@
 import { useState, useMemo } from 'react';
-import DOMPurify from 'dompurify';
 import { ServiceCard } from '../components/ServiceCard';
-import { MapPin, Filter, RefreshCw } from 'lucide-react';
+import { Search, RefreshCw, ShoppingBag, Apple, UtensilsCrossed, AlertTriangle, HeartPulse, Users, Home, Brain, BookOpen, Flower2 } from 'lucide-react';
 import { useServices } from '../hooks/useServices';
 import { useCMSPage } from '../hooks/useCMSContent';
 
-interface ServiceLocation {
-  label?: string;
-  address?: {
-    suburb?: string;
-    state?: string;
-  };
-}
+const SERVICE_TYPES = [
+  { value: 'op_shop', name: 'Op Shop', icon: ShoppingBag },
+  { value: 'food_pantry', name: 'Food Pantry', icon: Apple },
+  { value: 'soup_kitchen', name: 'Soup Kitchen', icon: UtensilsCrossed },
+  { value: 'disaster_response', name: 'Disaster Response', icon: AlertTriangle },
+  { value: 'health_program', name: 'Health Program', icon: HeartPulse },
+  { value: 'youth_outreach', name: 'Youth Outreach', icon: Users },
+  { value: 'emergency_shelter', name: 'Emergency Shelter', icon: Home },
+  { value: 'counseling_service', name: 'Counseling', icon: Brain },
+  { value: 'education_program', name: 'Education', icon: BookOpen },
+  { value: 'community_garden', name: 'Community Garden', icon: Flower2 },
+];
 
-function getLocationString(locations: ServiceLocation[] | undefined): string {
-  if (!locations || locations.length === 0) return '';
-  const loc = locations[0];
-  if (loc.address) {
-    const { suburb, state } = loc.address;
-    if (suburb && state) return `${suburb}, ${state}`;
-    return state || '';
-  }
-  return loc.label || '';
-}
-
-interface HeroSectionProps {
-  label: string;
-  title: string;
-  subtitle?: string;
-  showFullDecorations?: boolean;
-}
-
-function HeroSection({ label, title, subtitle, showFullDecorations = false }: HeroSectionProps): JSX.Element {
-  return (
-    <div className="relative min-h-[500px] flex items-center justify-center overflow-hidden">
-      <div className="absolute inset-0">
-        <div className="absolute inset-0">
-          <div className="absolute top-20 right-20 w-96 h-96 rounded-full bg-white/5 blur-3xl"></div>
-          <div className="absolute bottom-0 left-0 w-[600px] h-[600px] rounded-full bg-white/10 blur-3xl"></div>
-          {showFullDecorations && (
-            <>
-              <div className="absolute top-1/2 right-1/4 w-2 h-2 rounded-full bg-white/30"></div>
-              <div className="absolute top-1/3 left-1/3 w-3 h-3 rounded-full bg-white/20"></div>
-            </>
-          )}
-        </div>
-      </div>
-      <div className="relative z-10 max-w-4xl mx-auto px-6 py-32 text-center">
-        <p className="text-white/90 text-sm tracking-wider uppercase mb-4">{label}</p>
-        <h1 className="text-white text-5xl md:text-6xl font-bold mb-6 leading-tight">{title}</h1>
-        {subtitle && (
-          <p
-            className="text-white/90 text-lg leading-relaxed max-w-3xl mx-auto"
-            dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(subtitle) }}
-          />
-        )}
-      </div>
-    </div>
-  );
-}
-
-interface StatusCardProps {
-  children: React.ReactNode;
-}
-
-function StatusCard({ children }: StatusCardProps): JSX.Element {
-  return (
-    <div className="max-w-7xl mx-auto px-6 pb-24">
-      <div className="text-center py-16">
-        <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl p-12 max-w-md mx-auto">
-          {children}
-        </div>
-      </div>
-    </div>
-  );
+function getTeamName(service: any): string {
+  if (service.teamId?.name) return service.teamId.name;
+  if (service.churchId?.name) return service.churchId.name;
+  return '';
 }
 
 export function Services(): JSX.Element {
   const { getBlock } = useCMSPage('services');
   const { services, loading, error, refetch } = useServices();
-  const [selectedLocation, setSelectedLocation] = useState('All Locations');
-  const [selectedChurch, setSelectedChurch] = useState('All Churches');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedType, setSelectedType] = useState<string | null>(null);
 
-  const heroLabel = getBlock('hero', 'section_label') || 'Our Services';
-  const heroTitle = getBlock('hero', 'title') || 'Find Support In Your Community';
+  const heroLabel = getBlock('hero', 'section_label') || 'Services Directory';
+  const heroTitle = getBlock('hero', 'title') || 'Find a Service';
   const heroSubtitle =
     getBlock('hero', 'subtitle') ||
-    'Discover the range of community services available across Australia. Filter by location or church to find support near you.';
+    'Browse community services by type or search for what you\'re looking for. Every service is provided by a local team of volunteers.';
 
-  const { locations, churches, filteredServices } = useMemo(() => {
-    const locationSet = new Set<string>();
-    const churchSet = new Set<string>();
+  const { serviceTypeCounts, filteredServices } = useMemo(() => {
+    const typeCounts: Record<string, number> = {};
+    const searchLower = searchQuery.toLowerCase();
 
-    for (const service of services) {
-      const locationStr = getLocationString(service.locations);
-      if (locationStr) locationSet.add(locationStr);
-      if (service.churchId?.name) churchSet.add(service.churchId.name);
-    }
+    SERVICE_TYPES.forEach(type => { typeCounts[type.value] = 0; });
 
-    const filtered = services.filter((service) => {
-      const locationMatch =
-        selectedLocation === 'All Locations' ||
-        getLocationString(service.locations) === selectedLocation;
-      const churchMatch =
-        selectedChurch === 'All Churches' || service.churchId?.name === selectedChurch;
-      return locationMatch && churchMatch;
+    services.forEach(service => {
+      const sType = service.type;
+      if (sType && typeCounts[sType] !== undefined) {
+        typeCounts[sType]++;
+      }
     });
 
-    return {
-      locations: ['All Locations', ...Array.from(locationSet).sort()],
-      churches: ['All Churches', ...Array.from(churchSet).sort()],
-      filteredServices: filtered,
-    };
-  }, [services, selectedLocation, selectedChurch]);
+    const filtered = services.filter(service => {
+      const typeMatch = !selectedType || service.type === selectedType;
+      const searchMatch = !searchQuery ||
+        service.name.toLowerCase().includes(searchLower) ||
+        (service.descriptionShort && service.descriptionShort.toLowerCase().includes(searchLower)) ||
+        getTeamName(service).toLowerCase().includes(searchLower);
+      return typeMatch && searchMatch;
+    });
 
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-[#F44314] via-[#F97023] to-[#F98344]">
-        <HeroSection label={heroLabel} title={heroTitle} />
-        <div className="flex justify-center py-20">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white"></div>
-        </div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-[#F44314] via-[#F97023] to-[#F98344]">
-        <HeroSection label={heroLabel} title={heroTitle} />
-        <StatusCard>
-          <p className="text-white text-lg mb-4">{error}</p>
-          <button
-            onClick={() => refetch()}
-            className="inline-flex items-center gap-2 bg-white text-[#F44314] px-6 py-3 rounded-xl font-semibold hover:bg-white/90 transition-colors"
-          >
-            <RefreshCw className="w-5 h-5" />
-            Try Again
-          </button>
-        </StatusCard>
-      </div>
-    );
-  }
-
-  const selectClassName =
-    'w-full px-4 py-3 rounded-xl bg-white/10 backdrop-blur-sm border border-white/20 text-white focus:outline-none focus:border-white/40 transition-colors';
-  const optionClassName = 'bg-[#F44314] text-white';
-
-  const resultsText = buildResultsText(filteredServices.length, selectedLocation, selectedChurch);
+    return { serviceTypeCounts: typeCounts, filteredServices: filtered };
+  }, [services, searchQuery, selectedType]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#F44314] via-[#F97023] to-[#F98344]">
-      <HeroSection label={heroLabel} title={heroTitle} subtitle={heroSubtitle} showFullDecorations />
+    <div>
+      {/* Hero */}
+      <div className="bg-[#F8F7F5] py-16 md:py-24">
+        <div className="max-w-4xl mx-auto px-6 text-center">
+          <p className="text-[#F44314] text-sm font-semibold tracking-wider uppercase mb-4">{heroLabel}</p>
+          <h1 className="text-[#1F2937] text-5xl md:text-6xl font-bold mb-6 leading-tight">{heroTitle}</h1>
+          <p className="text-gray-600 text-lg max-w-2xl mx-auto">{heroSubtitle}</p>
 
-      <div className="max-w-7xl mx-auto px-6 pb-24">
-        <div className="mb-12">
-          <div className="flex items-center gap-3 mb-6">
-            <Filter className="w-5 h-5 text-white" />
-            <h2 className="text-white text-2xl font-semibold">Filter Services</h2>
-          </div>
-
-          <div className="grid md:grid-cols-2 gap-6">
-            <div>
-              <label htmlFor="location" className="block text-white/90 text-sm mb-2 flex items-center gap-2">
-                <MapPin className="w-4 h-4" />
-                Location
-              </label>
-              <select
-                id="location"
-                value={selectedLocation}
-                onChange={(e) => setSelectedLocation(e.target.value)}
-                className={selectClassName}
-              >
-                {locations.map((location) => (
-                  <option key={location} value={location} className={optionClassName}>
-                    {location}
-                  </option>
-                ))}
-              </select>
+          {/* Search */}
+          <div className="mt-10 max-w-xl mx-auto">
+            <div className="flex items-center gap-3 px-5 py-4 bg-white rounded-2xl shadow-md border border-gray-200">
+              <Search className="w-5 h-5 text-gray-400 flex-shrink-0" />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search services, teams, or locations..."
+                className="flex-1 bg-transparent outline-none text-gray-900 placeholder:text-gray-400"
+              />
             </div>
-
-            <div>
-              <label htmlFor="church" className="block text-white/90 text-sm mb-2">
-                Church
-              </label>
-              <select
-                id="church"
-                value={selectedChurch}
-                onChange={(e) => setSelectedChurch(e.target.value)}
-                className={selectClassName}
-              >
-                {churches.map((church) => (
-                  <option key={church} value={church} className={optionClassName}>
-                    {church}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </div>
-
-          <div className="mt-6">
-            <p className="text-white/80">{resultsText}</p>
           </div>
         </div>
+      </div>
 
-        {filteredServices.length > 0 ? (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredServices.map((service) => (
-              <ServiceCard
-                key={service._id}
-                id={service._id}
-                name={service.name}
-                descriptionShort={service.descriptionShort}
-                locations={service.locations}
-                capacity={service.capacity}
-                primaryImage={service.primaryImage}
-              />
-            ))}
+      {/* Service Type Cards */}
+      <div className="bg-white py-14">
+        <div className="max-w-7xl mx-auto px-6">
+          <h2 className="text-[#1F2937] text-2xl font-bold mb-8">Browse by Type</h2>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+            {SERVICE_TYPES.map((st) => {
+              const Icon = st.icon;
+              const isSelected = selectedType === st.value;
+              return (
+                <button
+                  key={st.value}
+                  onClick={() => setSelectedType(isSelected ? null : st.value)}
+                  className={`rounded-2xl p-5 text-center transition-all border ${
+                    isSelected
+                      ? 'bg-[#FFF1EE] border-[#F44314] shadow-sm'
+                      : 'bg-gray-50 border-gray-200 hover:border-[#F44314] hover:bg-[#FFF8F6]'
+                  }`}
+                >
+                  <Icon className={`w-7 h-7 mx-auto mb-3 ${isSelected ? 'text-[#F44314]' : 'text-gray-400'}`} />
+                  <h3 className={`font-semibold text-sm mb-1 ${isSelected ? 'text-[#F44314]' : 'text-[#1F2937]'}`}>{st.name}</h3>
+                  <p className="text-gray-500 text-xs">
+                    {serviceTypeCounts[st.value]} {serviceTypeCounts[st.value] === 1 ? 'team' : 'teams'}
+                  </p>
+                </button>
+              );
+            })}
           </div>
-        ) : (
-          <StatusCard>
-            <p className="text-white text-lg mb-2">No services found</p>
-            <p className="text-white/70 text-sm">
-              Try adjusting your filters to find more services in other locations or churches.
-            </p>
-          </StatusCard>
-        )}
+        </div>
+      </div>
+
+      {/* All Services */}
+      <div className="bg-[#F8F7F5] py-14">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="flex items-center justify-between mb-8">
+            <h2 className="text-[#1F2937] text-2xl font-bold">
+              {selectedType
+                ? `${SERVICE_TYPES.find(s => s.value === selectedType)?.name} Services`
+                : 'All Services'}
+            </h2>
+            <p className="text-gray-500 text-sm">{filteredServices.length} result{filteredServices.length !== 1 ? 's' : ''}</p>
+          </div>
+
+          {loading && (
+            <div className="flex justify-center py-20">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#F44314]"></div>
+            </div>
+          )}
+
+          {error && (
+            <div className="text-center py-16">
+              <p className="text-gray-700 mb-4">{error}</p>
+              <button
+                onClick={() => refetch()}
+                className="inline-flex items-center gap-2 bg-[#F44314] text-white px-6 py-3 rounded-xl font-semibold hover:bg-[#d93a10]"
+              >
+                <RefreshCw className="w-5 h-5" /> Try Again
+              </button>
+            </div>
+          )}
+
+          {!loading && !error && filteredServices.length > 0 && (
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {filteredServices.map((service) => {
+                const teamName = getTeamName(service);
+                return (
+                  <ServiceCard
+                    key={service._id}
+                    id={service._id}
+                    name={service.name}
+                    descriptionShort={service.descriptionShort}
+                    locations={service.locations}
+                    capacity={service.capacity}
+                    primaryImage={service.primaryImage}
+                    teamName={teamName}
+                  />
+                );
+              })}
+            </div>
+          )}
+
+          {!loading && !error && filteredServices.length === 0 && (
+            <div className="text-center py-16">
+              <div className="bg-white border border-gray-200 rounded-2xl p-12 max-w-lg mx-auto">
+                <p className="text-[#1F2937] text-xl font-semibold mb-2">
+                  {searchQuery || selectedType ? 'No services match your search' : 'No services listed yet'}
+                </p>
+                <p className="text-gray-500 mb-6">
+                  {searchQuery || selectedType
+                    ? 'Try different search terms or browse all service types.'
+                    : 'Teams are still setting up their services. Check back soon!'}
+                </p>
+                {(searchQuery || selectedType) && (
+                  <button
+                    onClick={() => { setSearchQuery(''); setSelectedType(null); }}
+                    className="text-[#F44314] font-semibold hover:underline"
+                  >
+                    Clear filters
+                  </button>
+                )}
+              </div>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
-}
-
-function buildResultsText(count: number, location: string, church: string): string {
-  const plural = count !== 1 ? 's' : '';
-  let text = `Showing ${count} service${plural}`;
-  if (location !== 'All Locations') text += ` in ${location}`;
-  if (church !== 'All Churches') text += ` at ${church}`;
-  return text;
 }

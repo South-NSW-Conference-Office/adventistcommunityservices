@@ -14,16 +14,16 @@ export const teamsApi = {
     if (filters?.includeInactive) params.append('includeInactive', 'true');
 
     const queryString = params.toString();
-    const endpoint = `/teams/all${queryString ? `?${queryString}` : ''}`;
+    const endpoint = `/teams/public${queryString ? `?${queryString}` : ''}`;
 
-    return api.get<Team[]>(endpoint, true);
+    return api.get<Team[]>(endpoint, false);
   },
 
   /**
-   * Get single team by ID (authenticated endpoint)
+   * Get single team by ID (public endpoint)
    */
   getTeamById: async (id: string) => {
-    return api.get<Team>(`/teams/${id}`, true);
+    return api.get<Team>(`/teams/public/${id}`, false);
   },
 
   /**

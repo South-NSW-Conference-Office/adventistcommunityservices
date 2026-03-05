@@ -3,43 +3,40 @@ import { useState } from 'react';
 import { useCMSPage } from '../hooks/useCMSContent';
 import { EditableText, EditableRichText } from './editable';
 
+const CATEGORIES = [
+  { label: 'Op Shops', type: 'op_shop' },
+  { label: 'Food Pantry', type: 'food_pantry' },
+  { label: 'Soup Kitchen', type: 'soup_kitchen' },
+  { label: 'Disaster Response', type: 'disaster_response' },
+  { label: 'Health', type: 'health_program' },
+  { label: 'Counseling', type: 'counseling_service' },
+  { label: 'Shelter', type: 'emergency_shelter' },
+  { label: 'Education', type: 'education_program' },
+];
+
 export function HeroSection() {
   const [searchQuery, setSearchQuery] = useState('');
   const [location, setLocation] = useState('');
 
   const { getBlock } = useCMSPage('home');
 
-  // Get CMS content with fallbacks
-  const label = getBlock('hero', 'label') || "Australia's Adventist Community Service";
-  const title = getBlock('hero', 'title') || 'Discover Services. Find Support.';
-  const subtitle = getBlock('hero', 'subtitle') || "Search for community services, support programs, and resources offered by the Adventist Church across Australia. We're here to help you find the assistance you need.";
-  const searchPlaceholder = getBlock('hero', 'search_placeholder') || 'Search for services...';
-  const locationPlaceholder = getBlock('hero', 'location_placeholder') || 'Location';
+  const label = getBlock('hero', 'label') || "Here to Serve";
+  const title = getBlock('hero', 'title') || 'Find Services Near You';
+  const subtitle = getBlock('hero', 'subtitle') || 'Discover community services across Australia by location, type, or postcode. We\'re here to serve you.';
+  const searchPlaceholder = getBlock('hero', 'search_placeholder') || 'What are you looking for?';
+  const locationPlaceholder = getBlock('hero', 'location_placeholder') || 'Suburb or postcode';
   const searchButtonText = getBlock('hero', 'search_button_text') || 'Search';
 
   return (
-    <div className="relative min-h-[600px] flex items-center justify-center overflow-hidden">
-      {/* Gradient Background with decorative circles */}
-      <div className="absolute inset-0">
-        <div className="absolute inset-0">
-          {/* Decorative circles */}
-          <div className="absolute top-20 right-20 w-96 h-96 rounded-full bg-white/5 blur-3xl"></div>
-          <div className="absolute bottom-0 right-0 w-[600px] h-[600px] rounded-full bg-white/10 blur-3xl"></div>
-          <div className="absolute bottom-20 left-10 w-32 h-32 rounded-full border-2 border-white/20"></div>
-          <div className="absolute top-1/3 left-1/4 w-2 h-2 rounded-full bg-white/30"></div>
-          <div className="absolute top-1/2 right-1/3 w-3 h-3 rounded-full bg-white/20"></div>
-        </div>
-      </div>
-
-      {/* Content */}
-      <div className="relative z-10 max-w-4xl mx-auto px-6 py-32 text-center">
+    <div className="bg-[#F8F7F5]">
+      <div className="max-w-4xl mx-auto px-6 py-20 md:py-28 text-center">
         <EditableText
           pageId="home"
           sectionId="hero"
           blockKey="label"
           content={label}
-          fallback="Australia's Adventist Community Service"
-          className="text-white/90 text-sm tracking-wider uppercase mb-4"
+          fallback="Here to Serve"
+          className="text-[#F44314] text-sm font-semibold tracking-wider uppercase mb-4"
           as="p"
         />
         <EditableText
@@ -47,8 +44,8 @@ export function HeroSection() {
           sectionId="hero"
           blockKey="title"
           content={title}
-          fallback="Discover Services. Find Support."
-          className="text-white text-5xl md:text-6xl font-bold mb-6 leading-tight"
+          fallback="Find Services Near You"
+          className="text-[#1F2937] text-5xl md:text-6xl font-bold mb-6 leading-tight"
           as="h1"
         />
         <EditableRichText
@@ -56,12 +53,12 @@ export function HeroSection() {
           sectionId="hero"
           blockKey="subtitle"
           content={subtitle}
-          fallback="Search for community services, support programs, and resources offered by the Adventist Church across Australia. We're here to help you find the assistance you need."
-          className="text-white/90 text-lg mb-12 max-w-2xl mx-auto"
+          fallback="Search community services across Australia by need, location, or postcode. We're here to connect you with support."
+          className="text-gray-600 text-lg mb-10 max-w-2xl mx-auto"
         />
 
         {/* Search Bar */}
-        <div className="bg-white rounded-2xl shadow-2xl p-3 flex flex-col md:flex-row gap-3 max-w-3xl mx-auto">
+        <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-3 flex flex-col md:flex-row gap-3 max-w-3xl mx-auto">
           <div className="flex-1 flex items-center gap-3 px-4 py-3 bg-gray-50 rounded-xl">
             <Search className="w-5 h-5 text-gray-400 flex-shrink-0" />
             <input
@@ -69,7 +66,7 @@ export function HeroSection() {
               placeholder={searchPlaceholder}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="flex-1 bg-transparent outline-none text-gray-900 placeholder:text-gray-500"
+              className="flex-1 bg-transparent outline-none text-gray-900 placeholder:text-gray-400"
             />
           </div>
           <div className="flex-1 flex items-center gap-3 px-4 py-3 bg-gray-50 rounded-xl">
@@ -79,12 +76,25 @@ export function HeroSection() {
               placeholder={locationPlaceholder}
               value={location}
               onChange={(e) => setLocation(e.target.value)}
-              className="flex-1 bg-transparent outline-none text-gray-900 placeholder:text-gray-500"
+              className="flex-1 bg-transparent outline-none text-gray-900 placeholder:text-gray-400"
             />
           </div>
-          <button className="bg-gradient-to-r from-[#E8653F] to-[#F37B4E] text-white px-8 py-3 rounded-xl hover:shadow-lg transition-all font-medium">
+          <button className="bg-[#F44314] text-white px-8 py-3 rounded-xl hover:bg-[#d93a10] transition-colors font-semibold shadow-sm">
             {searchButtonText}
           </button>
+        </div>
+
+        {/* Category Quick Links */}
+        <div className="flex flex-wrap justify-center gap-2 mt-8">
+          {CATEGORIES.map((cat) => (
+            <a
+              key={cat.type}
+              href={`/services?type=${cat.type}`}
+              className="px-4 py-2 rounded-full bg-white border border-gray-200 text-gray-600 text-sm font-medium hover:border-[#F44314] hover:text-[#F44314] transition-colors"
+            >
+              {cat.label}
+            </a>
+          ))}
         </div>
       </div>
     </div>

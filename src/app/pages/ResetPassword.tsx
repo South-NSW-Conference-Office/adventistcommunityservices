@@ -26,9 +26,8 @@ export function ResetPassword() {
       return;
     }
 
-    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]).{8,}$/;
-    if (!passwordRegex.test(password)) {
-      setError('Password must be at least 8 characters with uppercase, lowercase, number, and special character');
+    if (password.length < 6) {
+      setError('Password must be at least 6 characters');
       return;
     }
 
@@ -157,7 +156,7 @@ export function ResetPassword() {
                       placeholder="Enter new password"
                       required
                       disabled={loading}
-                      minLength={8}
+                      minLength={6}
                     />
                     <button
                       type="button"
@@ -183,7 +182,7 @@ export function ResetPassword() {
                       placeholder="Confirm new password"
                       required
                       disabled={loading}
-                      minLength={8}
+                      minLength={6}
                     />
                     <button
                       type="button"
