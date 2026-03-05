@@ -68,30 +68,31 @@ export function Home(): JSX.Element {
 
   return (
     <div>
-      <HeroSection />
-
-      {/* Conference Map Section — white background */}
-      <section className="bg-white py-16">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="text-center mb-12">
-            <h2 className="text-[#1F2937] text-4xl font-bold mb-4">
-              Find Services in Your Area
-            </h2>
-            <p className="text-gray-600 max-w-2xl mx-auto text-lg">
-              Select your conference to discover local Adventist Community Services
+      {/* Hero — Conference Map */}
+      <section className="bg-gradient-to-b from-[#1F2937] to-[#111827] pt-12 pb-16">
+        <div className="max-w-5xl mx-auto px-6">
+          <div className="text-center mb-8">
+            <p className="text-[#F44314] font-semibold text-sm uppercase tracking-widest mb-3">
+              Here to Serve
+            </p>
+            <h1 className="text-white text-4xl md:text-5xl font-bold mb-4">
+              Adventist Community Services
+            </h1>
+            <p className="text-gray-400 max-w-2xl mx-auto text-lg">
+              Find local services across Australia — select your conference below
             </p>
           </div>
 
-          <ConferenceMap className="mb-8" />
+          <ConferenceMap className="mb-6" />
 
           <div className="text-center">
             <p className="text-sm text-gray-500">
-              Grey areas coming soon — contact{' '}
+              Grey areas coming soon —{' '}
               <a 
                 href="mailto:acs@adventist.org.au" 
                 className="text-[#F44314] hover:underline"
               >
-                acs@adventist.org.au
+                contact ACS
               </a>{' '}
               to activate your conference
             </p>
