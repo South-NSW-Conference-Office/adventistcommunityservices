@@ -12,8 +12,8 @@ export function Header({ onLogout, isAuthenticated = false }: HeaderProps) {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-50 bg-white border-b border-gray-200">
-      <div className="max-w-7xl mx-auto px-6 py-3">
+    <header className="fixed top-0 left-0 right-0 z-50 bg-transparent">
+      <div className="max-w-7xl mx-auto px-6 py-4">
         <div className="flex items-center justify-between">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-3">
@@ -56,7 +56,7 @@ export function Header({ onLogout, isAuthenticated = false }: HeaderProps) {
 
         {/* Mobile nav */}
         {mobileOpen && (
-          <nav className="md:hidden pt-4 pb-2 border-t border-gray-100 mt-3 flex flex-col gap-3">
+          <nav className="md:hidden pt-4 pb-2 border-t border-gray-200 mt-3 flex flex-col gap-3 bg-white/80 backdrop-blur-md rounded-lg px-4 -mx-2">
             <Link to="/" onClick={() => setMobileOpen(false)} className="text-gray-700 hover:text-[#F44314] font-medium py-2">Home</Link>
             <Link to="/about" onClick={() => setMobileOpen(false)} className="text-gray-700 hover:text-[#F44314] font-medium py-2">About</Link>
             <Link to="/services" onClick={() => setMobileOpen(false)} className="text-gray-700 hover:text-[#F44314] font-medium py-2">Services</Link>

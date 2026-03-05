@@ -1,5 +1,5 @@
 import { HeroSection } from '../components/HeroSection';
-import { ConferenceMap } from '../components/ConferenceMap';
+import { InteractiveConferenceMap } from '../components/InteractiveConferenceMap';
 import { ServiceCard } from '../components/ServiceCard';
 import { TeamCard } from '../components/TeamCard';
 import { Skeleton } from '../components/ui/skeleton';
@@ -52,31 +52,25 @@ export function Home(): JSX.Element {
 
   return (
     <div>
-      {/* Conference Map — THE hero */}
-      <section className="bg-[#F8F7F5] py-12 md:py-16">
-        <div className="max-w-4xl mx-auto px-6">
-          <div className="text-center mb-6">
-            <p className="text-[#F44314] font-semibold text-sm uppercase tracking-widest mb-3">
+      {/* Conference Map Hero — full bleed, nav overlays on top */}
+      {/* Conference Map Hero — full bleed, nav overlays on top */}
+      <section className="relative bg-[#F8F7F5] md:min-h-screen flex items-start md:items-center justify-center pb-6 md:pb-0">
+        <div className="w-full mt-24 md:mt-0 md:pt-20 flex flex-col-reverse md:flex-row items-center gap-4 md:gap-6 justify-end pr-4 pl-6 md:pl-[15%]">
+          {/* Copy — left column on desktop, below map on mobile */}
+          <div className="md:w-[480px] text-center md:text-left shrink-0 px-4 md:px-0">
+            <p className="text-[#F44314] font-semibold text-base uppercase tracking-widest mb-4">
               Here to Serve
             </p>
-            <h1 className="text-[#1F2937] text-3xl md:text-5xl font-bold mb-3">
-              Adventist Community Services
+            <h1 className="text-[#1F2937] text-3xl md:text-5xl font-bold mb-4 leading-tight whitespace-nowrap">
+              Adventist<br />Community Services
             </h1>
-            <p className="text-gray-600 max-w-2xl mx-auto text-base md:text-lg">
+            <p className="text-gray-600 text-base md:text-lg">
               Select your conference to find local services
             </p>
           </div>
-
-          <ConferenceMap className="mb-4" />
-
-          <div className="text-center">
-            <p className="text-sm text-gray-500">
-              Grey areas coming soon —{' '}
-              <a href="mailto:acs@adventist.org.au" className="text-[#F44314] hover:underline">
-                contact ACS
-              </a>{' '}
-              to activate your conference
-            </p>
+          {/* Map — takes the rest */}
+          <div className="flex-1 w-full min-w-0">
+            <InteractiveConferenceMap />
           </div>
         </div>
       </section>
