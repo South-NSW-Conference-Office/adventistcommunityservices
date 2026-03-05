@@ -74,8 +74,8 @@ const REGIONS: RegionLayer[] = [
   },
   {
     file: 'layer 8.png',
-    code: 'norfolk',
-    label: 'Norfolk Island',
+    code: 'gsc',
+    label: 'Greater Sydney',
     transformOrigin: '77% 71%',
     hitBox: [76.0, 68.9, 1.9, 3.6],
     labelPos: [77, 71],
@@ -83,8 +83,8 @@ const REGIONS: RegionLayer[] = [
   },
   {
     file: 'layer 9.png',
-    code: 'gsc',
-    label: 'Greater Sydney',
+    code: 'vic',
+    label: 'Victorian',
     transformOrigin: '68% 75%',
     hitBox: [60.2, 67.7, 15.9, 14.7],
     labelPos: [68, 75],
