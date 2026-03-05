@@ -47,12 +47,11 @@ export const ConferenceMap: React.FC<ConferenceMapProps> = ({ className = '' }) 
     const isActive = conf?.active ?? false;
     const isHovered = hoveredCode === code;
 
-    // NSW path covers both NNSW and SNSW — both are active
-    if (code === 'nnsw') {
-      return isHovered ? '#DC2626' : '#F44314';
+    // Uniform grey base matching reference map
+    if (isHovered) {
+      return isActive ? '#F44314' : '#C8CCD0';
     }
-    if (isActive) return isHovered ? '#DC2626' : '#F44314';
-    return isHovered ? '#D1D5DB' : '#E5E7EB';
+    return '#D9DDE1';
   };
 
   return (
@@ -106,9 +105,9 @@ export const ConferenceMap: React.FC<ConferenceMapProps> = ({ className = '' }) 
                     y={info.y + (i * 8)}
                     textAnchor="middle"
                     dominantBaseline="middle"
-                    fill={isActive ? '#FFFFFF' : '#6B7280'}
+                    fill={isActive ? '#1F2937' : '#4B5563'}
                     fontSize="5.5"
-                    fontWeight={isActive ? '700' : '500'}
+                    fontWeight="600"
                     fontFamily="Inter, system-ui, sans-serif"
                     className="select-none"
                   >
@@ -120,7 +119,7 @@ export const ConferenceMap: React.FC<ConferenceMapProps> = ({ className = '' }) 
                     cx={info.x}
                     cy={info.y + (nameLines.length * 8) + 2}
                     r="2"
-                    fill="#FFFFFF"
+                    fill="#F44314"
                     opacity="0.8"
                   />
                 )}

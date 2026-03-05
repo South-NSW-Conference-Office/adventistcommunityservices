@@ -18,12 +18,16 @@ export const CONFERENCE_PATHS: Record<string, string> = {
 // These show where conferences split within states
 // Coordinates traced from the official SDA conference boundary map
 export const BOUNDARY_LINES: Record<string, string> = {
-  // NQ / SQ border — runs near Tropic of Capricorn (~Rockhampton on coast)
-  // From NT/QLD border eastward across QLD to the coast near Gladstone/Rockhampton
+  // NT / SA border — horizontal line along ~26°S (NT-SA state border)
+  nt_sa_split: "M 113.85,117.35 L 194.16,117.35",
+  // NQ / SQ border — runs near Tropic of Capricorn across QLD (~Rockhampton on coast)
   qld_split: "M 173.41,80 L 185,80 L 195,79 L 205,78 L 215,77 L 225,75 L 230,73 L 235,70 L 237,68",
-  // NNSW / SNSW border — runs near Newcastle/Hunter Valley latitude
-  // From SA/NSW border eastward across NSW to the coast near Newcastle
+  // QLD / NSW border — follows the state border
+  qld_nsw: "M 194.16,134.29 L 247.29,134.35",
+  // NNSW / SNSW+GSC border — runs near Newcastle/Hunter Valley latitude
   nsw_split: "M 194.16,165 L 210,164 L 225,162 L 235,160 L 245,158 L 252,155 L 256,152",
+  // SA / VIC border — follows ~141°E state border south
+  sa_vic: "M 194.16,179.38 L 194.16,207.79",
 };
 
 // Label positions in SVG viewBox coordinates
