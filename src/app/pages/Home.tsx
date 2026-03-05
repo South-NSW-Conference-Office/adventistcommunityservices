@@ -53,16 +53,16 @@ export function Home(): JSX.Element {
   return (
     <div>
       {/* Conference Map — THE hero */}
-      <section className="bg-gradient-to-b from-[#1F2937] to-[#111827] py-12 md:py-16">
+      <section className="bg-[#F8F7F5] py-12 md:py-16">
         <div className="max-w-4xl mx-auto px-6">
           <div className="text-center mb-6">
             <p className="text-[#F44314] font-semibold text-sm uppercase tracking-widest mb-3">
               Here to Serve
             </p>
-            <h1 className="text-white text-3xl md:text-5xl font-bold mb-3">
+            <h1 className="text-[#1F2937] text-3xl md:text-5xl font-bold mb-3">
               Adventist Community Services
             </h1>
-            <p className="text-gray-400 max-w-2xl mx-auto text-base md:text-lg">
+            <p className="text-gray-600 max-w-2xl mx-auto text-base md:text-lg">
               Select your conference to find local services
             </p>
           </div>

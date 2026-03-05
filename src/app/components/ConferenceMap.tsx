@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { CONFERENCES, Conference } from '../data/conferences';
-import { AU_VIEWBOX, CONFERENCE_PATHS, CONFERENCE_LABELS } from '../data/conferenceMapPaths';
+import { AU_VIEWBOX, CONFERENCE_PATHS, CONFERENCE_LABELS, BOUNDARY_LINES } from '../data/conferenceMapPaths';
 import {
   Dialog,
   DialogContent,
@@ -17,17 +17,6 @@ interface ConferenceMapProps {
   className?: string;
 }
 
-const CONF_DISPLAY: Record<string, string> = {
-  snsw: 'South NSW',
-  nnsw: 'North NSW',
-  vic: 'Victoria',
-  sq: 'South QLD',
-  sa: 'South Australia',
-  wa: 'Western Australia',
-  tas: 'Tasmania',
-  nq: 'North Australia',
-};
-
 export const ConferenceMap: React.FC<ConferenceMapProps> = ({ className = '' }) => {
   const navigate = useNavigate();
   const [selectedConference, setSelectedConference] = useState<Conference | null>(null);
@@ -35,9 +24,7 @@ export const ConferenceMap: React.FC<ConferenceMapProps> = ({ className = '' }) 
   const [hoveredCode, setHoveredCode] = useState<string | null>(null);
 
   const handleClick = async (code: string) => {
-    // nnsw click target also represents snsw area
-    const actualCode = code;
-    const conference = CONFERENCES.find(c => c.code === actualCode);
+    const conference = CONFERENCES.find(c => c.code === code);
     if (!conference) return;
 
     if (conference.active) {
@@ -55,23 +42,17 @@ export const ConferenceMap: React.FC<ConferenceMapProps> = ({ className = '' }) 
     }
   };
 
-  // Determine fill for a conference path
   const getFill = (code: string) => {
-    const conference = CONFERENCES.find(c => c.code === code);
-    const isActive = conference?.active ?? false;
+    const conf = CONFERENCES.find(c => c.code === code);
+    const isActive = conf?.active ?? false;
     const isHovered = hoveredCode === code;
 
-    // Special: NSW path contains both SNSW (active) and NNSW (inactive)
-    // Show it as active since SNSW is part of it
+    // NSW path covers both NNSW and SNSW — both are active
     if (code === 'nnsw') {
-      const snsw = CONFERENCES.find(c => c.code === 'snsw');
-      if (snsw?.active) {
-        return isHovered ? '#DC2626' : '#F44314';
-      }
+      return isHovered ? '#DC2626' : '#F44314';
     }
-
     if (isActive) return isHovered ? '#DC2626' : '#F44314';
-    return isHovered ? '#4B5563' : '#374151';
+    return isHovered ? '#D1D5DB' : '#E5E7EB';
   };
 
   return (
@@ -84,53 +65,64 @@ export const ConferenceMap: React.FC<ConferenceMapProps> = ({ className = '' }) 
               key={code}
               d={path}
               fill={getFill(code)}
-              stroke="#1F2937"
-              strokeWidth="0.5"
+              stroke="white"
+              strokeWidth="0.8"
               className="cursor-pointer transition-all duration-200"
-              onClick={() => handleClick(code === 'nnsw' ? 'snsw' : code)}
+              onClick={() => {
+                // NSW click → route to snsw (primary active)
+                if (code === 'nnsw') handleClick('snsw');
+                else handleClick(code);
+              }}
               onMouseEnter={() => setHoveredCode(code)}
               onMouseLeave={() => setHoveredCode(null)}
             />
           ))}
 
-          {/* Conference labels */}
-          {Object.entries(CONFERENCE_LABELS).map(([code, pos]) => {
-            const conference = CONFERENCES.find(c => c.code === code);
-            const isActive = conference?.active ?? false;
-            const label = CONF_DISPLAY[code] || code.toUpperCase();
+          {/* Internal conference boundary lines */}
+          {Object.entries(BOUNDARY_LINES).map(([key, path]) => (
+            <path
+              key={`boundary-${key}`}
+              d={path}
+              fill="none"
+              stroke="white"
+              strokeWidth="0.6"
+              strokeDasharray="3 2"
+              className="pointer-events-none"
+            />
+          ))}
 
-            // Skip snsw label if it overlaps nnsw (they share NSW territory)
-            // Show both labels at different positions
+          {/* Conference labels */}
+          {Object.entries(CONFERENCE_LABELS).map(([code, info]) => {
+            const conf = CONFERENCES.find(c => c.code === code);
+            const isActive = conf?.active ?? false;
+            const nameLines = info.name.split('\\n');
+
             return (
               <g key={`label-${code}`} className="pointer-events-none">
-                <text
-                  x={pos.x}
-                  y={pos.y}
-                  textAnchor="middle"
-                  dominantBaseline="middle"
-                  fill="#FFFFFF"
-                  fontSize={isActive ? '7' : '6'}
-                  fontWeight={isActive ? '700' : '500'}
-                  fontFamily="Inter, system-ui, sans-serif"
-                  className="select-none"
-                >
-                  {label}
-                </text>
-                {isActive && (
+                {nameLines.map((line, i) => (
                   <text
-                    x={pos.x}
-                    y={pos.y + 8}
+                    key={i}
+                    x={info.x}
+                    y={info.y + (i * 8)}
                     textAnchor="middle"
                     dominantBaseline="middle"
-                    fill="#FCA5A5"
-                    fontSize="5"
-                    fontWeight="700"
+                    fill={isActive ? '#FFFFFF' : '#6B7280'}
+                    fontSize="5.5"
+                    fontWeight={isActive ? '700' : '500'}
                     fontFamily="Inter, system-ui, sans-serif"
                     className="select-none"
-                    letterSpacing="0.5"
                   >
-                    ● ACTIVE
+                    {line}
                   </text>
+                ))}
+                {isActive && (
+                  <circle
+                    cx={info.x}
+                    cy={info.y + (nameLines.length * 8) + 2}
+                    r="2"
+                    fill="#FFFFFF"
+                    opacity="0.8"
+                  />
                 )}
               </g>
             );
@@ -138,7 +130,7 @@ export const ConferenceMap: React.FC<ConferenceMapProps> = ({ className = '' }) 
         </svg>
       </div>
 
-      {/* Inactive modal */}
+      {/* Inactive conference modal */}
       <Dialog open={modalOpen} onOpenChange={setModalOpen}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
