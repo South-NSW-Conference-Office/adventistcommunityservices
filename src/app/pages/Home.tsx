@@ -1,6 +1,7 @@
 import { HeroSection } from '../components/HeroSection';
 import { ServiceCard } from '../components/ServiceCard';
 import { TeamCard } from '../components/TeamCard';
+import { ConferenceMap } from '../components/ConferenceMap';
 import { Skeleton } from '../components/ui/skeleton';
 import { ClipboardCheck, Users, Heart } from 'lucide-react';
 import {
@@ -68,6 +69,35 @@ export function Home(): JSX.Element {
   return (
     <div>
       <HeroSection />
+
+      {/* Conference Map Section — white background */}
+      <section className="bg-white py-16">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="text-center mb-12">
+            <h2 className="text-[#1F2937] text-4xl font-bold mb-4">
+              Find Services in Your Area
+            </h2>
+            <p className="text-gray-600 max-w-2xl mx-auto text-lg">
+              Select your conference to discover local Adventist Community Services
+            </p>
+          </div>
+
+          <ConferenceMap className="mb-8" />
+
+          <div className="text-center">
+            <p className="text-sm text-gray-500">
+              Grey areas coming soon — contact{' '}
+              <a 
+                href="mailto:acs@adventist.org.au" 
+                className="text-[#F44314] hover:underline"
+              >
+                acs@adventist.org.au
+              </a>{' '}
+              to activate your conference
+            </p>
+          </div>
+        </div>
+      </section>
 
       {/* Services Section — white background */}
       {isSectionEnabled('services-preview') && (
