@@ -7,6 +7,7 @@ import { Services } from './pages/Services';
 import { ServiceDetails } from './pages/ServiceDetails';
 import { Churches } from './pages/Churches';
 import { ChurchDetails } from './pages/ChurchDetails';
+import { Fellowship } from './pages/Fellowship';
 import { Teams } from './pages/Teams';
 import { TeamDetails } from './pages/TeamDetails';
 import { ComingSoon } from './pages/ComingSoon';
@@ -31,7 +32,8 @@ function AppContent() {
         <Route path="/about" element={<About />} />
         <Route path="/services" element={<Services />} />
         <Route path="/services/:id" element={<ServiceDetails />} />
-        <Route path="/churches" element={<Churches />} />
+        <Route path="/fellowship" element={<Fellowship />} />
+        <Route path="/churches" element={<Fellowship />} />
         <Route path="/churches/:id" element={<ChurchDetails />} />
         <Route path="/teams" element={<Teams />} />
         <Route path="/teams/:id" element={<TeamDetails />} />
@@ -62,9 +64,9 @@ function AppContent() {
               <ul className="space-y-2 text-sm">
                 <li><a href="/about" className="text-gray-400 hover:text-white transition-colors">About Us</a></li>
                 <li><a href="/services" className="text-gray-400 hover:text-white transition-colors">Services</a></li>
+                <li><a href="/fellowship" className="text-gray-400 hover:text-white transition-colors">Fellowship</a></li>
                 <li><a href="/teams" className="text-gray-400 hover:text-white transition-colors">Teams</a></li>
                 <li><a href="/contact" className="text-gray-400 hover:text-white transition-colors">Contact</a></li>
-                <li><a href="/about" className="text-gray-400 hover:text-white transition-colors">List Your Team</a></li>
               </ul>
             </div>
             <div>

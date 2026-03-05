@@ -29,7 +29,7 @@ export function Header({ onLogout, isAuthenticated = false }: HeaderProps) {
             <Link to="/" className="text-gray-700 hover:text-[#F44314] transition-colors font-medium">Home</Link>
             <Link to="/about" className="text-gray-700 hover:text-[#F44314] transition-colors font-medium">About</Link>
             <Link to="/services" className="text-gray-700 hover:text-[#F44314] transition-colors font-medium">Services</Link>
-            <Link to="/churches" className="text-gray-700 hover:text-[#F44314] transition-colors font-medium">Churches</Link>
+            <Link to="/fellowship" className="text-gray-700 hover:text-[#F44314] transition-colors font-medium">Fellowship</Link>
             <Link to="/teams" className="text-gray-700 hover:text-[#F44314] transition-colors font-medium">Teams</Link>
             <Link to="/contact" className="text-gray-700 hover:text-[#F44314] transition-colors font-medium">Contact</Link>
           </nav>
@@ -60,7 +60,7 @@ export function Header({ onLogout, isAuthenticated = false }: HeaderProps) {
             <Link to="/" onClick={() => setMobileOpen(false)} className="text-gray-700 hover:text-[#F44314] font-medium py-2">Home</Link>
             <Link to="/about" onClick={() => setMobileOpen(false)} className="text-gray-700 hover:text-[#F44314] font-medium py-2">About</Link>
             <Link to="/services" onClick={() => setMobileOpen(false)} className="text-gray-700 hover:text-[#F44314] font-medium py-2">Services</Link>
-            <Link to="/churches" onClick={() => setMobileOpen(false)} className="text-gray-700 hover:text-[#F44314] font-medium py-2">Churches</Link>
+            <Link to="/fellowship" onClick={() => setMobileOpen(false)} className="text-gray-700 hover:text-[#F44314] font-medium py-2">Fellowship</Link>
             <Link to="/teams" onClick={() => setMobileOpen(false)} className="text-gray-700 hover:text-[#F44314] font-medium py-2">Teams</Link>
             <Link to="/contact" onClick={() => setMobileOpen(false)} className="text-gray-700 hover:text-[#F44314] font-medium py-2">Contact</Link>
           </nav>
