@@ -155,15 +155,27 @@ export function Teams(): JSX.Element {
           {/* Error */}
           {error && (
             <div className="text-center py-16">
-              <div className="bg-gray-50 border border-gray-200 rounded-2xl p-12 max-w-md mx-auto">
-                <p className="text-gray-700 text-lg mb-4">{error}</p>
-                <button
-                  onClick={() => refetch()}
-                  className="inline-flex items-center gap-2 bg-[#F44314] text-white px-6 py-3 rounded-xl font-semibold hover:bg-[#d93a10] transition-colors"
-                >
-                  <RefreshCw className="w-5 h-5" />
-                  Try Again
-                </button>
+              <div className="bg-gray-50 border border-gray-200 rounded-2xl p-12 max-w-lg mx-auto">
+                <p className="text-[#1F2937] text-xl font-semibold mb-4">Community service teams are being registered</p>
+                <p className="text-gray-600 mb-6">
+                  Teams across Australia are setting up their profiles. Check back soon to see services available in your area, 
+                  or contact us directly if you need immediate assistance.
+                </p>
+                <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                  <button
+                    onClick={() => refetch()}
+                    className="inline-flex items-center gap-2 bg-[#F44314] text-white px-6 py-3 rounded-xl font-semibold hover:bg-[#d93a10] transition-colors"
+                  >
+                    <RefreshCw className="w-5 h-5" />
+                    Check Again
+                  </button>
+                  <a
+                    href="/contact"
+                    className="inline-flex items-center gap-2 bg-white border-2 border-[#F44314] text-[#F44314] px-6 py-3 rounded-xl font-semibold hover:bg-[#F44314] hover:text-white transition-colors"
+                  >
+                    Contact Us
+                  </a>
+                </div>
               </div>
             </div>
           )}
@@ -181,15 +193,26 @@ export function Teams(): JSX.Element {
           {!loading && !error && filteredTeams.length === 0 && (
             <div className="text-center py-16">
               <div className="bg-[#F8F7F5] border border-gray-200 rounded-2xl p-12 max-w-lg mx-auto">
-                <p className="text-[#1F2937] text-xl font-semibold mb-2">No teams found</p>
-                <p className="text-gray-500 mb-6">
+                <p className="text-[#1F2937] text-xl font-semibold mb-4">Community service teams are being registered</p>
+                <p className="text-gray-600 mb-6">
                   {teams.length === 0
-                    ? "No teams have been listed in this area yet. Check back soon as more teams join the platform."
-                    : "Try adjusting your filters to find teams in other locations or categories."}
+                    ? "Teams across Australia are setting up their services. Check back soon, or contact us if you need help now!"
+                    : "Try adjusting your search to find teams in other locations. We're here to help connect you with the right support."}
                 </p>
-                <button className="bg-[#F44314] text-white px-8 py-3 rounded-xl font-semibold hover:bg-[#d93a10] transition-colors">
-                  List Your Team
-                </button>
+                <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                  <a
+                    href="/contact"
+                    className="bg-[#F44314] text-white px-8 py-3 rounded-xl font-semibold hover:bg-[#d93a10] transition-colors inline-block"
+                  >
+                    Contact Us
+                  </a>
+                  <a
+                    href="/services"
+                    className="bg-white border-2 border-[#F44314] text-[#F44314] px-8 py-3 rounded-xl font-semibold hover:bg-[#F44314] hover:text-white transition-colors inline-block"
+                  >
+                    View All Services
+                  </a>
+                </div>
               </div>
             </div>
           )}

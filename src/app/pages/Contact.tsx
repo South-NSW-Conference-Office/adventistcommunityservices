@@ -123,6 +123,37 @@ function ImageMasonry({ images, layout }: ImageMasonryProps): JSX.Element {
   );
 }
 
+function ContactImagePlaceholders(): JSX.Element {
+  return (
+    <div className="grid grid-cols-2 gap-3">
+      <div className="col-span-2 h-48 bg-gradient-to-br from-[#F44314] to-[#D63912] rounded-2xl shadow-lg flex items-center justify-center">
+        <div className="text-white text-center">
+          <svg className="w-12 h-12 mx-auto mb-2" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+          </svg>
+          <p className="text-sm font-medium">Community Centre</p>
+        </div>
+      </div>
+      <div className="col-span-1 h-40 bg-gradient-to-br from-[#F44314] to-[#D63912] rounded-2xl shadow-lg flex items-center justify-center">
+        <div className="text-white text-center">
+          <svg className="w-10 h-10 mx-auto mb-2" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+          </svg>
+          <p className="text-xs font-medium">Contact Us</p>
+        </div>
+      </div>
+      <div className="col-span-1 h-40 bg-gradient-to-br from-[#F44314] to-[#D63912] rounded-2xl shadow-lg flex items-center justify-center">
+        <div className="text-white text-center">
+          <svg className="w-10 h-10 mx-auto mb-2" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+          </svg>
+          <p className="text-xs font-medium">Find Services</p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export function Contact(): JSX.Element {
   const [formType, setFormType] = useState<FormType>('contact');
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -136,12 +167,12 @@ export function Contact(): JSX.Element {
     hero: {
       label: getBlock('hero', 'section_label') || 'Contact Us',
       title: getBlock('hero', 'title') || 'Get In Touch',
-      description1: getBlock('hero', 'description_1') || "We'd love to hear from you. Whether you have questions about our services, want to connect with a local team, or are interested in volunteering, we're here for you.",
+      description1: getBlock('hero', 'description_1') || "We'd love to hear from you. Whether you need help, have questions about our services, want to connect with a local team, or are interested in volunteering, we're here for you.",
       description2: getBlock('hero', 'description_2') || 'Our team is committed to responding to all inquiries promptly and connecting you with the right resources. Reach out today and become part of our community making a difference across Australia.',
     },
     contactInfo: {
       title: getBlock('contact-info', 'title') || 'Contact Information',
-      description: getBlock('contact-info', 'description') || "Our offices are open to assist you with any inquiries, whether you have questions about our services, want to connect with a team, or are interested in what we offer. Adventist Community Services operates multiple locations across Australia, providing accessible services to communities with compassionate and professional staff. We've created a welcoming environment where everyone is treated with dignity and respect.",
+      description: getBlock('contact-info', 'description') || "We'd love to help with any questions about our services, connecting you with a local team, or getting involved as a volunteer. Adventist Community Services operates community centres across Australia, providing accessible services with compassionate staff. We've created a welcoming environment where everyone is treated with dignity and respect.",
       images: getJSONBlock<CMSImage[]>('contact-info', 'images_data', STATIC_DATA.contactImages),
     },
     volunteerInfo: {
@@ -339,7 +370,11 @@ export function Contact(): JSX.Element {
                 />
               </>
             )}
-            <ImageMasonry images={currentInfo.images} layout={imageLayout} />
+            {isContact ? (
+              <ContactImagePlaceholders />
+            ) : (
+              <ImageMasonry images={currentInfo.images} layout={imageLayout} />
+            )}
           </div>
 
           {/* Contact Form */}
