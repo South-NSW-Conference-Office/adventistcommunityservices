@@ -109,7 +109,7 @@ export function About(): JSX.Element {
     story: {
       title: getBlock('our-story', 'title') || 'Our Story',
       paragraph1: getBlock('our-story', 'paragraph_1') || "For decades, Adventist Community Services has been helping Australian communities through practical action. What started as local volunteers helping their neighbours has grown into a network of services reaching thousands of people each year.",
-      paragraph2: getBlock('our-story', 'paragraph_2') || 'Our volunteers work tirelessly to provide food, clothing, emergency relief, and emotional support throughout Australia. We believe in practical service that empowers positive change in people's lives.',
+      paragraph2: getBlock('our-story', 'paragraph_2') || 'Our volunteers work tirelessly to provide food, clothing, emergency relief, and emotional support throughout Australia. We believe in practical service that empowers positive change in peoples lives.',
       paragraph3: getBlock('our-story', 'paragraph_3') || 'Every day, we witness the transformative power of community support and the resilience of the human spirit.',
       images: getJSONBlock<CMSImage[]>('our-story', 'images_data', STATIC_DATA.storyImages),
     },
