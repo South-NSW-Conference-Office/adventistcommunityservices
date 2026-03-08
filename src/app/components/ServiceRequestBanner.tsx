@@ -47,13 +47,13 @@ export function ServiceRequestBanner({ contextName, teamId, pageType = 'team' }:
   }
 
   return (
-    <div className="bg-[#FFFBEB] border-y border-amber-200">
+    <div className="border-y border-gray-100">
       <div className="max-w-7xl mx-auto px-6 py-5">
         {!expanded ? (
           <div className="flex items-center justify-between gap-4 flex-wrap">
             <div className="flex items-center gap-3">
-              <div className="w-9 h-9 bg-amber-100 rounded-full flex items-center justify-center flex-shrink-0">
-                <Lightbulb className="w-4 h-4 text-amber-600" />
+              <div className="w-9 h-9 bg-gray-100 rounded-full flex items-center justify-center flex-shrink-0">
+                <Lightbulb className="w-4 h-4 text-gray-500" />
               </div>
               <div>
                 <p className="text-[#1F2937] font-semibold text-sm">Can't find what you're looking for?</p>
@@ -70,7 +70,7 @@ export function ServiceRequestBanner({ contextName, teamId, pageType = 'team' }:
         ) : (
           <form onSubmit={handleSubmit} className="space-y-3">
             <div className="flex items-center gap-3 mb-2">
-              <Lightbulb className="w-4 h-4 text-amber-600 flex-shrink-0" />
+              <Lightbulb className="w-4 h-4 text-gray-500 flex-shrink-0" />
               <p className="text-[#1F2937] font-semibold text-sm">What service would you like to see{contextName ? ` from ${contextName}` : ''}?</p>
             </div>
             <div className="flex gap-3 flex-wrap md:flex-nowrap">
@@ -79,7 +79,7 @@ export function ServiceRequestBanner({ contextName, teamId, pageType = 'team' }:
                 value={request}
                 onChange={(e) => setRequest(e.target.value)}
                 placeholder="e.g. After-school tutoring, clothing repairs, financial counseling..."
-                className="flex-1 min-w-0 px-4 py-2.5 rounded-lg bg-white border border-amber-300 text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-[#F44314] text-sm"
+                className="flex-1 min-w-0 px-4 py-2.5 rounded-lg bg-white border border-gray-200 text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-[#F44314] text-sm"
                 required
               />
               <input
@@ -87,7 +87,7 @@ export function ServiceRequestBanner({ contextName, teamId, pageType = 'team' }:
                 value={location}
                 onChange={(e) => setLocation(e.target.value)}
                 placeholder="Your suburb"
-                className="w-40 px-4 py-2.5 rounded-lg bg-white border border-amber-300 text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-[#F44314] text-sm"
+                className="w-40 px-4 py-2.5 rounded-lg bg-white border border-gray-200 text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-[#F44314] text-sm"
               />
               <button type="submit" className="px-5 py-2.5 bg-[#F44314] text-white rounded-lg text-sm font-semibold hover:bg-[#d93a10] transition-colors flex items-center gap-2 flex-shrink-0">
                 <Send className="w-3.5 h-3.5" /> Submit
