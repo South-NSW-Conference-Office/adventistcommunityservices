@@ -40,10 +40,10 @@ export function Header({ onLogout, isAuthenticated = false }: HeaderProps) {
           {/* Navigation */}
           <nav className="hidden md:flex items-center gap-8">
             <Link to="/" className="text-gray-700 hover:text-[#F44314] transition-colors font-medium">Home</Link>
-            <Link to="/about" className="text-gray-700 hover:text-[#F44314] transition-colors font-medium">About</Link>
             <Link to="/services" className="text-gray-700 hover:text-[#F44314] transition-colors font-medium">Services</Link>
-            <Link to="/fellowship" className="text-gray-700 hover:text-[#F44314] transition-colors font-medium">Fellowship</Link>
             <Link to="/teams" className="text-gray-700 hover:text-[#F44314] transition-colors font-medium">Teams</Link>
+            <Link to="/fellowship" className="text-gray-700 hover:text-[#F44314] transition-colors font-medium">Fellowship</Link>
+            <Link to="/about" className="text-gray-700 hover:text-[#F44314] transition-colors font-medium">About</Link>
             <Link to="/contact" className="text-gray-700 hover:text-[#F44314] transition-colors font-medium">Contact</Link>
           </nav>
 
@@ -71,10 +71,10 @@ export function Header({ onLogout, isAuthenticated = false }: HeaderProps) {
         {mobileOpen && (
           <nav className="md:hidden pt-4 pb-2 border-t border-gray-200 mt-3 flex flex-col gap-3 bg-white/95 backdrop-blur-md rounded-lg px-4 -mx-2">
             <Link to="/" onClick={() => setMobileOpen(false)} className="text-gray-700 hover:text-[#F44314] font-medium py-2">Home</Link>
-            <Link to="/about" onClick={() => setMobileOpen(false)} className="text-gray-700 hover:text-[#F44314] font-medium py-2">About</Link>
             <Link to="/services" onClick={() => setMobileOpen(false)} className="text-gray-700 hover:text-[#F44314] font-medium py-2">Services</Link>
-            <Link to="/fellowship" onClick={() => setMobileOpen(false)} className="text-gray-700 hover:text-[#F44314] font-medium py-2">Fellowship</Link>
             <Link to="/teams" onClick={() => setMobileOpen(false)} className="text-gray-700 hover:text-[#F44314] font-medium py-2">Teams</Link>
+            <Link to="/fellowship" onClick={() => setMobileOpen(false)} className="text-gray-700 hover:text-[#F44314] font-medium py-2">Fellowship</Link>
+            <Link to="/about" onClick={() => setMobileOpen(false)} className="text-gray-700 hover:text-[#F44314] font-medium py-2">About</Link>
             <Link to="/contact" onClick={() => setMobileOpen(false)} className="text-gray-700 hover:text-[#F44314] font-medium py-2">Contact</Link>
           </nav>
         )}
