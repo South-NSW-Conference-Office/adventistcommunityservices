@@ -32,8 +32,8 @@ const STATIC_DATA = {
     { icon: 'Award', title: 'Integrity', description: 'Providing reliable, quality community services you can trust' },
   ] as ValueItem[],
   teamMembers: [
-    { image: 'https://images.unsplash.com/photo-1759709042164-0dd78a39028b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhdXN0cmFsaWElMjBoZWxwaW5nJTIwaGFuZHM8ZW58MXx8fHwxNzY2MTk2MTgzfDA&ixlib=rb-4.1.0&q=80&w=1080', title: 'South NSW Director — Kyle Morrison', department: 'South NSW Conference', description: 'Leading ACS across the South NSW region' },
-    { image: 'https://images.unsplash.com/photo-1638769314338-9ba8e1e69465?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhdXN0cmFsaWElMjBjaGFyaXR5JTIwd2FybXxlbnwxfHx8fDE3NjYxOTU4MzV8MA&ixlib=rb-4.1.0&q=80&w=1080', title: 'North NSW Director — Steve Teale', department: 'North NSW Conference', description: 'Leading ACS across the North NSW region' },
+    { image: '/images/team/steve-teale.jpg', title: 'North NSW Director — Steve Teale', department: 'North NSW Conference', description: 'Leading ACS across the North NSW region' },
+    { image: '/images/team/kyle-morrison.jpg', title: 'South NSW Director — Kyle Morrison', department: 'South NSW Conference', description: 'Leading ACS across the South NSW region' },
   ] as TeamMember[],
   storyImages: [
     { url: '/images/team/stormco-group.jpg', alt: 'StormCo volunteer team on site' },
