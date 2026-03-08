@@ -32,8 +32,8 @@ const STATIC_DATA = {
     { icon: 'Award', title: 'Integrity', description: 'Providing reliable, quality community services you can trust' },
   ] as ValueItem[],
   teamMembers: [
-    { image: '/images/team/steve-teale.jpg', title: 'North NSW Director — Steve Teale', department: 'North NSW Conference', description: 'Leading ACS across the North NSW region' },
-    { image: '/images/team/kyle-morrison.jpg', title: 'South NSW Director — Kyle Morrison', department: 'South NSW Conference', description: 'Leading ACS across the South NSW region' },
+    { image: '/images/team/steve-teale.jpg', title: 'North NSW Director — Steve Teale', department: 'North NSW Conference', description: 'Leading Adventist Community Services across the North NSW region' },
+    { image: '/images/team/kyle-morrison.jpg', title: 'South NSW Director — Kyle Morrison', department: 'South NSW Conference', description: 'Leading Adventist Community Services across the South NSW region' },
   ] as TeamMember[],
   storyImages: [
     { url: '/images/team/stormco-group.jpg', alt: 'StormCo volunteer team on site' },
