@@ -1,13 +1,34 @@
 import { useState, useMemo, useEffect } from 'react';
 import { Search, MapPin, UtensilsCrossed, Heart, Users, Clock, Loader2 } from 'lucide-react';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001';
+interface ChurchData {
+  id: string;
+  name: string;
+  conference: string;
+  city: string;
+  state: string;
+  address: string | null;
+  postcode: string | null;
+  worshipTime: string;
+  sabbathSchoolTime: string;
+  pastorName: string | null;
+  hasKitchen: boolean | null;
+  hasMeals: boolean | null;
+  mealDay: string | null;
+  outreachFocus: string[];
+  teamCount: number;
+  serviceCount: number;
+  website: string | null;
+  phone: string | null;
+  isActive: boolean;
+}
 
 interface FellowshipChurch {
   id: string;
   name: string;
   city: string;
   state: string;
+  address: string | null;
   conference: string;
   conferenceCode: string;
   conferenceId: string;
@@ -28,43 +49,52 @@ interface ConferenceInfo {
   churchCount: number;
 }
 
-// Hardcoded fallback — used when API is unavailable
-const FALLBACK_CONFERENCES: ConferenceInfo[] = [
-  { id: 'snsw', name: 'South NSW Conference', code: 'SNSW', churchCount: 17 },
-  { id: 'nnsw', name: 'North NSW Conference', code: 'NNSW', churchCount: 10 },
-];
+const CONFERENCE_NAMES: Record<string, string> = {
+  SNSW: 'South NSW',
+  NNSW: 'North NSW',
+  VIC: 'Victoria',
+  SQ: 'South Queensland',
+  NQ: 'North Queensland',
+  SA: 'South Australia',
+  WA: 'Western Australia',
+  TAS: 'Tasmania',
+};
 
-const FALLBACK_CHURCHES: FellowshipChurch[] = [
-  { id: '1', name: 'Canberra National', city: 'Canberra City', state: 'ACT', conference: 'South NSW Conference', conferenceCode: 'SNSW', conferenceId: 'snsw', hasKitchen: true, hasMeals: true, mealDay: 'Saturday lunch', worshipTime: '11:00 AM', sabbathSchoolTime: '9:30 AM', outreachFocus: ['food_assistance'], teamCount: 2, serviceCount: 3 },
-  { id: '2', name: 'Canberra Calvary', city: 'Canberra', state: 'ACT', conference: 'South NSW Conference', conferenceCode: 'SNSW', conferenceId: 'snsw', hasKitchen: false, hasMeals: false, mealDay: null, worshipTime: '11:00 AM', sabbathSchoolTime: '9:30 AM', outreachFocus: [], teamCount: 0, serviceCount: 0 },
-  { id: '3', name: 'Wagga Wagga', city: 'Wagga Wagga', state: 'NSW', conference: 'South NSW Conference', conferenceCode: 'SNSW', conferenceId: 'snsw', hasKitchen: true, hasMeals: true, mealDay: 'Saturday lunch', worshipTime: '11:00 AM', sabbathSchoolTime: '9:30 AM', outreachFocus: ['food_assistance', 'clothing'], teamCount: 1, serviceCount: 2 },
-  { id: '4', name: 'Albury', city: 'Albury', state: 'NSW', conference: 'South NSW Conference', conferenceCode: 'SNSW', conferenceId: 'snsw', hasKitchen: true, hasMeals: true, mealDay: 'Saturday lunch', worshipTime: '11:00 AM', sabbathSchoolTime: '9:30 AM', outreachFocus: ['food_assistance'], teamCount: 1, serviceCount: 1 },
-  { id: '5', name: 'Griffith', city: 'Griffith', state: 'NSW', conference: 'South NSW Conference', conferenceCode: 'SNSW', conferenceId: 'snsw', hasKitchen: false, hasMeals: false, mealDay: null, worshipTime: '11:00 AM', sabbathSchoolTime: '9:30 AM', outreachFocus: [], teamCount: 0, serviceCount: 0 },
-  { id: '6', name: 'Tumut', city: 'Tumut', state: 'NSW', conference: 'South NSW Conference', conferenceCode: 'SNSW', conferenceId: 'snsw', hasKitchen: false, hasMeals: false, mealDay: null, worshipTime: '11:00 AM', sabbathSchoolTime: '9:30 AM', outreachFocus: ['community_development'], teamCount: 0, serviceCount: 0 },
-  { id: '7', name: 'Tumbarumba', city: 'Tumbarumba', state: 'NSW', conference: 'South NSW Conference', conferenceCode: 'SNSW', conferenceId: 'snsw', hasKitchen: false, hasMeals: false, mealDay: null, worshipTime: '11:00 AM', sabbathSchoolTime: '9:30 AM', outreachFocus: [], teamCount: 0, serviceCount: 0 },
-  { id: '8', name: 'Wollongong', city: 'Wollongong', state: 'NSW', conference: 'South NSW Conference', conferenceCode: 'SNSW', conferenceId: 'snsw', hasKitchen: true, hasMeals: true, mealDay: 'Saturday lunch', worshipTime: '11:00 AM', sabbathSchoolTime: '9:30 AM', outreachFocus: ['food_assistance', 'health_services'], teamCount: 2, serviceCount: 3 },
-  { id: '9', name: 'Liverpool', city: 'Liverpool', state: 'NSW', conference: 'South NSW Conference', conferenceCode: 'SNSW', conferenceId: 'snsw', hasKitchen: true, hasMeals: true, mealDay: 'Saturday lunch', worshipTime: '11:00 AM', sabbathSchoolTime: '9:30 AM', outreachFocus: ['food_assistance'], teamCount: 1, serviceCount: 2 },
-  { id: '10', name: 'Hurstville', city: 'Hurstville', state: 'NSW', conference: 'South NSW Conference', conferenceCode: 'SNSW', conferenceId: 'snsw', hasKitchen: false, hasMeals: false, mealDay: null, worshipTime: '11:00 AM', sabbathSchoolTime: '9:30 AM', outreachFocus: ['health_services'], teamCount: 1, serviceCount: 1 },
-  { id: '11', name: 'Campbelltown', city: 'Campbelltown', state: 'NSW', conference: 'South NSW Conference', conferenceCode: 'SNSW', conferenceId: 'snsw', hasKitchen: false, hasMeals: false, mealDay: null, worshipTime: '11:00 AM', sabbathSchoolTime: '9:30 AM', outreachFocus: ['education'], teamCount: 0, serviceCount: 0 },
-  { id: '12', name: 'Dubbo', city: 'Dubbo', state: 'NSW', conference: 'South NSW Conference', conferenceCode: 'SNSW', conferenceId: 'snsw', hasKitchen: true, hasMeals: true, mealDay: 'Saturday lunch', worshipTime: '11:00 AM', sabbathSchoolTime: '9:30 AM', outreachFocus: ['food_assistance'], teamCount: 1, serviceCount: 1 },
-  { id: '13', name: 'Bathurst', city: 'Bathurst', state: 'NSW', conference: 'South NSW Conference', conferenceCode: 'SNSW', conferenceId: 'snsw', hasKitchen: false, hasMeals: false, mealDay: null, worshipTime: '11:00 AM', sabbathSchoolTime: '9:30 AM', outreachFocus: [], teamCount: 0, serviceCount: 0 },
-  { id: '14', name: 'Orange', city: 'Orange', state: 'NSW', conference: 'South NSW Conference', conferenceCode: 'SNSW', conferenceId: 'snsw', hasKitchen: false, hasMeals: false, mealDay: null, worshipTime: '11:00 AM', sabbathSchoolTime: '9:30 AM', outreachFocus: ['clothing'], teamCount: 0, serviceCount: 1 },
-  { id: '15', name: 'Bega', city: 'Bega', state: 'NSW', conference: 'South NSW Conference', conferenceCode: 'SNSW', conferenceId: 'snsw', hasKitchen: true, hasMeals: true, mealDay: 'Saturday lunch', worshipTime: '11:00 AM', sabbathSchoolTime: '9:30 AM', outreachFocus: ['food_assistance'], teamCount: 0, serviceCount: 1 },
-  { id: '16', name: 'Nowra', city: 'Nowra', state: 'NSW', conference: 'South NSW Conference', conferenceCode: 'SNSW', conferenceId: 'snsw', hasKitchen: false, hasMeals: false, mealDay: null, worshipTime: '11:00 AM', sabbathSchoolTime: '9:30 AM', outreachFocus: ['clothing'], teamCount: 0, serviceCount: 1 },
-  { id: '17', name: 'Young', city: 'Young', state: 'NSW', conference: 'South NSW Conference', conferenceCode: 'SNSW', conferenceId: 'snsw', hasKitchen: false, hasMeals: false, mealDay: null, worshipTime: '11:00 AM', sabbathSchoolTime: '9:30 AM', outreachFocus: [], teamCount: 0, serviceCount: 0 },
-  // NNSW
-  { id: '18', name: 'Newcastle', city: 'Newcastle', state: 'NSW', conference: 'North NSW Conference', conferenceCode: 'NNSW', conferenceId: 'nnsw', hasKitchen: true, hasMeals: true, mealDay: 'Saturday lunch', worshipTime: '11:00 AM', sabbathSchoolTime: '9:30 AM', outreachFocus: ['food_assistance', 'health_services'], teamCount: 2, serviceCount: 3 },
-  { id: '19', name: 'Maitland', city: 'Maitland', state: 'NSW', conference: 'North NSW Conference', conferenceCode: 'NNSW', conferenceId: 'nnsw', hasKitchen: false, hasMeals: false, mealDay: null, worshipTime: '11:00 AM', sabbathSchoolTime: '9:30 AM', outreachFocus: ['disaster_relief'], teamCount: 1, serviceCount: 1 },
-  { id: '20', name: 'Port Macquarie', city: 'Port Macquarie', state: 'NSW', conference: 'North NSW Conference', conferenceCode: 'NNSW', conferenceId: 'nnsw', hasKitchen: true, hasMeals: true, mealDay: 'Saturday lunch', worshipTime: '11:00 AM', sabbathSchoolTime: '9:30 AM', outreachFocus: ['food_assistance', 'disaster_relief'], teamCount: 1, serviceCount: 2 },
-  { id: '21', name: 'Coffs Harbour', city: 'Coffs Harbour', state: 'NSW', conference: 'North NSW Conference', conferenceCode: 'NNSW', conferenceId: 'nnsw', hasKitchen: true, hasMeals: true, mealDay: 'Saturday lunch', worshipTime: '11:00 AM', sabbathSchoolTime: '9:30 AM', outreachFocus: ['food_assistance', 'clothing'], teamCount: 1, serviceCount: 2 },
-  { id: '22', name: 'Tamworth', city: 'Tamworth', state: 'NSW', conference: 'North NSW Conference', conferenceCode: 'NNSW', conferenceId: 'nnsw', hasKitchen: false, hasMeals: false, mealDay: null, worshipTime: '11:00 AM', sabbathSchoolTime: '9:30 AM', outreachFocus: ['food_assistance'], teamCount: 0, serviceCount: 1 },
-  { id: '23', name: 'Lismore', city: 'Lismore', state: 'NSW', conference: 'North NSW Conference', conferenceCode: 'NNSW', conferenceId: 'nnsw', hasKitchen: true, hasMeals: true, mealDay: 'Saturday lunch', worshipTime: '11:00 AM', sabbathSchoolTime: '9:30 AM', outreachFocus: ['disaster_relief', 'food_assistance'], teamCount: 1, serviceCount: 2 },
-  { id: '24', name: 'Tweed Heads', city: 'Tweed Heads', state: 'NSW', conference: 'North NSW Conference', conferenceCode: 'NNSW', conferenceId: 'nnsw', hasKitchen: false, hasMeals: false, mealDay: null, worshipTime: '11:00 AM', sabbathSchoolTime: '9:30 AM', outreachFocus: ['clothing'], teamCount: 0, serviceCount: 1 },
-  { id: '25', name: 'Kingscliff', city: 'Kingscliff', state: 'NSW', conference: 'North NSW Conference', conferenceCode: 'NNSW', conferenceId: 'nnsw', hasKitchen: false, hasMeals: false, mealDay: null, worshipTime: '11:00 AM', sabbathSchoolTime: '9:30 AM', outreachFocus: ['clothing'], teamCount: 0, serviceCount: 1 },
-  { id: '26', name: 'Avondale', city: 'Cooranbong', state: 'NSW', conference: 'North NSW Conference', conferenceCode: 'NNSW', conferenceId: 'nnsw', hasKitchen: true, hasMeals: true, mealDay: 'Saturday lunch', worshipTime: '11:00 AM', sabbathSchoolTime: '9:30 AM', outreachFocus: ['health_services', 'food_assistance', 'education'], teamCount: 3, serviceCount: 4 },
-  { id: '27', name: 'Toronto', city: 'Toronto', state: 'NSW', conference: 'North NSW Conference', conferenceCode: 'NNSW', conferenceId: 'nnsw', hasKitchen: false, hasMeals: false, mealDay: null, worshipTime: '11:00 AM', sabbathSchoolTime: '9:30 AM', outreachFocus: ['community_development'], teamCount: 0, serviceCount: 0 },
-  { id: '28', name: 'Armidale', city: 'Armidale', state: 'NSW', conference: 'North NSW Conference', conferenceCode: 'NNSW', conferenceId: 'nnsw', hasKitchen: false, hasMeals: false, mealDay: null, worshipTime: '11:00 AM', sabbathSchoolTime: '9:30 AM', outreachFocus: [], teamCount: 0, serviceCount: 0 },
-];
+function mapChurchData(raw: ChurchData[]): { churches: FellowshipChurch[]; conferences: ConferenceInfo[] } {
+  const confCounts: Record<string, number> = {};
+  const churches: FellowshipChurch[] = raw
+    .filter(c => c.isActive)
+    .map(c => {
+      confCounts[c.conference] = (confCounts[c.conference] || 0) + 1;
+      return {
+        id: c.id,
+        name: c.name,
+        city: c.city,
+        state: c.state,
+        address: c.address,
+        conference: CONFERENCE_NAMES[c.conference] || c.conference,
+        conferenceCode: c.conference,
+        conferenceId: c.conference.toLowerCase(),
+        hasKitchen: c.hasKitchen === true,
+        hasMeals: c.hasMeals === true,
+        mealDay: c.mealDay,
+        worshipTime: c.worshipTime,
+        sabbathSchoolTime: c.sabbathSchoolTime,
+        outreachFocus: c.outreachFocus,
+        teamCount: c.teamCount,
+        serviceCount: c.serviceCount,
+      };
+    });
+
+  const conferences: ConferenceInfo[] = Object.entries(confCounts).map(([code, count]) => ({
+    id: code.toLowerCase(),
+    name: CONFERENCE_NAMES[code] || code,
+    code,
+    churchCount: count,
+  }));
+
+  return { churches, conferences };
+}
 
 const OUTREACH_LABELS: Record<string, string> = {
   food_assistance: 'Food Assistance',
@@ -77,27 +107,25 @@ const OUTREACH_LABELS: Record<string, string> = {
 };
 
 export function Fellowship(): JSX.Element {
-  const [conferences, setConferences] = useState<ConferenceInfo[]>(FALLBACK_CONFERENCES);
-  const [churches, setChurches] = useState<FellowshipChurch[]>(FALLBACK_CHURCHES);
+  const [conferences, setConferences] = useState<ConferenceInfo[]>([]);
+  const [churches, setChurches] = useState<FellowshipChurch[]>([]);
   const [activeConference, setActiveConference] = useState<string>('all');
   const [search, setSearch] = useState('');
   const [mealsOnly, setMealsOnly] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  // Fetch from API, fall back to hardcoded
   useEffect(() => {
     async function fetchData() {
       try {
-        const res = await fetch(`${API_URL}/api/public/fellowship`);
+        const res = await fetch('/data/churches-australia.json');
         if (res.ok) {
-          const data = await res.json();
-          if (data.success && data.churches.length > 0) {
-            setConferences(data.conferences);
-            setChurches(data.churches);
-          }
+          const raw: ChurchData[] = await res.json();
+          const { churches: mapped, conferences: confs } = mapChurchData(raw);
+          setChurches(mapped);
+          setConferences(confs);
         }
       } catch {
-        // API unavailable — fallback data already set
+        // Data unavailable
       } finally {
         setLoading(false);
       }
@@ -111,7 +139,7 @@ export function Fellowship(): JSX.Element {
       if (mealsOnly && !c.hasMeals) return false;
       if (search) {
         const q = search.toLowerCase();
-        return c.name.toLowerCase().includes(q) || c.city.toLowerCase().includes(q);
+        return c.name.toLowerCase().includes(q) || c.city.toLowerCase().includes(q) || (c.address && c.address.toLowerCase().includes(q));
       }
       return true;
     }).sort((a, b) => {
@@ -143,10 +171,12 @@ export function Fellowship(): JSX.Element {
               <Users className="w-4 h-4 text-[#F44314]" />
               <span className="text-sm font-medium">{churches.length} Communities</span>
             </div>
-            <div className="flex items-center gap-2 bg-white rounded-full px-5 py-2 shadow-sm">
-              <UtensilsCrossed className="w-4 h-4 text-[#F44314]" />
-              <span className="text-sm font-medium">{mealsCount} with Weekly Meals</span>
-            </div>
+            {mealsCount > 0 && (
+              <div className="flex items-center gap-2 bg-white rounded-full px-5 py-2 shadow-sm">
+                <UtensilsCrossed className="w-4 h-4 text-[#F44314]" />
+                <span className="text-sm font-medium">{mealsCount} with Weekly Meals</span>
+              </div>
+            )}
             <div className="flex items-center gap-2 bg-white rounded-full px-5 py-2 shadow-sm">
               <Heart className="w-4 h-4 text-[#F44314]" />
               <span className="text-sm font-medium">Everyone Welcome</span>
@@ -178,7 +208,7 @@ export function Fellowship(): JSX.Element {
                   : 'text-gray-600 hover:bg-gray-100'
               }`}
             >
-              {conf.name.replace(' Conference', '')} ({conf.churchCount})
+              {conf.name} ({conf.churchCount})
             </button>
           ))}
         </div>
@@ -192,7 +222,9 @@ export function Fellowship(): JSX.Element {
             <div>
               <h3 className="font-bold text-lg">Looking for a Free Community Meal?</h3>
               <p className="text-white/80 text-sm">
-                {mealsCount} communities serve free weekly meals — everyone is welcome, no questions asked.
+                {mealsCount > 0
+                  ? `${mealsCount} communities serve free weekly meals — everyone is welcome, no questions asked.`
+                  : 'We\'re collecting meal data from churches — check back soon for updates.'}
               </p>
             </div>
           </div>
@@ -217,14 +249,14 @@ export function Fellowship(): JSX.Element {
             type="text"
             value={search}
             onChange={e => setSearch(e.target.value)}
-            placeholder="Search by community name or city..."
+            placeholder="Search by community name, city, or address..."
             className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:border-[#F44314] transition-colors"
           />
         </div>
         <p className="text-sm text-gray-500 mt-3">
           Showing <span className="font-semibold text-[#F44314]">{filtered.length}</span> communit{filtered.length !== 1 ? 'ies' : 'y'}
           {mealsOnly && ' with weekly meals'}
-          {activeConference !== 'all' && ` in ${conferences.find(c => c.id === activeConference)?.name.replace(' Conference', '') || ''}`}
+          {activeConference !== 'all' && ` in ${conferences.find(c => c.id === activeConference)?.name || ''}`}
         </p>
       </div>
 
@@ -254,10 +286,14 @@ export function Fellowship(): JSX.Element {
                   )}
                 </div>
                 
-                <div className="flex items-center gap-1 text-sm text-gray-500 mb-3">
+                <div className="flex items-center gap-1 text-sm text-gray-500 mb-1">
                   <MapPin className="w-4 h-4" />
                   {community.city}, {community.state}
                 </div>
+
+                {community.address && (
+                  <p className="text-xs text-gray-400 mb-3 ml-5">{community.address}</p>
+                )}
 
                 {community.hasMeals && community.mealDay && (
                   <div className="flex items-center gap-1 text-sm text-green-700 bg-green-50 rounded-lg px-3 py-2 mb-3">
