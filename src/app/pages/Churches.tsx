@@ -1,224 +1,248 @@
-import { useState, useMemo } from 'react';
-import { ChurchCard } from '../components/ChurchCard';
-import { MapPin, Filter, RefreshCw, Search } from 'lucide-react';
+import { useState, useEffect, useRef } from 'react';
+import { MapPin, RefreshCw, Search, ChevronLeft, ChevronRight } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { useChurches } from '../hooks/useChurches';
-import { useCMSPage } from '../hooks/useCMSContent';
+import InboxList, {
+  InboxAvatar,
+  InboxTag,
+  InboxSkeleton,
+  type InboxColumn,
+} from '../components/ui/inbox-list';
+import type { ChurchListItem } from '../types/church.types';
 
-function DecorativeCircles({ showSmallCircles = false }: { showSmallCircles?: boolean }): JSX.Element {
-  return (
-    <div className="absolute inset-0">
-      <div className="absolute top-20 right-20 w-96 h-96 rounded-full bg-white/5 blur-3xl" />
-      <div className="absolute bottom-0 left-0 w-[600px] h-[600px] rounded-full bg-gray-50 blur-3xl" />
-      {showSmallCircles && (
-        <>
-          <div className="absolute top-1/2 right-1/4 w-2 h-2 rounded-full bg-white/30" />
-          <div className="absolute top-1/3 left-1/3 w-3 h-3 rounded-full bg-white/20" />
-        </>
-      )}
-    </div>
-  );
-}
+const PAGE_LIMIT = 25;
 
-interface HeroSectionProps {
-  label: string;
-  title: string;
-  subtitle?: string;
-  showSmallCircles?: boolean;
-}
+// =============================================================================
+// COLUMN DEFINITIONS — renders only server-provided fields, no derivation
+// =============================================================================
 
-function HeroSection({ label, title, subtitle, showSmallCircles = false }: HeroSectionProps): JSX.Element {
-  return (
-    <div className="relative min-h-[500px] flex items-center justify-center overflow-hidden">
-      <div className="absolute inset-0">
-        <DecorativeCircles showSmallCircles={showSmallCircles} />
-      </div>
-      <div className="relative z-10 max-w-4xl mx-auto px-6 py-32 text-center">
-        <p className="text-[#F44314] text-sm font-semibold tracking-wider uppercase mb-4">{label}</p>
-        <h1 className="text-[#1F2937] text-5xl md:text-6xl font-bold mb-6 leading-tight">{title}</h1>
-        {subtitle && (
-          <p
-            className="text-gray-600 text-lg leading-relaxed max-w-3xl mx-auto"
-            dangerouslySetInnerHTML={{ __html: subtitle }}
-          />
-        )}
-      </div>
-    </div>
-  );
-}
+const columns: InboxColumn<ChurchListItem>[] = [
+  {
+    key: 'avatar',
+    width: 'w-8',
+    render: (c) => <InboxAvatar name={c.name ?? '?'} />,
+  },
+  {
+    key: 'name',
+    header: 'Church',
+    width: 'w-56',
+    render: (c) => (
+      <span className="text-sm font-medium text-gray-900 truncate block">{c.name}</span>
+    ),
+  },
+  {
+    key: 'conference',
+    header: 'Conference',
+    width: 'w-28',
+    render: (c) =>
+      c.conference?.name ? (
+        <InboxTag color="orange">{c.conference.name}</InboxTag>
+      ) : (
+        <span className="text-xs text-gray-300">—</span>
+      ),
+  },
+  {
+    key: 'location',
+    header: 'Location',
+    width: 'w-40',
+    render: (c) => (
+      <span className="text-sm text-gray-500 truncate block">
+        {c.locationShort ?? <span className="text-gray-300 italic text-xs">—</span>}
+      </span>
+    ),
+  },
+  {
+    key: 'address',
+    header: 'Address',
+    render: (c) => (
+      <span className="text-sm text-gray-400 truncate block">
+        {c.location?.address?.street ?? <span className="italic text-gray-300 text-xs">No address</span>}
+      </span>
+    ),
+  },
+  {
+    key: 'status',
+    header: 'Status',
+    width: 'w-20',
+    align: 'right',
+    render: (c) => (
+      <InboxTag color={c.isActive ? 'green' : 'gray'}>
+        {c.isActive ? 'Active' : 'Inactive'}
+      </InboxTag>
+    ),
+  },
+];
 
-function PageWrapper({ children }: { children: React.ReactNode }): JSX.Element {
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-[#F44314] via-[#F97023] to-[#F98344]">
-      {children}
-    </div>
-  );
-}
+// Known states — static, avoids an extra API call
+const AU_STATES = ['ACT', 'NSW', 'NT', 'QLD', 'SA', 'TAS', 'VIC', 'WA'];
 
-function StatusCard({ children }: { children: React.ReactNode }): JSX.Element {
-  return (
-    <div className="text-center py-16">
-      <div className="bg-white border border-gray-200 shadow-sm rounded-2xl p-12 max-w-md mx-auto">
-        {children}
-      </div>
-    </div>
-  );
-}
+// =============================================================================
+// PAGE
+// =============================================================================
 
 export function Churches(): JSX.Element {
-  const { getBlock } = useCMSPage('churches');
-  const { churches, loading, error, refetch } = useChurches();
-  const [selectedState, setSelectedState] = useState('All States');
-  const [searchQuery, setSearchQuery] = useState('');
+  const navigate = useNavigate();
 
-  const heroLabel = getBlock('hero', 'section_label') || 'Our Churches';
-  const heroTitle = getBlock('hero', 'title') || 'Find Your Local Church';
-  const heroSubtitle =
-    getBlock('hero', 'subtitle') ||
-    'Connect with Seventh-day Adventist churches across South NSW. Find pastors, ACS coordinators, and community service leaders near you.';
+  // Server-driven state
+  const [page, setPage]           = useState(1);
+  const [search, setSearch]       = useState('');
+  const [debouncedSearch, setDebouncedSearch] = useState('');
+  const [selectedState, setSelectedState]     = useState('');
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const states = useMemo(() => {
-    const uniqueStates = churches
-      .map((church) => church.location?.address?.state)
-      .filter((state): state is string => Boolean(state));
-    return ['All States', ...Array.from(new Set(uniqueStates)).sort()];
-  }, [churches]);
+  // Debounce search — avoid Atlas query on every keystroke
+  useEffect(() => {
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(() => {
+      setDebouncedSearch(search);
+      setPage(1); // reset to page 1 on new search
+    }, 350);
+    return () => { if (debounceRef.current) clearTimeout(debounceRef.current); };
+  }, [search]);
 
-  const filteredChurches = useMemo(() => {
-    const searchLower = searchQuery.toLowerCase();
+  // Reset page when state filter changes
+  const handleStateChange = (s: string) => {
+    setSelectedState(s);
+    setPage(1);
+  };
 
-    return churches.filter((church) => {
-      const stateMatch =
-        selectedState === 'All States' || church.location?.address?.state === selectedState;
-
-      if (!stateMatch) return false;
-      if (!searchQuery) return true;
-
-      const nameMatch = church.name.toLowerCase().includes(searchLower);
-      const pastorMatch = church.leadership?.associatePastors?.some((p) =>
-        p.name.toLowerCase().includes(searchLower)
-      );
-      const coordinatorMatch = church.leadership?.acsCoordinator?.name
-        ?.toLowerCase()
-        .includes(searchLower);
-
-      return nameMatch || pastorMatch || coordinatorMatch;
-    });
-  }, [churches, selectedState, searchQuery]);
-
-  if (loading) {
-    return (
-      <PageWrapper>
-        <HeroSection label={heroLabel} title={heroTitle} />
-        <div className="flex justify-center py-20">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white" />
-        </div>
-      </PageWrapper>
-    );
-  }
+  const { churches, pagination, loading, error, refetch } = useChurches({
+    page,
+    limit: PAGE_LIMIT,
+    search: debouncedSearch || undefined,
+    state: selectedState || undefined,
+  });
 
   if (error) {
     return (
-      <PageWrapper>
-        <HeroSection label={heroLabel} title={heroTitle} />
-        <div className="max-w-7xl mx-auto px-6 pb-24">
-          <StatusCard>
-            <p className="text-[#1F2937] text-lg mb-4">{error}</p>
-            <button
-              onClick={() => refetch()}
-              className="inline-flex items-center gap-2 bg-white text-[#F44314] px-6 py-3 rounded-xl font-semibold hover:bg-white/90 transition-colors"
-            >
-              <RefreshCw className="w-5 h-5" />
-              Try Again
-            </button>
-          </StatusCard>
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-gray-500 mb-4">{error}</p>
+          <button
+            onClick={refetch}
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-[#F44314] text-white text-sm font-medium hover:bg-[#d63a10] transition-colors"
+          >
+            <RefreshCw className="w-4 h-4" /> Try Again
+          </button>
         </div>
-      </PageWrapper>
+      </div>
     );
   }
 
   return (
-    <PageWrapper>
-      <HeroSection label={heroLabel} title={heroTitle} subtitle={heroSubtitle} showSmallCircles />
-
-      {/* Churches Section */}
-      <div className="max-w-7xl mx-auto px-6 pb-24">
-        {/* Filters */}
-        <div className="mb-12">
-          <div className="flex items-center gap-3 mb-6">
-            <Filter className="w-5 h-5 text-[#F44314]" />
-            <h2 className="text-[#1F2937] text-2xl font-semibold">Filter Churches</h2>
-          </div>
-
-          <div className="grid md:grid-cols-2 gap-6">
-            {/* Search Filter */}
-            <div>
-              <label htmlFor="search" className="block text-white/90 text-sm mb-2 flex items-center gap-2">
-                <Search className="w-4 h-4" />
-                Search
-              </label>
-              <input
-                id="search"
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search by name, pastor, or ACS coordinator..."
-                className="w-full px-4 py-3 rounded-xl bg-white border border-gray-200 shadow-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#F44314] transition-colors"
-              />
-            </div>
-
-            {/* State Filter */}
-            <div>
-              <label
-                htmlFor="state"
-                className="block text-white/90 text-sm mb-2 flex items-center gap-2"
-              >
-                <MapPin className="w-4 h-4" />
-                State
-              </label>
-              <select
-                id="state"
-                value={selectedState}
-                onChange={(e) => setSelectedState(e.target.value)}
-                className="w-full px-4 py-3 rounded-xl bg-white border border-gray-200 shadow-sm text-gray-900 focus:outline-none focus:border-[#F44314] transition-colors"
-              >
-                {states.map((state) => (
-                  <option key={state} value={state} className="bg-white text-gray-900">
-                    {state}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </div>
-
-          {/* Results Count */}
-          <div className="mt-6">
-            <p className="text-white/80">
-              Showing{' '}
-              <span className="font-semibold text-[#F44314]">{filteredChurches.length}</span> church
-              {filteredChurches.length !== 1 ? 'es' : ''}
-              {selectedState !== 'All States' && ` in ${selectedState}`}
-              {searchQuery && ` matching "${searchQuery}"`}
-            </p>
-          </div>
+    <div className="min-h-screen bg-white">
+      {/* Page header */}
+      <div className="px-6 py-5 border-b border-gray-100 flex items-center gap-4 flex-wrap">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900">Churches</h1>
+          <p className="text-sm text-gray-400 mt-0.5">
+            {loading
+              ? 'Loading…'
+              : `${pagination.total} church${pagination.total !== 1 ? 'es' : ''}${selectedState ? ` in ${selectedState}` : ''}`}
+          </p>
         </div>
 
-        {/* Churches Grid */}
-        {filteredChurches.length > 0 ? (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredChurches.map((church) => (
-              <ChurchCard key={church._id} church={church} />
+        <div className="flex-1" />
+
+        {/* Search — debounced, hits server */}
+        <div className="relative w-64">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+          <input
+            type="text"
+            placeholder="Search churches…"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="w-full pl-9 pr-3 py-2 text-sm bg-gray-100 rounded-lg border-0 focus:outline-none focus:ring-2 focus:ring-[#F44314]/30 placeholder-gray-400"
+          />
+        </div>
+
+        {/* State filter */}
+        <div className="relative">
+          <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+          <select
+            value={selectedState}
+            onChange={(e) => handleStateChange(e.target.value)}
+            className="pl-9 pr-8 py-2 text-sm bg-gray-100 rounded-lg border-0 focus:outline-none focus:ring-2 focus:ring-[#F44314]/30 text-gray-700 appearance-none cursor-pointer"
+          >
+            <option value="">All States</option>
+            {AU_STATES.map((s) => (
+              <option key={s} value={s}>{s}</option>
             ))}
-          </div>
+          </select>
+        </div>
+      </div>
+
+      {/* Table */}
+      <div className="px-2">
+        {loading && churches.length === 0 ? (
+          <InboxSkeleton rows={PAGE_LIMIT} />
         ) : (
-          <StatusCard>
-            <p className="text-[#1F2937] text-lg mb-2">No churches found</p>
-            <p className="text-gray-600 text-sm">
-              Try adjusting your filters to find churches in other states or with different search
-              terms.
-            </p>
-          </StatusCard>
+          <InboxList<ChurchListItem>
+            data={churches as ChurchListItem[]}
+            columns={columns}
+            getRowKey={(c) => c._id}
+            onRowClick={(c) => navigate(`/churches/${c._id}`)}
+            loading={loading}
+            emptyIcon={<MapPin className="w-12 h-12" />}
+            emptyTitle="No churches found"
+            emptyDescription={
+              debouncedSearch || selectedState
+                ? 'Try adjusting your search or filter'
+                : 'No churches have been added yet'
+            }
+          />
         )}
       </div>
-    </PageWrapper>
+
+      {/* Pagination — lives outside InboxList so it's always in normal document flow */}
+      {pagination.total > 0 && (
+        <div className="flex items-center justify-between px-6 py-3 border-t border-gray-100 bg-white">
+          <span className="text-xs text-gray-400">
+            {Math.min((pagination.page - 1) * pagination.limit + 1, pagination.total)}–{Math.min(pagination.page * pagination.limit, pagination.total)} of {pagination.total} churches
+          </span>
+          <div className="flex items-center gap-1">
+            <button
+              onClick={() => setPage(Math.max(1, page - 1))}
+              disabled={page <= 1}
+              className="p-1.5 rounded-lg text-gray-400 hover:text-gray-700 hover:bg-gray-100 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+            >
+              <ChevronLeft className="w-4 h-4" />
+            </button>
+            {/* Page number pills */}
+            {Array.from({ length: pagination.totalPages }, (_, i) => i + 1)
+              .filter((p) => p === 1 || p === pagination.totalPages || Math.abs(p - page) <= 1)
+              .reduce<(number | '...')[]>((acc, p, idx, arr) => {
+                if (idx > 0 && typeof arr[idx - 1] === 'number' && (p as number) - (arr[idx - 1] as number) > 1) acc.push('...');
+                acc.push(p);
+                return acc;
+              }, [])
+              .map((p, i) =>
+                p === '...' ? (
+                  <span key={`ellipsis-${i}`} className="px-1 text-gray-300 text-xs">…</span>
+                ) : (
+                  <button
+                    key={p}
+                    onClick={() => setPage(p as number)}
+                    className={`min-w-[28px] h-7 px-2 rounded-lg text-xs font-medium transition-colors ${
+                      p === page
+                        ? 'bg-[#F44314] text-white'
+                        : 'text-gray-500 hover:bg-gray-100'
+                    }`}
+                  >
+                    {p}
+                  </button>
+                )
+              )}
+            <button
+              onClick={() => setPage(Math.min(pagination.totalPages, page + 1))}
+              disabled={page >= pagination.totalPages}
+              className="p-1.5 rounded-lg text-gray-400 hover:text-gray-700 hover:bg-gray-100 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+            >
+              <ChevronRight className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
   );
 }

@@ -1,45 +1,70 @@
-import { useState, useEffect, useCallback } from 'react';
-import { churchesApi } from '../services/churchesApi';
-import type { Church, ChurchFilters } from '../types/church.types';
+import { useState, useEffect, useCallback, useRef } from 'react';
+import { churchesApi, type ChurchesQueryParams, type ChurchPagination } from '../services/churchesApi';
+import type { Church } from '../types/church.types';
+
+// =============================================================================
+// useChurches — server-side paginated, filtered, and cached via HTTP headers.
+// All filtering/sorting/pagination happens on the backend.
+// =============================================================================
 
 interface UseChurchesResult {
   churches: Church[];
+  pagination: ChurchPagination;
   loading: boolean;
   error: string | null;
-  refetch: (filters?: ChurchFilters) => Promise<void>;
+  refetch: () => void;
 }
 
-/**
- * Hook for fetching churches list
- */
-export function useChurches(initialFilters?: ChurchFilters): UseChurchesResult {
-  const [churches, setChurches] = useState<Church[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+const DEFAULT_PAGINATION: ChurchPagination = {
+  page: 1,
+  limit: 25,
+  total: 0,
+  totalPages: 1,
+};
 
-  const fetchChurches = useCallback(async (filters?: ChurchFilters) => {
+export function useChurches(params: ChurchesQueryParams): UseChurchesResult {
+  const [churches, setChurches]     = useState<Church[]>([]);
+  const [pagination, setPagination] = useState<ChurchPagination>(DEFAULT_PAGINATION);
+  const [loading, setLoading]       = useState(true);
+  const [error, setError]           = useState<string | null>(null);
+  const isMounted = useRef(true);
+
+  // Stable serialised key — triggers re-fetch when any param changes
+  const paramsKey = JSON.stringify(params);
+
+  const fetchChurches = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
-      const response = await churchesApi.getChurches(filters);
-      if (response.success && response.data) {
-        setChurches(response.data);
+      const res = await churchesApi.getChurches(params);
+      if (!isMounted.current) return;
+      if (res.success) {
+        setChurches(res.data ?? []);
+        setPagination(res.pagination ?? DEFAULT_PAGINATION);
       } else {
         setError('Failed to fetch churches');
       }
     } catch (err) {
+      if (!isMounted.current) return;
       setError(err instanceof Error ? err.message : 'Failed to fetch churches');
     } finally {
-      setLoading(false);
+      if (isMounted.current) setLoading(false);
     }
-  }, []);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [paramsKey]);
 
   useEffect(() => {
-    fetchChurches(initialFilters);
-  }, [fetchChurches, initialFilters]);
+    isMounted.current = true;
+    fetchChurches();
+    return () => { isMounted.current = false; };
+  }, [fetchChurches]);
 
-  return { churches, loading, error, refetch: fetchChurches };
+  return { churches, pagination, loading, error, refetch: fetchChurches };
 }
+
+// =============================================================================
+// useChurchDetail — single church fetch
+// =============================================================================
 
 interface UseChurchDetailResult {
   church: Church | null;
@@ -48,26 +73,19 @@ interface UseChurchDetailResult {
   refetch: () => Promise<void>;
 }
 
-/**
- * Hook for fetching a single church by ID
- */
 export function useChurchDetail(id: string | undefined): UseChurchDetailResult {
   const [church, setChurch] = useState<Church | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   const fetchChurch = useCallback(async () => {
-    if (!id) {
-      setLoading(false);
-      return;
-    }
-
+    if (!id) { setLoading(false); return; }
     setLoading(true);
     setError(null);
     try {
-      const response = await churchesApi.getChurchById(id);
-      if (response.success && response.data) {
-        setChurch(response.data);
+      const res = await churchesApi.getChurchById(id);
+      if (res.success && res.data) {
+        setChurch(res.data as unknown as Church);
       } else {
         setError('Church not found');
       }
@@ -78,9 +96,7 @@ export function useChurchDetail(id: string | undefined): UseChurchDetailResult {
     }
   }, [id]);
 
-  useEffect(() => {
-    fetchChurch();
-  }, [fetchChurch]);
+  useEffect(() => { fetchChurch(); }, [fetchChurch]);
 
   return { church, loading, error, refetch: fetchChurch };
 }

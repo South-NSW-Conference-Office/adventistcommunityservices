@@ -1,51 +1,71 @@
 import { api } from './api';
 import type { Church, ChurchFilters } from '../types/church.types';
 
+export interface ChurchPagination {
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
+}
+
+export interface ChurchesPageResponse {
+  success: boolean;
+  message: string;
+  data: Church[];
+  pagination: ChurchPagination;
+}
+
+export interface ChurchesQueryParams extends ChurchFilters {
+  page?: number;
+  limit?: number;
+  search?: string;
+}
+
 export const churchesApi = {
   /**
-   * Get all churches (authenticated endpoint)
+   * Get paginated churches list.
+   * Server handles filtering, sorting, and pagination.
    */
-  getChurches: async (filters?: ChurchFilters) => {
-    const params = new URLSearchParams();
+  getChurches: async (params?: ChurchesQueryParams): Promise<ChurchesPageResponse> => {
+    const qs = new URLSearchParams();
+    if (params?.conferenceId)   qs.append('conferenceId',   params.conferenceId);
+    if (params?.city)           qs.append('city',           params.city);
+    if (params?.state)          qs.append('state',          params.state);
+    if (params?.search)         qs.append('search',         params.search);
+    if (params?.includeInactive) qs.append('includeInactive', 'true');
+    if (params?.page)           qs.append('page',           String(params.page));
+    if (params?.limit)          qs.append('limit',          String(params.limit));
 
-    if (filters?.conferenceId) params.append('conferenceId', filters.conferenceId);
-    if (filters?.city) params.append('city', filters.city);
-    if (filters?.state) params.append('state', filters.state);
-    if (filters?.search) params.append('search', filters.search);
-    if (filters?.includeInactive) params.append('includeInactive', 'true');
-
-    const queryString = params.toString();
-    const endpoint = `/churches${queryString ? `?${queryString}` : ''}`;
-
-    return api.get<Church[]>(endpoint, true);
+    const endpoint = `/churches${qs.toString() ? `?${qs}` : ''}`;
+    return api.get<ChurchesPageResponse>(endpoint, true) as unknown as ChurchesPageResponse;
   },
 
   /**
-   * Get single church by ID (authenticated endpoint)
+   * Get single church by ID.
    */
   getChurchById: async (id: string) => {
     return api.get<Church>(`/churches/${id}`, true);
   },
 
   /**
-   * Search churches by location
+   * Search churches by geographic location.
    */
-  searchChurches: async (params: { city?: string; state?: string; lat?: number; lng?: number; radius?: number }) => {
-    const searchParams = new URLSearchParams();
-
-    if (params.city) searchParams.append('city', params.city);
-    if (params.state) searchParams.append('state', params.state);
-    if (params.lat !== undefined) searchParams.append('lat', params.lat.toString());
-    if (params.lng !== undefined) searchParams.append('lng', params.lng.toString());
-    if (params.radius !== undefined) searchParams.append('radius', params.radius.toString());
-
-    const queryString = searchParams.toString();
-    return api.get<Church[]>(`/churches/search?${queryString}`, true);
+  searchChurches: async (params: {
+    city?: string;
+    state?: string;
+    lat?: number;
+    lng?: number;
+    radius?: number;
+  }) => {
+    const qs = new URLSearchParams();
+    if (params.city)   qs.append('city',   params.city);
+    if (params.state)  qs.append('state',  params.state);
+    if (params.lat !== undefined) qs.append('lat', String(params.lat));
+    if (params.lng !== undefined) qs.append('lng', String(params.lng));
+    if (params.radius !== undefined) qs.append('radius', String(params.radius));
+    return api.get<Church[]>(`/churches/search?${qs}`, true);
   },
 
-  /**
-   * Get church statistics
-   */
   getChurchStatistics: async (id: string) => {
     return api.get<{
       teams: number;
@@ -55,9 +75,6 @@ export const churchesApi = {
     }>(`/churches/${id}/statistics`, true);
   },
 
-  /**
-   * Get church hierarchy (union -> conference -> church -> teams)
-   */
   getChurchHierarchy: async (id: string) => {
     return api.get<{
       union: { _id: string; name: string };

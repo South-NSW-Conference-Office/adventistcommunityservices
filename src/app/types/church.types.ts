@@ -1,221 +1,251 @@
-// Church Image Types
-export interface ChurchImage {
-  url: string;
-  key?: string;
-  alt?: string;
-  thumbnailUrl?: string;
+/**
+ * church.types.ts
+ *
+ * These types mirror exactly what the backend returns from formatChurchResponse()
+ * and formatChurchListItem().  The frontend never derives or transforms data —
+ * it renders what it receives.
+ */
+
+// ---------------------------------------------------------------------------
+// Sub-types
+// ---------------------------------------------------------------------------
+
+export interface ChurchConference {
+  _id:  string;
+  name: string | null;
+  code: string | null;
 }
 
-// Church Leader Types
-export interface ChurchLeader {
-  name: string;
-  title?: string;
-  email?: string;
-  phone?: string;
-  responsibilities?: string[];
-}
-
-// Church Address Types
 export interface ChurchAddress {
-  street?: string;
-  city?: string;
-  state?: string;
-  postalCode?: string;
-  country?: string;
+  street:     string | null;
+  city:       string | null;
+  state:      string | null;
+  postalCode: string | null;
+  country?:   string | null;
 }
 
-// Church Coordinates
 export interface ChurchCoordinates {
-  latitude: number;
+  latitude:  number;
   longitude: number;
 }
 
-// Church Location
 export interface ChurchLocation {
-  address: ChurchAddress;
-  coordinates?: ChurchCoordinates;
-  timezone?: string;
+  address:     ChurchAddress | null;
+  coordinates: ChurchCoordinates | null;
 }
 
-// Church Contact Info
 export interface ChurchContact {
-  email?: string;
-  phone?: string;
-  website?: string;
-  mailingAddress?: ChurchAddress;
+  phone:          string | null;
+  email:          string | null;
+  website:        string | null;
+  /** UI-safe fallback: "Contact for details" if phone is null */
+  phoneDisplay:   string;
+  /** Normalised URL (always has https://) or null */
+  websiteDisplay: string | null;
 }
 
-// Church Leadership
+export interface ChurchLeader {
+  name:             string | null;
+  title?:           string | null;
+  phone:            string | null;
+  email?:           string | null;
+  responsibilities?: string[];
+  isPrimary?:       boolean;
+}
+
 export interface ChurchLeadership {
+  /** First entry in associatePastors, pre-extracted by the backend */
+  primaryPastor:    ChurchLeader | null;
   associatePastors: ChurchLeader[];
-  acsCoordinator?: ChurchLeader;
-  firstElder?: ChurchLeader;
-  clerk?: ChurchLeader;
-  treasurer?: ChurchLeader;
+  firstElder:       ChurchLeader | null;
+  acsCoordinator:   ChurchLeader | null;
+  clerk:            ChurchLeader | null;
+  treasurer:        ChurchLeader | null;
 }
 
-// Church Facilities
-export interface ChurchSanctuary {
-  capacity?: number;
-  hasAV?: boolean;
-  hasAccessibility?: boolean;
-}
-
-export interface ChurchClassroom {
-  name?: string;
-  capacity?: number;
-  purpose?: string;
-}
-
-export interface ChurchKitchen {
-  available?: boolean;
-  capacity?: number;
-  equipment?: string[];
-}
-
-export interface ChurchParking {
-  spaces?: number;
-  handicapSpaces?: number;
-}
-
-export interface ChurchFacilities {
-  sanctuary?: ChurchSanctuary;
-  classrooms?: ChurchClassroom[];
-  kitchen?: ChurchKitchen;
-  parking?: ChurchParking;
-  other?: string[];
-}
-
-// Church Service Schedule
 export interface ChurchServiceTime {
-  time?: string;
+  time?:        string;
   description?: string;
-  day?: string;
+  day?:         string;
 }
 
 export interface ChurchSpecialService {
-  name?: string;
-  schedule?: string;
+  name?:        string;
+  schedule?:    string;
   description?: string;
 }
 
 export interface ChurchServices {
-  sabbathSchool?: ChurchServiceTime;
-  worship?: ChurchServiceTime;
-  prayerMeeting?: ChurchServiceTime;
-  vespers?: ChurchServiceTime;
-  special?: ChurchSpecialService[];
+  sabbathSchool: ChurchServiceTime | null;
+  worship:       ChurchServiceTime | null;
+  prayerMeeting: ChurchServiceTime | null;
+  vespers:       ChurchServiceTime | null;
+  special:       ChurchSpecialService[];
 }
 
-// Church Outreach
-export type OutreachFocusType =
-  | 'food_assistance'
-  | 'clothing'
-  | 'health_services'
-  | 'education'
-  | 'disaster_relief'
-  | 'community_development'
-  | 'family_services';
+export interface ChurchSanctuary {
+  capacity?:        number;
+  hasAV?:           boolean;
+  hasAccessibility?: boolean;
+}
+
+export interface ChurchClassroom {
+  name?:     string;
+  capacity?: number;
+  purpose?:  string;
+}
+
+export interface ChurchKitchen {
+  available?: boolean;
+  capacity?:  number;
+  equipment?: string[];
+}
+
+export interface ChurchParking {
+  spaces?:         number;
+  handicapSpaces?: number;
+}
+
+export interface ChurchFacilities {
+  sanctuary:  ChurchSanctuary | null;
+  classrooms: ChurchClassroom[];
+  kitchen:    ChurchKitchen | null;
+  parking:    ChurchParking | null;
+  other:      string[];
+}
+
+export interface OutreachFocusItem {
+  /** The raw enum key stored in the DB */
+  key:   string;
+  /** Human-readable label, resolved by the backend */
+  label: string;
+}
 
 export interface ChurchServiceArea {
-  radius?: number;
-  communities?: string[];
+  radius?:             number;
+  communities?:        string[];
   specialPopulations?: string[];
 }
 
-export interface ChurchPartnership {
-  organization?: string;
-  type?: string;
-  contactPerson?: string;
-  relationship?: string;
-}
-
 export interface ChurchOutreach {
-  primaryFocus?: OutreachFocusType[];
-  serviceArea?: ChurchServiceArea;
-  partnerships?: ChurchPartnership[];
+  primaryFocus: OutreachFocusItem[];
+  serviceArea:  ChurchServiceArea | null;
+  partnerships: unknown[];
 }
 
-// Church Settings
-export interface ChurchServiceLanguage {
-  language?: string;
-  isPrimary?: boolean;
-  serviceTypes?: string[];
+export interface ChurchImage {
+  url:          string;
+  key?:         string;
+  alt?:         string;
+  thumbnailUrl?: string;
 }
 
-export interface ChurchACSOperatingHours {
-  day?: string;
-  open?: string;
-  close?: string;
+/** Section presence flags — computed by the backend */
+export interface ChurchSections {
+  hasServiceTimes: boolean;
+  hasFacilities:   boolean;
+  hasLeadership:   boolean;
+  hasOutreach:     boolean;
 }
 
-export interface ChurchACSSettings {
-  operatingHours?: ChurchACSOperatingHours[];
-  specialRequirements?: string[];
-  volunteerCoordinator?: string;
-}
-
-export interface ChurchSettings {
-  serviceLanguages?: ChurchServiceLanguage[];
-  acsSettings?: ChurchACSSettings;
-}
-
-// Church Metadata
-export interface ChurchMetadata {
-  teamCount: number;
+/** Stats — always numbers, never null */
+export interface ChurchStats {
+  teamCount:    number;
   serviceCount: number;
-  lastReport?: string;
-  lastVisit?: string;
-  lastUpdated?: string;
 }
 
-// Conference Reference
-export interface ChurchConference {
-  _id: string;
-  name: string;
-  code?: string;
-}
-
-// Main Church Interface
+// ---------------------------------------------------------------------------
+// Full church detail response
+// ---------------------------------------------------------------------------
 export interface Church {
-  _id: string;
-  name: string;
-  code?: string;
-  conferenceId: string | ChurchConference;
-  hierarchyPath: string;
+  _id:            string;
+  name:           string | null;
+  code:           string | null;
+  isActive:       boolean;
+  organizedDate:  string | null;
+  hierarchyPath:  string | null;
   hierarchyLevel: number;
-  location: ChurchLocation;
-  contact: ChurchContact;
-  leadership: ChurchLeadership;
-  primaryImage?: ChurchImage;
-  facilities?: ChurchFacilities;
-  services?: ChurchServices;
-  outreach?: ChurchOutreach;
-  settings?: ChurchSettings;
-  organizedDate?: string;
-  isActive: boolean;
-  metadata: ChurchMetadata;
-  createdAt: string;
-  updatedAt: string;
+
+  /** Always a consistent object shape, never a raw ObjectId string */
+  conference: ChurchConference | null;
+
+  location:         ChurchLocation;
+  formattedAddress: string;   // e.g. "805 David Street, Albury, NSW 2640"
+  locationShort:    string;   // e.g. "Albury, NSW"
+
+  contact:   ChurchContact;
+  /** Google Maps directions URL, computed by backend */
+  directionsUrl: string | null;
+
+  leadership:  ChurchLeadership;
+  services:    ChurchServices;
+  facilities:  ChurchFacilities;
+  outreach:    ChurchOutreach;
+  primaryImage: ChurchImage | null;
+  settings:    unknown | null;
+
+  /** Section presence flags — render conditionally on these */
+  sections: ChurchSections;
+  /** Stats — always numbers */
+  stats:    ChurchStats;
+
+  createdAt: string | null;
+  updatedAt: string | null;
 }
 
-// API Response Types
+// ---------------------------------------------------------------------------
+// List item — lighter shape returned by GET /churches
+// ---------------------------------------------------------------------------
+export interface ChurchListItem {
+  _id:           string;
+  name:          string | null;
+  code:          string | null;
+  isActive:      boolean;
+  conference:    ChurchConference | null;
+  locationShort: string | null;
+  location: {
+    address: Omit<ChurchAddress, 'country'> | null;
+  };
+  contact: {
+    phone:   string | null;
+    email:   string | null;
+    website: string | null;
+  };
+  stats: ChurchStats;
+}
+
+// ---------------------------------------------------------------------------
+// API response wrappers
+// ---------------------------------------------------------------------------
+export interface ChurchPagination {
+  page:       number;
+  limit:      number;
+  total:      number;
+  totalPages: number;
+}
+
 export interface ChurchesListResponse {
-  success: boolean;
-  count?: number;
-  data: Church[];
+  success:    boolean;
+  message:    string;
+  data:       ChurchListItem[];
+  pagination: ChurchPagination;
 }
 
 export interface ChurchDetailResponse {
   success: boolean;
-  data: Church;
+  message: string;
+  data:    Church;
 }
 
-// Filter Parameters
+// ---------------------------------------------------------------------------
+// Query params
+// ---------------------------------------------------------------------------
 export interface ChurchFilters {
-  conferenceId?: string;
-  city?: string;
-  state?: string;
-  search?: string;
+  conferenceId?:   string;
+  city?:           string;
+  state?:          string;
+  search?:         string;
   includeInactive?: boolean;
+  page?:           number;
+  limit?:          number;
 }
