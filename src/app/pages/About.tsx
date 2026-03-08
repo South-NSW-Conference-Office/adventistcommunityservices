@@ -342,7 +342,7 @@ export function About(): JSX.Element {
             fallback="Our passionate team of professionals and volunteers are committed to making a difference in communities across Australia."
             className="text-gray-600 text-center max-w-2xl mx-auto mb-12"
           />
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="flex flex-wrap justify-center gap-8">
             {cms.team.members.map((member, index) => (
               <div key={index} className="text-center">
                 <img
