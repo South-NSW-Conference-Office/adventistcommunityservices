@@ -23,7 +23,20 @@ export interface ChurchesQueryParams extends ChurchFilters {
 
 export const churchesApi = {
   /**
-   * Get paginated churches list.
+   * Get public churches list — no auth required.
+   * Supports optional search, state, and conferenceId filters.
+   */
+  getPublicChurches: async (params?: { search?: string; state?: string; conferenceId?: string }) => {
+    const qs = new URLSearchParams();
+    if (params?.search)       qs.append('search',       params.search);
+    if (params?.state)        qs.append('state',        params.state);
+    if (params?.conferenceId) qs.append('conferenceId', params.conferenceId);
+    const endpoint = `/churches/public${qs.toString() ? `?${qs}` : ''}`;
+    return api.get<Church[]>(endpoint, false);
+  },
+
+  /**
+   * Get paginated churches list (admin — requires auth).
    * Server handles filtering, sorting, and pagination.
    */
   getChurches: async (params?: ChurchesQueryParams): Promise<ChurchesPageResponse> => {

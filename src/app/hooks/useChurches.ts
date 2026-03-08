@@ -3,6 +3,44 @@ import { churchesApi, type ChurchesQueryParams, type ChurchPagination } from '..
 import type { Church } from '../types/church.types';
 
 // =============================================================================
+// usePublicChurches — public, no auth, client-side filtered (like useTeams)
+// =============================================================================
+
+interface UsePublicChurchesResult {
+  churches: Church[];
+  loading: boolean;
+  error: string | null;
+  refetch: () => Promise<void>;
+}
+
+export function usePublicChurches(): UsePublicChurchesResult {
+  const [churches, setChurches] = useState<Church[]>([]);
+  const [loading, setLoading]   = useState(true);
+  const [error, setError]       = useState<string | null>(null);
+
+  const fetchChurches = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await churchesApi.getPublicChurches();
+      if (res.success && res.data) {
+        setChurches(res.data as unknown as Church[]);
+      } else {
+        setError('Failed to fetch churches');
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to fetch churches');
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => { fetchChurches(); }, [fetchChurches]);
+
+  return { churches, loading, error, refetch: fetchChurches };
+}
+
+// =============================================================================
 // useChurches — server-side paginated, filtered, and cached via HTTP headers.
 // All filtering/sorting/pagination happens on the backend.
 // =============================================================================
