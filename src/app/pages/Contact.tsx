@@ -1,5 +1,5 @@
 import { Loader2 } from 'lucide-react';
-import { useState, FormEvent } from 'react';
+import { useState, useEffect, FormEvent } from 'react';
 import { contactApi, ContactFormData, VolunteerApplicationData } from '../services/contactApi';
 import { useCMSPage, CMSImage } from '../hooks/useCMSContent';
 import { EditableText, EditableRichText } from '../components/editable';
@@ -154,12 +154,35 @@ function ContactImagePlaceholders(): JSX.Element {
   );
 }
 
+interface ChurchTeam {
+  id: string;
+  name: string;
+  conference: string;
+  city: string;
+  state: string;
+  email?: string | null;
+}
+
 export function Contact(): JSX.Element {
   const [formType, setFormType] = useState<FormType>('contact');
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
+  const [teams, setTeams] = useState<ChurchTeam[]>([]);
+
+  useEffect(() => {
+    fetch('/data/churches-australia.json')
+      .then(r => r.json())
+      .then((data: any[]) => {
+        const sorted = data
+          .filter(c => c.isActive)
+          .sort((a, b) => a.name.localeCompare(b.name))
+          .map(c => ({ id: c.id, name: c.name, conference: c.conference, city: c.city, state: c.state, email: c.email || null }));
+        setTeams(sorted);
+      })
+      .catch(() => {});
+  }, []);
 
   const { getBlock, getJSONBlock } = useCMSPage('contact');
 
@@ -424,6 +447,22 @@ export function Contact(): JSX.Element {
 
               {isContact ? (
                 <>
+                  <div>
+                    <label htmlFor="team" className="block text-gray-700 text-sm mb-2">Direct your enquiry to</label>
+                    <select
+                      id="team"
+                      name="team"
+                      className={INPUT_CLASS}
+                      onChange={() => handleInputChange('team')}
+                    >
+                      <option value="">Select a local team or Admin...</option>
+                      <option value="admin">Admin — Adventist Community Services</option>
+                      {teams.map(t => (
+                        <option key={t.id} value={t.id}>{t.name}, {t.state} ({t.conference})</option>
+                      ))}
+                    </select>
+                  </div>
+
                   <div>
                     <label htmlFor="subject" className="block text-gray-700 text-sm mb-2">Subject</label>
                     <input
