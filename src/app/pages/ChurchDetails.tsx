@@ -20,9 +20,6 @@ import { JSX } from 'react';
 const DEFAULT_CHURCH_IMAGE =
   'https://images.unsplash.com/photo-1438032005730-c779502df39b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080';
 
-const GRADIENT_BG =
-  'min-h-screen bg-gradient-to-br from-[#F44314] via-[#F97023] to-[#F98344]';
-
 const CARD_STYLES = 'bg-white border border-gray-200 shadow-sm rounded-xl p-4';
 
 // =============================================================================
@@ -153,7 +150,7 @@ interface PageStateProps {
 }
 function PageState({ message, showRefresh, onRefresh }: PageStateProps): JSX.Element {
   return (
-    <div className={`${GRADIENT_BG} flex items-center justify-center px-6`}>
+    <div className="min-h-screen bg-white flex items-center justify-center px-6">
       <div className="bg-white border border-gray-200 shadow-sm rounded-2xl p-12 max-w-md text-center">
         <p className="text-gray-900 text-xl mb-4">{message}</p>
         <div className="flex flex-col gap-3">
@@ -184,7 +181,7 @@ export function ChurchDetails(): JSX.Element {
 
   if (loading) {
     return (
-      <div className={`${GRADIENT_BG} flex items-center justify-center`}>
+      <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white" />
       </div>
     );
@@ -200,7 +197,7 @@ export function ChurchDetails(): JSX.Element {
   const conferenceName = c.conference?.name ?? 'Conference';
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#F44314] via-[#F97023] to-[#F98344]">
+    <div className="min-h-screen bg-white">
       {/* Hero */}
       <div className="relative h-[500px] overflow-hidden">
         <img src={imageUrl} alt={c.name ?? 'Church'} className="w-full h-full object-cover" />
@@ -217,7 +214,7 @@ export function ChurchDetails(): JSX.Element {
 
         <div className="absolute bottom-0 left-0 right-0 pb-12">
           <div className="max-w-7xl mx-auto px-6">
-            <h1 className="text-gray-900 text-5xl font-bold mb-4">{c.name}</h1>
+            <h1 className="text-white text-5xl font-bold mb-4">{c.name}</h1>
             <div className="flex flex-wrap items-center gap-4 text-white/90">
               <div className="flex items-center gap-2">
                 <MapPin className="w-5 h-5" />
