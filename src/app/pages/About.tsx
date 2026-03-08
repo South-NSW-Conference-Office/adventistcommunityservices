@@ -18,13 +18,13 @@ const VALUE_ICONS: Record<string, React.ComponentType<{ className?: string }>> =
 
 const STATIC_DATA = {
   testimonials: [
-    { id: 1, name: "Jenny Clarke", location: "Wagga Wagga", review: "Helping families put food on the table — Kyle will provide real quotes soon.", image: "" },
-    { id: 2, name: "Mark O'Sullivan", location: "Albury", review: "Being here for people in crisis moments — Kyle will provide real quotes soon.", image: "" },
-    { id: 3, name: "Patricia Williams", location: "Canberra", review: "Every item we sell helps fund our community programs — Kyle will provide real quotes soon.", image: "" },
-    { id: 4, name: "Tony Vasquez", location: "Nowra", review: "First on scene when communities need us most — Kyle will provide real quotes soon.", image: "" },
-    { id: 5, name: "Sarah McDonald", location: "Bathurst", review: "Teaching financial skills that change lives long-term — Kyle will provide real quotes soon.", image: "" },
-    { id: 6, name: "David Thompson", location: "Orange", review: "Working with young people to build brighter futures — Kyle will provide real quotes soon.", image: "" },
-
+    { id: 1, name: "Ben Forbes", location: "Wagga Wagga", review: "Always ready to help, with an eye for details and a network that runs deep. Service with a smile!", image: "" },
+    { id: 2, name: "Sophie Bullock", location: "Canberra", review: "The can-do dynamo who never slows down. Always the hardest worker in the room.", image: "" },
+    { id: 3, name: "Russell Alsop", location: "Albury", review: "The prayer warrior who knows exactly how to fix anything and everything.", image: "" },
+    { id: 4, name: "Daniel Oehlmann", location: "Bowral", review: "Friendly, fun and ready to run! He also cooks up a storm, if you ever need it.", image: "" },
+    { id: 5, name: "Brett Pitman", location: "Orange", review: "Living a life of servant leadership, helping anyone he can along the way.", image: "" },
+    { id: 6, name: "Steve Teale", location: "Kempsey", review: "The mud army sergeant, who can rally a team and provide service with a smile.", image: "" },
+    { id: 7, name: "Kevin Johnson", location: "Kingscliff", review: "A born and bred local with all the connections and a couple of flood clean-ups under his belt.", image: "" },
   ] as Testimonial[],
   values: [
     { icon: 'Heart', title: 'Compassion', description: 'We serve each person with genuine care and respect, regardless of their situation' },
