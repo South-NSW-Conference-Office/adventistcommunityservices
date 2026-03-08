@@ -23,6 +23,13 @@ export interface ChurchesQueryParams extends ChurchFilters {
 
 export const churchesApi = {
   /**
+   * Get single church by ID — public, no auth required.
+   */
+  getPublicChurchById: async (id: string) => {
+    return api.get<Church>(`/churches/public/${id}`, false);
+  },
+
+  /**
    * Get public churches list — no auth required.
    * Supports optional search, state, and conferenceId filters.
    */

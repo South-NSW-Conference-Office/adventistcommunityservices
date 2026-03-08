@@ -41,6 +41,45 @@ export function usePublicChurches(): UsePublicChurchesResult {
 }
 
 // =============================================================================
+// usePublicChurchDetail — single church, public, no auth
+// =============================================================================
+
+interface UsePublicChurchDetailResult {
+  church: Church | null;
+  loading: boolean;
+  error: string | null;
+  refetch: () => Promise<void>;
+}
+
+export function usePublicChurchDetail(id: string | undefined): UsePublicChurchDetailResult {
+  const [church, setChurch] = useState<Church | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchChurch = useCallback(async () => {
+    if (!id) { setLoading(false); return; }
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await churchesApi.getPublicChurchById(id);
+      if (res.success && res.data) {
+        setChurch(res.data as unknown as Church);
+      } else {
+        setError('Church not found');
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to fetch church');
+    } finally {
+      setLoading(false);
+    }
+  }, [id]);
+
+  useEffect(() => { fetchChurch(); }, [fetchChurch]);
+
+  return { church, loading, error, refetch: fetchChurch };
+}
+
+// =============================================================================
 // useChurches — server-side paginated, filtered, and cached via HTTP headers.
 // All filtering/sorting/pagination happens on the backend.
 // =============================================================================

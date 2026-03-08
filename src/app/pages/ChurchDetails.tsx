@@ -5,7 +5,7 @@ import {
   Building2, Car, Utensils, Monitor,
   Accessibility, Heart, User,
 } from 'lucide-react';
-import { useChurchDetail } from '../hooks/useChurches';
+import { usePublicChurchDetail } from '../hooks/useChurches';
 import type {
   Church,
   ChurchLeader,
@@ -180,7 +180,7 @@ function PageState({ message, showRefresh, onRefresh }: PageStateProps): JSX.Ele
 export function ChurchDetails(): JSX.Element {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { church, loading, error, refetch } = useChurchDetail(id);
+  const { church, loading, error, refetch } = usePublicChurchDetail(id);
 
   if (loading) {
     return (
