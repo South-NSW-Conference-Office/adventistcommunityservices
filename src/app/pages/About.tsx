@@ -23,8 +23,7 @@ const STATIC_DATA = {
     { id: 3, name: "Russell Alsop", location: "Albury", review: "The prayer warrior who knows exactly how to fix anything and everything.", image: "" },
     { id: 4, name: "Daniel Oehlmann", location: "Bowral", review: "Friendly, fun and ready to run! He also cooks up a storm, if you ever need it.", image: "" },
     { id: 5, name: "Brett Pitman", location: "Orange", review: "Living a life of servant leadership, helping anyone he can along the way.", image: "" },
-    { id: 6, name: "Steve Teale", location: "Kempsey", review: "The mud army sergeant, who can rally a team and provide service with a smile.", image: "" },
-    { id: 7, name: "Kevin Johnson", location: "Kingscliff", review: "A born and bred local with all the connections and a couple of flood clean-ups under his belt.", image: "" },
+    { id: 6, name: "Kevin Johnson", location: "Kingscliff", review: "A born and bred local with all the connections and a couple of flood clean-ups under his belt.", image: "" },
   ] as Testimonial[],
   values: [
     { icon: 'Heart', title: 'Compassion', description: 'We serve each person with genuine care and respect, regardless of their situation' },
@@ -33,9 +32,8 @@ const STATIC_DATA = {
     { icon: 'Award', title: 'Integrity', description: 'Providing reliable, quality community services you can trust' },
   ] as ValueItem[],
   teamMembers: [
-    { image: 'https://images.unsplash.com/photo-1759709042164-0dd78a39028b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhdXN0cmFsaWElMjBoZWxwaW5nJTIwaGFuZHM8ZW58MXx8fHwxNzY2MTk2MTgzfDA&ixlib=rb-4.1.0&q=80&w=1080', title: 'ACS Director — Kyle Morrison', department: 'Leadership Team', description: 'Guiding our vision and mission across Australia' },
-    { image: 'https://images.unsplash.com/photo-1638769314338-9ba8e1e69465?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhdXN0cmFsaWElMjBjaGFyaXR5JTIwd2FybXxlbnwxfHx8fDE3NjYxOTU4MzV8MA&ixlib=rb-4.1.0&q=80&w=1080', title: 'Local Church Coordinators', department: 'Service Delivery', description: 'The volunteers in each church who run ACS programs' },
-    { image: 'https://images.unsplash.com/photo-1586210477035-c8d790403e35?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhdXN0cmFsaWElMjBjaHVyY2glMjBtaXNzaW9ufGVufDF8fHx8MTc2NjE5NjE4NHww&ixlib=rb-4.1.0&q=80&w=1080', title: 'Our Volunteers', department: 'Community Support', description: 'The heart of everything we do' },
+    { image: 'https://images.unsplash.com/photo-1759709042164-0dd78a39028b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhdXN0cmFsaWElMjBoZWxwaW5nJTIwaGFuZHM8ZW58MXx8fHwxNzY2MTk2MTgzfDA&ixlib=rb-4.1.0&q=80&w=1080', title: 'South NSW Director — Kyle Morrison', department: 'South NSW Conference', description: 'Leading ACS across the South NSW region' },
+    { image: 'https://images.unsplash.com/photo-1638769314338-9ba8e1e69465?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhdXN0cmFsaWElMjBjaGFyaXR5JTIwd2FybXxlbnwxfHx8fDE3NjYxOTU4MzV8MA&ixlib=rb-4.1.0&q=80&w=1080', title: 'North NSW Director — Steve Teale', department: 'North NSW Conference', description: 'Leading ACS across the North NSW region' },
   ] as TeamMember[],
   storyImages: [
     { url: 'https://images.unsplash.com/photo-1664799024654-9bc64fd66af1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhdXN0cmFsaWElMjBvdXRiYWNrJTIwbGFuZHNjYXBlfGVufDF8fHx8MTc2NjE5Njk2N3ww&ixlib=rb-4.1.0&q=80&w=1080', alt: 'Australian outback' },
