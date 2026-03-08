@@ -36,10 +36,9 @@ const STATIC_DATA = {
     { image: 'https://images.unsplash.com/photo-1638769314338-9ba8e1e69465?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhdXN0cmFsaWElMjBjaGFyaXR5JTIwd2FybXxlbnwxfHx8fDE3NjYxOTU4MzV8MA&ixlib=rb-4.1.0&q=80&w=1080', title: 'North NSW Director — Steve Teale', department: 'North NSW Conference', description: 'Leading ACS across the North NSW region' },
   ] as TeamMember[],
   storyImages: [
-    { url: 'https://images.unsplash.com/photo-1664799024654-9bc64fd66af1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhdXN0cmFsaWElMjBvdXRiYWNrJTIwbGFuZHNjYXBlfGVufDF8fHx8MTc2NjE5Njk2N3ww&ixlib=rb-4.1.0&q=80&w=1080', alt: 'Australian outback' },
-    { url: 'https://images.unsplash.com/photo-1443048361775-c3bab8add48e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzeWRuZXklMjBhdXN0cmFsaWElMjBjaXR5c2NhcGV8ZW58MXx8fHwxNzY2MTk2OTY3fDA&ixlib=rb-4.1.0&q=80&w=1080', alt: 'Sydney cityscape' },
-    { url: 'https://images.unsplash.com/photo-1510508050928-0d01634906dd?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhdXN0cmFsaWElMjBiZWFjaCUyMGNvYXN0YWx8ZW58MXx8fHwxNzY2MTk2OTY3fDA&ixlib=rb-4.1.0&q=80&w=1080', alt: 'Australian beach' },
-    { url: 'https://images.unsplash.com/photo-1743130940758-622b8e6b4140?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhdXN0cmFsaWElMjBjb21tdW5pdHklMjB2b2x1bnRlZXJzfGVufDF8fHx8MTc2NjE5Njk2Nnww&ixlib=rb-4.1.0&q=80&w=1080', alt: 'Community volunteers' },
+    { url: '/images/team/stormco-group.jpg', alt: 'StormCo volunteer team on site' },
+    { url: '/images/team/stormco-leaders.jpg', alt: 'StormCo leadership team' },
+    { url: '/images/team/stormco-truck.jpg', alt: 'ACS disaster response team with vehicle' },
   ] as CMSImage[],
 };
 
@@ -47,7 +46,6 @@ const STORY_IMAGE_GRID = [
   { className: 'col-span-1 row-span-2', heightClass: 'h-full' },
   { className: 'col-span-1', heightClass: 'h-full' },
   { className: 'col-span-1', heightClass: 'h-full' },
-  { className: 'col-span-2', heightClass: 'h-48' },
 ];
 
 interface TestimonialCardProps {
@@ -218,11 +216,23 @@ export function About(): JSX.Element {
                     <img
                       src={image.url}
                       alt={image.alt}
-                      className={`rounded-2xl shadow-lg w-full ${layout.heightClass} object-cover`}
+                      className={`rounded-2xl shadow-lg w-full ${layout.heightClass} object-cover object-center`}
                     />
                   </div>
                 );
               })}
+              {/* YouTube Video */}
+              <div className="col-span-2 mt-3">
+                <div className="relative w-full rounded-2xl overflow-hidden shadow-lg" style={{ paddingTop: '56.25%' }}>
+                  <iframe
+                    className="absolute inset-0 w-full h-full"
+                    src="https://www.youtube.com/embed/Mzwy_gkPjbw"
+                    title="Adventist Community Services"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                  />
+                </div>
+              </div>
             </div>
 
             <div>
