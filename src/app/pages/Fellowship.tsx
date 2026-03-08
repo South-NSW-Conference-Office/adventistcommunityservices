@@ -130,11 +130,11 @@ export function Fellowship(): JSX.Element {
         <div className="max-w-4xl mx-auto text-center">
           <p className="text-[#F44314] text-sm font-semibold tracking-wider uppercase mb-4">Fellowship</p>
           <h1 className="text-[#1F2937] text-4xl md:text-5xl font-bold mb-4">
-            Find Friendship, Faith & Fellowship
+            Find Friends, Fellowship and Faith
           </h1>
           <p className="text-gray-600 text-lg max-w-2xl mx-auto mb-8">
-            Every Adventist community welcomes you with open arms. Come for a visit, stay for a meal, 
-            and find a place to belong. No membership required — just show up.
+            Come for a meal, meet some kind neighbours, and find a place that you belong. 
+            No membership or admission fees required — just come as you are.
           </p>
           
           {/* Stats */}
