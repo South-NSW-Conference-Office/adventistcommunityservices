@@ -135,13 +135,13 @@ export function About(): JSX.Element {
       {/* Hero Image Section */}
       {isSectionEnabled('hero') && (
         <div className="relative h-[500px] overflow-hidden">
-          <EditableImage
-            pageId="about"
-            sectionId="hero"
-            blockKey="background_image"
-            src={cms.hero.image}
-            alt="Community helping together"
-            className="w-full h-full object-cover"
+          {/* YouTube background video */}
+          <iframe
+            className="absolute inset-0 w-full h-full pointer-events-none"
+            src="https://www.youtube.com/embed/Mzwy_gkPjbw?autoplay=1&mute=1&loop=1&playlist=Mzwy_gkPjbw&controls=0&showinfo=0&modestbranding=1&playsinline=1"
+            title="ACS Background Video"
+            allow="autoplay; encrypted-media"
+            style={{ transform: 'scale(1.5)', transformOrigin: 'center center' }}
           />
           <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/30 to-black/60" />
           <div className="absolute bottom-0 left-0 right-0 pb-12">
@@ -221,18 +221,7 @@ export function About(): JSX.Element {
                   </div>
                 );
               })}
-              {/* YouTube Video */}
-              <div className="col-span-2 mt-3">
-                <div className="relative w-full rounded-2xl overflow-hidden shadow-lg" style={{ paddingTop: '56.25%' }}>
-                  <iframe
-                    className="absolute inset-0 w-full h-full"
-                    src="https://www.youtube.com/embed/Mzwy_gkPjbw"
-                    title="Adventist Community Services"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                  />
-                </div>
-              </div>
+
             </div>
 
             <div>
