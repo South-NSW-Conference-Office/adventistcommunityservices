@@ -111,7 +111,7 @@ export function ChurchCard({ church }: ChurchCardProps) {
           <div>
             <div className="flex items-center gap-2 text-white/90 text-sm font-medium mb-1">
               <Building2 className="w-4 h-4 flex-shrink-0 text-orange-400" />
-              <span>ACS: {acsCoordinator.name}</span>
+              <span>Coordinator: {acsCoordinator.name}</span>
             </div>
             <div className="flex flex-wrap gap-3 ml-6">
               {acsCoordinator.phone && (

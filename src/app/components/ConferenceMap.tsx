@@ -143,17 +143,17 @@ export const ConferenceMap: React.FC<ConferenceMapProps> = ({ className = '' }) 
               </p>
               <p>
                 This conference hasn't activated on communityservices.org.au yet.
-                Want to bring ACS services to your area?
+                Want to bring Adventist Community Services to your area?
               </p>
             </DialogDescription>
           </DialogHeader>
           <DialogFooter className="flex flex-col sm:flex-row gap-2">
             <a
-              href={`mailto:${selectedConference?.contactEmail}?subject=Activate ${selectedConference?.name} on communityservices.org.au&body=Hi ACS,%0A%0APeople are looking for community services in ${selectedConference?.state}. I'd like to help activate our conference.%0A%0AThanks`}
+              href={`mailto:${selectedConference?.contactEmail}?subject=Activate ${selectedConference?.name} on communityservices.org.au&body=Hi,%0A%0A%0A%0APeople are looking for community services in ${selectedConference?.state}. I'd like to help activate our conference.%0A%0AThanks`}
               className="inline-flex items-center justify-center gap-2 rounded-lg bg-[#F44314] px-4 py-2.5 text-sm font-medium text-white hover:bg-[#DC2626] transition-colors"
             >
               <Mail className="w-4 h-4" />
-              Contact ACS
+              Contact Us
             </a>
             <Button variant="outline" onClick={() => setModalOpen(false)}>
               Close

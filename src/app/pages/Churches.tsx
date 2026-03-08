@@ -74,7 +74,7 @@ export function Churches(): JSX.Element {
   const heroTitle = getBlock('hero', 'title') || 'Find Your Local Church';
   const heroSubtitle =
     getBlock('hero', 'subtitle') ||
-    'Connect with Seventh-day Adventist churches across South NSW. Find pastors, ACS coordinators, and community service leaders near you.';
+    'Connect with Seventh-day Adventist churches across South NSW. Find pastors, community services coordinators, and community service leaders near you.';
 
   const states = useMemo(() => {
     const uniqueStates = churches
@@ -161,7 +161,7 @@ export function Churches(): JSX.Element {
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search by name, pastor, or ACS coordinator..."
+                placeholder="Search by name, pastor, or coordinator..."
                 className="w-full px-4 py-3 rounded-xl bg-white border border-gray-200 shadow-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#F44314] transition-colors"
               />
             </div>

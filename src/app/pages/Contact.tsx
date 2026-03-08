@@ -36,7 +36,7 @@ function getFormTypeButtonClass(isActive: boolean): string {
 
 const STATIC_DATA = {
   contactImages: [
-    { url: 'https://images.unsplash.com/photo-1725021059875-8f7fd08c843a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhdXN0cmFsaWElMjBzeWRuZXklMjBvZmZpY2UlMjBidWlsZGluZ3xlbnwxfHx8fDE3NjYxOTgyMTh8MA&ixlib=rb-4.1.0&q=80&w=1080', alt: 'ACS Office Building' },
+    { url: 'https://images.unsplash.com/photo-1725021059875-8f7fd08c843a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhdXN0cmFsaWElMjBzeWRuZXklMjBvZmZpY2UlMjBidWlsZGluZ3xlbnwxfHx8fDE3NjYxOTgyMTh8MA&ixlib=rb-4.1.0&q=80&w=1080', alt: 'Office Building' },
     { url: 'https://images.unsplash.com/photo-1556761175-b413da4baf72?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxvZmZpY2UlMjByZWNlcHRpb24lMjBkZXNrfGVufDF8fHx8MTczNDU2Nzg5Nnww&ixlib=rb-4.1.0&q=80&w=1080', alt: 'Reception Area' },
     { url: 'https://images.unsplash.com/photo-1497366216548-37526070297c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxvZmZpY2UlMjBtZWV0aW5nJTIwcm9vbXxlbnwxfHx8fDE3MzQ1Njc4OTZ8MA&ixlib=rb-4.1.0&q=80&w=1080', alt: 'Meeting Room' },
   ] as CMSImage[],

@@ -433,7 +433,7 @@ export function ChurchDetails(): JSX.Element {
                   ))}
                   {firstElder && <LeadershipCard title="First Elder" leader={firstElder} icon={User} />}
                   {acsCoordinator && (
-                    <LeadershipCard title="ACS Coordinator" leader={acsCoordinator} icon={Heart} highlight />
+                    <LeadershipCard title="Community Services Coordinator" leader={acsCoordinator} icon={Heart} highlight />
                   )}
                   {clerk && <LeadershipCard title="Church Clerk" leader={clerk} icon={User} />}
                   {treasurer && <LeadershipCard title="Treasurer" leader={treasurer} icon={User} />}

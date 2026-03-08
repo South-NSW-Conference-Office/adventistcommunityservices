@@ -38,7 +38,7 @@ const STATIC_DATA = {
   storyImages: [
     { url: '/images/team/stormco-group.jpg', alt: 'StormCo volunteer team on site' },
     { url: '/images/team/stormco-leaders.jpg', alt: 'StormCo leadership team' },
-    { url: '/images/team/stormco-truck.jpg', alt: 'ACS disaster response team with vehicle' },
+    { url: '/images/team/stormco-truck.jpg', alt: 'Adventist Community Services disaster response team with vehicle' },
   ] as CMSImage[],
 };
 
@@ -95,7 +95,7 @@ export function About(): JSX.Element {
     hero: {
       label: getBlock('hero', 'section_label') || 'About Us',
       title: getBlock('hero', 'title') || 'What Is Adventist Community Services?',
-      subtitle: getBlock('hero', 'subtitle') || "Adventist Community Services (ACS) is one of Australia's leading community organisations, providing compassionate service to communities across the nation.",
+      subtitle: getBlock('hero', 'subtitle') || "Adventist Community Services is one of Australia's leading community organisations, providing compassionate service to communities across the nation.",
       image: getBlock('hero', 'background_image') || 'https://images.unsplash.com/photo-1576897202707-f397683935d3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhdXN0cmFsaWElMjBjb21tdW5pdHklMjBoZWxwaW5nJTIwaGFuZHMlMjB0b2dldGhlcnxlbnwxfHx8fDE3NjYzNzI0NTF8MA&ixlib=rb-4.1.0&q=80&w=1080',
     },
     whatIsAcs: {
@@ -139,7 +139,7 @@ export function About(): JSX.Element {
           <iframe
             className="absolute inset-0 w-full h-full pointer-events-none"
             src="https://www.youtube.com/embed/Mzwy_gkPjbw?autoplay=1&mute=1&loop=1&playlist=Mzwy_gkPjbw&controls=0&showinfo=0&modestbranding=1&playsinline=1"
-            title="ACS Background Video"
+            title="Adventist Community Services"
             allow="autoplay; encrypted-media"
             style={{ transform: 'scale(1.5)', transformOrigin: 'center center' }}
           />
@@ -170,7 +170,7 @@ export function About(): JSX.Element {
                   sectionId="hero"
                   blockKey="subtitle"
                   content={cms.hero.subtitle}
-                  fallback="Adventist Community Services (ACS) is one of Australia's leading humanitarian organisations, providing compassionate service to communities across the nation."
+                  fallback="Adventist Community Services is one of Australia's leading humanitarian organisations, providing compassionate service to communities across the nation."
                   className="text-white/90 text-lg leading-relaxed"
                 />
               </div>
@@ -179,7 +179,7 @@ export function About(): JSX.Element {
         </div>
       )}
 
-      {/* What Is ACS Section */}
+      {/* What Is Adventist Community Services Section */}
       {isSectionEnabled('what-is-acs') && (
         <div className="max-w-7xl mx-auto px-6 py-16">
           <div className="max-w-4xl">
