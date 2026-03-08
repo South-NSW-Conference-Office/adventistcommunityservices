@@ -1,6 +1,6 @@
 import { Menu, LogOut, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import acsLogo from '@/assets/68ee6e4764f54c4a5a0a4c46b17e9e2662a774ac.png';
 
 interface HeaderProps {
@@ -10,9 +10,22 @@ interface HeaderProps {
 
 export function Header({ onLogout, isAuthenticated = false }: HeaderProps) {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 20);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-transparent">
+    <header
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+        scrolled
+          ? 'bg-white/95 backdrop-blur-md shadow-sm'
+          : 'bg-transparent'
+      }`}
+    >
       <div className="max-w-7xl mx-auto px-6 py-4">
         <div className="flex items-center justify-between">
           {/* Logo */}
@@ -56,7 +69,7 @@ export function Header({ onLogout, isAuthenticated = false }: HeaderProps) {
 
         {/* Mobile nav */}
         {mobileOpen && (
-          <nav className="md:hidden pt-4 pb-2 border-t border-gray-200 mt-3 flex flex-col gap-3 bg-white/80 backdrop-blur-md rounded-lg px-4 -mx-2">
+          <nav className="md:hidden pt-4 pb-2 border-t border-gray-200 mt-3 flex flex-col gap-3 bg-white/95 backdrop-blur-md rounded-lg px-4 -mx-2">
             <Link to="/" onClick={() => setMobileOpen(false)} className="text-gray-700 hover:text-[#F44314] font-medium py-2">Home</Link>
             <Link to="/about" onClick={() => setMobileOpen(false)} className="text-gray-700 hover:text-[#F44314] font-medium py-2">About</Link>
             <Link to="/services" onClick={() => setMobileOpen(false)} className="text-gray-700 hover:text-[#F44314] font-medium py-2">Services</Link>
