@@ -201,7 +201,7 @@ export function ChurchDetails(): JSX.Element {
       {/* Hero */}
       <div className="relative h-[500px] overflow-hidden">
         <img src={imageUrl} alt={c.name ?? 'Church'} className="w-full h-full object-cover" />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/20 via-30% via-transparent via-70% to-[#F44314]" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/20 via-30% via-transparent via-70% to-white" />
 
         <div className="absolute top-24 left-0 right-0 z-10">
           <div className="max-w-7xl mx-auto px-6">
