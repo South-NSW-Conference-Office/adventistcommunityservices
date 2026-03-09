@@ -1,11 +1,13 @@
 import { useState, useMemo } from 'react';
 import { ChurchCard } from '../components/ChurchCard';
-import { Filter, RefreshCw, Search, MapPin } from 'lucide-react';
+import { RefreshCw, Search } from 'lucide-react';
 import { usePublicChurches } from '../hooks/useChurches';
 import { useCMSPage } from '../hooks/useCMSContent';
 import type { Church } from '../types/church.types';
 
 const AU_STATES = ['ACT', 'NSW', 'NT', 'QLD', 'SA', 'TAS', 'VIC', 'WA'];
+const INITIAL_COUNT = 12;
+const LOAD_MORE_COUNT = 12;
 
 function getChurchConferenceName(church: Church): string | null {
   if (typeof church.conferenceId === 'object' && church.conferenceId?.name) {
@@ -32,12 +34,13 @@ export function Churches(): JSX.Element {
 
   const { churches, loading, error, refetch } = usePublicChurches();
 
-  const [searchQuery,    setSearchQuery]    = useState('');
-  const [selectedState,  setSelectedState]  = useState('All States');
-  const [selectedConf,   setSelectedConf]   = useState('All Conferences');
+  const [searchQuery,   setSearchQuery]   = useState('');
+  const [selectedState, setSelectedState] = useState('All States');
+  const [selectedConf,  setSelectedConf]  = useState('All Conferences');
+  const [visibleCount,  setVisibleCount]  = useState(INITIAL_COUNT);
 
   const { conferences, filteredChurches } = useMemo(() => {
-    const confSet    = new Set<string>();
+    const confSet     = new Set<string>();
     const searchLower = searchQuery.toLowerCase();
 
     const filtered = churches.filter((church) => {
@@ -46,8 +49,8 @@ export function Churches(): JSX.Element {
 
       if (confName) confSet.add(confName);
 
-      const stateMatch = selectedState  === 'All States'       || state    === selectedState;
-      const confMatch  = selectedConf   === 'All Conferences'  || confName === selectedConf;
+      const stateMatch  = selectedState === 'All States'      || state    === selectedState;
+      const confMatch   = selectedConf  === 'All Conferences' || confName === selectedConf;
       const searchMatch =
         !searchQuery ||
         church.name?.toLowerCase().includes(searchLower) ||
@@ -63,6 +66,20 @@ export function Churches(): JSX.Element {
     };
   }, [churches, searchQuery, selectedState, selectedConf]);
 
+  // Reset visible count whenever filters change
+  const handleFilterChange = (setter: (v: string) => void) => (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setter(e.target.value);
+    setVisibleCount(INITIAL_COUNT);
+  };
+
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value);
+    setVisibleCount(INITIAL_COUNT);
+  };
+
+  const visibleChurches  = filteredChurches.slice(0, visibleCount);
+  const hasMore          = filteredChurches.length > visibleCount;
+
   return (
     <div>
       {/* Hero */}
@@ -74,14 +91,14 @@ export function Churches(): JSX.Element {
 
           {/* Search */}
           <div className="mt-10 max-w-xl mx-auto">
-            <div className="flex items-center gap-3 px-5 py-4 bg-white rounded-2xl shadow-md border border-gray-200">
-              <Search className="w-5 h-5 text-gray-400 flex-shrink-0" />
+            <div className="flex items-center gap-3 px-4 py-3 bg-white rounded-xl shadow-md border border-gray-200">
+              <Search className="w-4 h-4 text-gray-400 flex-shrink-0" />
               <input
                 type="text"
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={handleSearch}
                 placeholder="Search churches, cities, or conferences..."
-                className="flex-1 bg-transparent outline-none text-gray-900 placeholder:text-gray-400"
+                className="flex-1 bg-transparent outline-none text-gray-900 text-sm placeholder:text-gray-400"
               />
             </div>
           </div>
@@ -89,66 +106,55 @@ export function Churches(): JSX.Element {
       </div>
 
       {/* Filters + Content */}
-      <div className="bg-white py-12">
+      <div className="bg-white py-10">
         <div className="max-w-7xl mx-auto px-6">
-          {/* Filter Bar */}
-          <div className="mb-10">
-            <div className="flex items-center gap-3 mb-6">
-              <Filter className="w-5 h-5 text-gray-400" />
-              <h2 className="text-[#1F2937] text-xl font-semibold">Filter Churches</h2>
-            </div>
 
-            <div className="grid md:grid-cols-2 gap-4">
-              <div>
-                <label htmlFor="state" className="block text-gray-600 text-sm mb-2 flex items-center gap-2">
-                  <MapPin className="w-4 h-4" />
-                  State
-                </label>
-                <select
-                  id="state"
-                  value={selectedState}
-                  onChange={(e) => setSelectedState(e.target.value)}
-                  className="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 text-gray-900 focus:outline-none focus:border-[#F44314] transition-colors"
-                >
-                  <option value="All States">All States</option>
-                  {AU_STATES.map((s) => (
-                    <option key={s} value={s}>{s}</option>
-                  ))}
-                </select>
-              </div>
+          {/* Compact Filter Bar */}
+          <div className="flex flex-wrap items-center gap-3 mb-8">
+            <span className="text-gray-500 text-xs font-medium uppercase tracking-wide">Filter by</span>
 
-              <div>
-                <label htmlFor="conference" className="block text-gray-600 text-sm mb-2">
-                  Conference
-                </label>
-                <select
-                  id="conference"
-                  value={selectedConf}
-                  onChange={(e) => setSelectedConf(e.target.value)}
-                  className="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 text-gray-900 focus:outline-none focus:border-[#F44314] transition-colors"
-                >
-                  {conferences.map((c) => (
-                    <option key={c} value={c}>{c}</option>
-                  ))}
-                </select>
-              </div>
-            </div>
+            <select
+              value={selectedState}
+              onChange={handleFilterChange(setSelectedState)}
+              className="px-3 py-1.5 rounded-lg bg-gray-50 border border-gray-200 text-gray-700 text-sm focus:outline-none focus:border-[#F44314] transition-colors cursor-pointer"
+            >
+              <option value="All States">All States</option>
+              {AU_STATES.map((s) => (
+                <option key={s} value={s}>{s}</option>
+              ))}
+            </select>
 
-            <div className="mt-4">
-              <p className="text-gray-500 text-sm">
-                Showing <span className="font-semibold text-[#1F2937]">{filteredChurches.length}</span>{' '}
-                church{filteredChurches.length !== 1 ? 'es' : ''}
-                {selectedState !== 'All States' && ` in ${selectedState}`}
-                {selectedConf !== 'All Conferences' && ` · ${selectedConf}`}
-                {searchQuery && ` matching "${searchQuery}"`}
-              </p>
-            </div>
+            <select
+              value={selectedConf}
+              onChange={handleFilterChange(setSelectedConf)}
+              className="px-3 py-1.5 rounded-lg bg-gray-50 border border-gray-200 text-gray-700 text-sm focus:outline-none focus:border-[#F44314] transition-colors cursor-pointer"
+            >
+              {conferences.map((c) => (
+                <option key={c} value={c}>{c}</option>
+              ))}
+            </select>
+
+            {(searchQuery || selectedState !== 'All States' || selectedConf !== 'All Conferences') && (
+              <button
+                onClick={() => { setSearchQuery(''); setSelectedState('All States'); setSelectedConf('All Conferences'); setVisibleCount(INITIAL_COUNT); }}
+                className="text-[#F44314] text-xs font-semibold hover:underline"
+              >
+                Clear filters
+              </button>
+            )}
+
+            <span className="text-gray-400 text-xs ml-auto">
+              {filteredChurches.length} church{filteredChurches.length !== 1 ? 'es' : ''}
+              {selectedState !== 'All States' && ` in ${selectedState}`}
+              {selectedConf !== 'All Conferences' && ` · ${selectedConf}`}
+              {searchQuery && ` matching "${searchQuery}"`}
+            </span>
           </div>
 
           {/* Loading */}
           {loading && (
             <div className="flex justify-center py-20">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#F44314]"></div>
+              <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-[#F44314]" />
             </div>
           )}
 
@@ -161,7 +167,7 @@ export function Churches(): JSX.Element {
                   onClick={() => refetch()}
                   className="inline-flex items-center gap-2 bg-[#F44314] text-white px-6 py-3 rounded-xl font-semibold hover:bg-[#d93a10] transition-colors"
                 >
-                  <RefreshCw className="w-5 h-5" />
+                  <RefreshCw className="w-4 h-4" />
                   Try Again
                 </button>
               </div>
@@ -169,12 +175,29 @@ export function Churches(): JSX.Element {
           )}
 
           {/* Church Grid */}
-          {!loading && !error && filteredChurches.length > 0 && (
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredChurches.map((church) => (
-                <ChurchCard key={church._id} church={church} />
-              ))}
-            </div>
+          {!loading && !error && visibleChurches.length > 0 && (
+            <>
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {visibleChurches.map((church) => (
+                  <ChurchCard key={church._id} church={church} />
+                ))}
+              </div>
+
+              {/* Load More */}
+              {hasMore && (
+                <div className="mt-10 text-center">
+                  <button
+                    onClick={() => setVisibleCount((prev) => prev + LOAD_MORE_COUNT)}
+                    className="inline-flex items-center gap-2 bg-[#F44314] text-white px-8 py-3 rounded-full font-semibold hover:bg-[#d93a10] transition-colors shadow-sm"
+                  >
+                    View More Churches
+                    <span className="text-white/70 text-sm">
+                      ({filteredChurches.length - visibleCount} remaining)
+                    </span>
+                  </button>
+                </div>
+              )}
+            </>
           )}
 
           {/* Empty State */}
