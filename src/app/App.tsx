@@ -50,44 +50,44 @@ function AppContent() {
       <Toaster position="top-right" richColors />
 
       {/* Footer */}
-      <footer className="bg-[#1F2937] mt-16">
+      <footer className="bg-white border-t border-gray-200 mt-16">
         <div className="max-w-7xl mx-auto px-6 py-12">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div>
-              <h3 className="text-white font-semibold mb-4">About Adventist Community Services</h3>
-              <p className="text-gray-400 text-sm">
+              <h3 className="text-[#1F2937] font-semibold mb-4">About Adventist Community Services</h3>
+              <p className="text-gray-500 text-sm">
                 Connecting communities with local service teams across Australia. Here to Serve.
               </p>
             </div>
             <div>
-              <h3 className="text-white font-semibold mb-4">Quick Links</h3>
+              <h3 className="text-[#1F2937] font-semibold mb-4">Quick Links</h3>
               <ul className="space-y-2 text-sm">
-                <li><a href="/about" className="text-gray-400 hover:text-white transition-colors">About Us</a></li>
-                <li><a href="/services" className="text-gray-400 hover:text-white transition-colors">Services</a></li>
-                <li><a href="/fellowship" className="text-gray-400 hover:text-white transition-colors">Fellowship</a></li>
-                <li><a href="/teams" className="text-gray-400 hover:text-white transition-colors">Teams</a></li>
-                <li><a href="/contact" className="text-gray-400 hover:text-white transition-colors">Contact</a></li>
+                <li><a href="/about" className="text-gray-500 hover:text-[#F44314] transition-colors">About Us</a></li>
+                <li><a href="/services" className="text-gray-500 hover:text-[#F44314] transition-colors">Services</a></li>
+                <li><a href="/fellowship" className="text-gray-500 hover:text-[#F44314] transition-colors">Fellowship</a></li>
+                <li><a href="/teams" className="text-gray-500 hover:text-[#F44314] transition-colors">Teams</a></li>
+                <li><a href="/contact" className="text-gray-500 hover:text-[#F44314] transition-colors">Contact</a></li>
               </ul>
             </div>
             <div>
-              <h3 className="text-white font-semibold mb-4">Services</h3>
+              <h3 className="text-[#1F2937] font-semibold mb-4">Services</h3>
               <ul className="space-y-2 text-sm">
-                <li><a href="/services?type=op_shop" className="text-gray-400 hover:text-white transition-colors">Op Shops</a></li>
-                <li><a href="/services?type=food_pantry" className="text-gray-400 hover:text-white transition-colors">Food Pantry</a></li>
-                <li><a href="/services?type=counseling_service" className="text-gray-400 hover:text-white transition-colors">Counseling</a></li>
-                <li><a href="/services?type=disaster_response" className="text-gray-400 hover:text-white transition-colors">Disaster Response</a></li>
-                <li><a href="/services?type=emergency_shelter" className="text-gray-400 hover:text-white transition-colors">Emergency Shelter</a></li>
+                <li><a href="/services?type=op_shop" className="text-gray-500 hover:text-[#F44314] transition-colors">Op Shops</a></li>
+                <li><a href="/services?type=food_pantry" className="text-gray-500 hover:text-[#F44314] transition-colors">Food Pantry</a></li>
+                <li><a href="/services?type=counseling_service" className="text-gray-500 hover:text-[#F44314] transition-colors">Counseling</a></li>
+                <li><a href="/services?type=disaster_response" className="text-gray-500 hover:text-[#F44314] transition-colors">Disaster Response</a></li>
+                <li><a href="/services?type=emergency_shelter" className="text-gray-500 hover:text-[#F44314] transition-colors">Emergency Shelter</a></li>
               </ul>
             </div>
             <div>
-              <h3 className="text-white font-semibold mb-4">Contact</h3>
-              <ul className="space-y-2 text-sm text-gray-400">
+              <h3 className="text-[#1F2937] font-semibold mb-4">Contact</h3>
+              <ul className="space-y-2 text-sm text-gray-500">
                 <li>info@communityservices.org.au</li>
                 <li>Monday – Friday: 9am – 5pm</li>
               </ul>
             </div>
           </div>
-          <div className="border-t border-gray-700 mt-8 pt-8 text-center text-gray-500 text-sm">
+          <div className="border-t border-gray-200 mt-8 pt-8 text-center text-gray-400 text-sm">
             <p>&copy; 2026 Adventist Community Services Australia. All rights reserved.</p>
           </div>
         </div>
