@@ -1,105 +1,139 @@
-import { MapPin, User, Phone, Building2 } from 'lucide-react';
+import { MapPin, User, Phone, Mail, Building2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import type { Church } from '../types/church.types';
+import type { Church, ChurchLeader } from '../types/church.types';
 
-const DEFAULT_CHURCH_IMAGE =
-  'https://images.unsplash.com/photo-1438032005730-c779502df39b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080';
+const DEFAULT_CHURCH_IMAGE = 'https://images.unsplash.com/photo-1438032005730-c779502df39b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080';
 
 interface ChurchCardProps {
   church: Church;
 }
 
-function getStateBadgeColor(state?: string | null): string {
+/**
+ * Format state badge color
+ */
+function getStateBadgeColor(state?: string): string {
   switch (state?.toUpperCase()) {
-    case 'ACT': return 'bg-blue-500/20 text-blue-200';
-    case 'VIC': return 'bg-purple-500/20 text-purple-200';
-    default:    return 'bg-white/20 text-white';
+    case 'ACT':
+      return 'bg-blue-500/20 text-blue-200';
+    case 'VIC':
+      return 'bg-purple-500/20 text-purple-200';
+    case 'NSW':
+    default:
+      return 'bg-green-500/20 text-green-200';
   }
 }
 
+/**
+ * Get primary pastor from church leadership
+ */
+function getPrimaryPastor(church: Church): ChurchLeader | undefined {
+  if (church.leadership?.associatePastors?.length > 0) {
+    return church.leadership.associatePastors[0];
+  }
+  return undefined;
+}
+
+/**
+ * Format phone number for display
+ */
+function formatPhone(phone?: string): string {
+  if (!phone) return '';
+  return phone.replace(/\s+/g, ' ').trim();
+}
+
 export function ChurchCard({ church }: ChurchCardProps) {
-  const address  = church.location?.address;
-  const state    = address?.state ?? null;
-  const imageUrl = church.primaryImage?.url ?? DEFAULT_CHURCH_IMAGE;
-  const pastor         = church.leadership?.primaryPastor ?? null;
-  const acsCoordinator = church.leadership?.acsCoordinator ?? null;
+  const state = church.location?.address?.state || 'NSW';
+  const pastor = getPrimaryPastor(church);
+  const acsCoordinator = church.leadership?.acsCoordinator;
+  const imageUrl = church.primaryImage?.url || DEFAULT_CHURCH_IMAGE;
 
   return (
-    <Link
-      to={`/churches/${church._id}`}
-      className="block h-full hover:-translate-y-1 transition-transform duration-200"
-    >
-      {/* Outer card — gray bezel */}
-      <div className="bg-[#EDEEED] rounded-3xl shadow-sm hover:shadow-md transition-all duration-300 h-full p-3 group">
-        {/* Inner image fills remaining space, text overlaid */}
-        <div className="relative rounded-2xl overflow-hidden h-full min-h-[280px]">
-          {/* Full image */}
-          <img
-            src={imageUrl}
-            alt={church.primaryImage?.alt ?? church.name ?? 'Church'}
-            className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-          />
+    <Link to={`/churches/${church._id}`} className="group cursor-pointer transition-all hover:scale-[1.02] block">
+      {/* Image Section */}
+      <div className="relative h-56 overflow-hidden rounded-t-2xl">
+        <img
+          src={imageUrl}
+          alt={church.primaryImage?.alt || church.name}
+          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
 
-          {/* Gradient overlay — bottom-heavy */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent" />
+        {/* State Badge on Image */}
+        <div className="absolute top-4 right-4">
+          <span className={`px-3 py-1 rounded-full text-xs font-medium backdrop-blur-sm ${getStateBadgeColor(state)}`}>
+            {state}
+          </span>
+        </div>
 
-          {/* State badge — top right */}
-          {state && (
-            <div className="absolute top-3 right-3">
-              <span className={`px-3 py-1 rounded-full text-xs font-semibold backdrop-blur-sm ${getStateBadgeColor(state)}`}>
-                {state}
+        {/* Church Name on Image */}
+        <div className="absolute bottom-4 left-4 right-4">
+          <h3 className="text-white text-xl font-semibold">{church.name}</h3>
+          {church.location?.address?.city && (
+            <div className="flex items-center gap-2 text-white/80 text-sm mt-1">
+              <MapPin className="w-4 h-4 flex-shrink-0" />
+              <span>
+                {church.location.address.city}
+                {church.location.address.state && `, ${church.location.address.state}`}
               </span>
             </div>
           )}
+        </div>
+      </div>
 
-          {/* Content overlay — bottom */}
-          <div className="absolute bottom-0 left-0 right-0 p-4">
-            <h3 className="text-white text-lg font-bold leading-snug mb-0.5">{church.name}</h3>
-
-            {church.locationShort && (
-              <p className="text-white/70 text-xs flex items-center gap-1 mb-2">
-                <MapPin className="w-3 h-3 flex-shrink-0" />
-                {church.locationShort}
-              </p>
-            )}
-
-            {/* Pastor / ACS quick info */}
-            <div className="space-y-1 mb-3">
-              {pastor && (
-                <div className="flex items-center gap-1.5 text-white/70 text-xs">
-                  <User className="w-3 h-3 flex-shrink-0" />
-                  <span className="truncate">
-                    Pastor: <span className="text-white font-medium">{pastor.name}</span>
-                    {pastor.phone && (
-                      <span className="text-white/50 ml-1">· {pastor.phone}</span>
-                    )}
-                  </span>
-                </div>
-              )}
-              {acsCoordinator && (
-                <div className="flex items-center gap-1.5 text-white/70 text-xs">
-                  <Building2 className="w-3 h-3 flex-shrink-0 text-orange-300" />
-                  <span className="truncate">
-                    ACS: <span className="text-white font-medium">{acsCoordinator.name}</span>
-                    {acsCoordinator.phone && (
-                      <span className="text-white/50 ml-1">· {acsCoordinator.phone}</span>
-                    )}
-                  </span>
-                </div>
-              )}
-              {!pastor && !acsCoordinator && (
-                <p className="text-white/40 text-xs italic">No leadership info available</p>
-              )}
+      {/* Content Section */}
+      <div className="bg-white/10 backdrop-blur-sm border border-white/20 border-t-0 rounded-b-2xl p-5">
+        {/* Pastor Info */}
+        {pastor && (
+          <div className="mb-3 pb-3 border-b border-white/10">
+            <div className="flex items-center gap-2 text-white/90 text-sm font-medium mb-1">
+              <User className="w-4 h-4 flex-shrink-0" />
+              <span>Pastor: {pastor.name}</span>
             </div>
-
-            {/* Bottom bar */}
-            <div className="flex items-center justify-end">
-              <span className="bg-white text-[#1F2937] text-xs font-semibold px-3 py-1.5 rounded-full shadow-sm">
-                View Church
-              </span>
+            <div className="flex flex-wrap gap-3 ml-6">
+              {pastor.phone && (
+                <a href={`tel:${pastor.phone}`} className="flex items-center gap-1 text-white/70 text-xs hover:text-white transition-colors">
+                  <Phone className="w-3 h-3" />
+                  {formatPhone(pastor.phone)}
+                </a>
+              )}
+              {pastor.email && (
+                <a href={`mailto:${pastor.email}`} className="flex items-center gap-1 text-white/70 text-xs hover:text-white transition-colors truncate">
+                  <Mail className="w-3 h-3" />
+                  <span className="truncate max-w-[150px]">{pastor.email}</span>
+                </a>
+              )}
             </div>
           </div>
-        </div>
+        )}
+
+        {/* ACS Coordinator Info */}
+        {acsCoordinator && (
+          <div>
+            <div className="flex items-center gap-2 text-white/90 text-sm font-medium mb-1">
+              <Building2 className="w-4 h-4 flex-shrink-0 text-orange-400" />
+              <span>Coordinator: {acsCoordinator.name}</span>
+            </div>
+            <div className="flex flex-wrap gap-3 ml-6">
+              {acsCoordinator.phone && (
+                <a href={`tel:${acsCoordinator.phone}`} className="flex items-center gap-1 text-white/70 text-xs hover:text-white transition-colors">
+                  <Phone className="w-3 h-3" />
+                  {formatPhone(acsCoordinator.phone)}
+                </a>
+              )}
+              {acsCoordinator.email && (
+                <a href={`mailto:${acsCoordinator.email}`} className="flex items-center gap-1 text-white/70 text-xs hover:text-white transition-colors truncate">
+                  <Mail className="w-3 h-3" />
+                  <span className="truncate max-w-[150px]">{acsCoordinator.email}</span>
+                </a>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* Empty state for no leadership info */}
+        {!pastor && !acsCoordinator && (
+          <p className="text-white/50 text-sm italic">No leadership information available</p>
+        )}
       </div>
     </Link>
   );

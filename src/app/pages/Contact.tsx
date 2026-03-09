@@ -1,5 +1,5 @@
 import { Loader2 } from 'lucide-react';
-import { useState, FormEvent } from 'react';
+import { useState, useEffect, FormEvent } from 'react';
 import { contactApi, ContactFormData, VolunteerApplicationData } from '../services/contactApi';
 import { useCMSPage, CMSImage } from '../hooks/useCMSContent';
 import { EditableText, EditableRichText } from '../components/editable';
@@ -36,7 +36,7 @@ function getFormTypeButtonClass(isActive: boolean): string {
 
 const STATIC_DATA = {
   contactImages: [
-    { url: 'https://images.unsplash.com/photo-1725021059875-8f7fd08c843a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhdXN0cmFsaWElMjBzeWRuZXklMjBvZmZpY2UlMjBidWlsZGluZ3xlbnwxfHx8fDE3NjYxOTgyMTh8MA&ixlib=rb-4.1.0&q=80&w=1080', alt: 'ACS Office Building' },
+    { url: 'https://images.unsplash.com/photo-1725021059875-8f7fd08c843a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhdXN0cmFsaWElMjBzeWRuZXklMjBvZmZpY2UlMjBidWlsZGluZ3xlbnwxfHx8fDE3NjYxOTgyMTh8MA&ixlib=rb-4.1.0&q=80&w=1080', alt: 'Office Building' },
     { url: 'https://images.unsplash.com/photo-1556761175-b413da4baf72?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxvZmZpY2UlMjByZWNlcHRpb24lMjBkZXNrfGVufDF8fHx8MTczNDU2Nzg5Nnww&ixlib=rb-4.1.0&q=80&w=1080', alt: 'Reception Area' },
     { url: 'https://images.unsplash.com/photo-1497366216548-37526070297c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxvZmZpY2UlMjBtZWV0aW5nJTIwcm9vbXxlbnwxfHx8fDE3MzQ1Njc4OTZ8MA&ixlib=rb-4.1.0&q=80&w=1080', alt: 'Meeting Room' },
   ] as CMSImage[],
@@ -123,12 +123,68 @@ function ImageMasonry({ images, layout }: ImageMasonryProps): JSX.Element {
   );
 }
 
+function ContactImagePlaceholders(): JSX.Element {
+  return (
+    <div className="grid grid-cols-2 gap-3">
+      <div className="col-span-2 h-48 bg-gradient-to-br from-[#F44314] to-[#D63912] rounded-2xl shadow-lg flex items-center justify-center">
+        <div className="text-white text-center">
+          <svg className="w-12 h-12 mx-auto mb-2" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+          </svg>
+          <p className="text-sm font-medium">Community Centre</p>
+        </div>
+      </div>
+      <div className="col-span-1 h-40 bg-gradient-to-br from-[#F44314] to-[#D63912] rounded-2xl shadow-lg flex items-center justify-center">
+        <div className="text-white text-center">
+          <svg className="w-10 h-10 mx-auto mb-2" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+          </svg>
+          <p className="text-xs font-medium">Contact Us</p>
+        </div>
+      </div>
+      <div className="col-span-1 h-40 bg-gradient-to-br from-[#F44314] to-[#D63912] rounded-2xl shadow-lg flex items-center justify-center">
+        <div className="text-white text-center">
+          <svg className="w-10 h-10 mx-auto mb-2" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+          </svg>
+          <p className="text-xs font-medium">Find Services</p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+interface ChurchTeam {
+  id: string;
+  name: string;
+  conference: string;
+  city: string;
+  state: string;
+  email?: string | null;
+}
+
 export function Contact(): JSX.Element {
   const [formType, setFormType] = useState<FormType>('contact');
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
+  const [teams, setTeams] = useState<ChurchTeam[]>([]);
+
+  useEffect(() => {
+    const apiUrl = import.meta.env.VITE_API_URL || '';
+    fetch(`${apiUrl}/api/public/fellowship`)
+      .then(r => r.json())
+      .then((data: any) => {
+        if (data.success && data.churches) {
+          const sorted = data.churches
+            .sort((a: any, b: any) => a.name.localeCompare(b.name))
+            .map((c: any) => ({ id: c.id, name: c.name, conference: c.conferenceCode || c.conference, city: c.city, state: c.state, email: null }));
+          setTeams(sorted);
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   const { getBlock, getJSONBlock } = useCMSPage('contact');
 
@@ -136,12 +192,12 @@ export function Contact(): JSX.Element {
     hero: {
       label: getBlock('hero', 'section_label') || 'Contact Us',
       title: getBlock('hero', 'title') || 'Get In Touch',
-      description1: getBlock('hero', 'description_1') || "We'd love to hear from you. Whether you have questions about our services, want to connect with a local team, or are interested in volunteering, we're here for you.",
+      description1: getBlock('hero', 'description_1') || "We'd love to hear from you. Whether you need help, have questions about our services, want to connect with a local team, or are interested in volunteering, we're here for you.",
       description2: getBlock('hero', 'description_2') || 'Our team is committed to responding to all inquiries promptly and connecting you with the right resources. Reach out today and become part of our community making a difference across Australia.',
     },
     contactInfo: {
       title: getBlock('contact-info', 'title') || 'Contact Information',
-      description: getBlock('contact-info', 'description') || "Our offices are open to assist you with any inquiries, whether you have questions about our services, want to connect with a team, or are interested in what we offer. Adventist Community Services operates multiple locations across Australia, providing accessible services to communities with compassionate and professional staff. We've created a welcoming environment where everyone is treated with dignity and respect.",
+      description: getBlock('contact-info', 'description') || "We'd love to help with any questions about our services, connecting you with a local team, or getting involved as a volunteer. Adventist Community Services operates community centres across Australia, providing accessible services with compassionate staff. We've created a welcoming environment where everyone is treated with dignity and respect.",
       images: getJSONBlock<CMSImage[]>('contact-info', 'images_data', STATIC_DATA.contactImages),
     },
     volunteerInfo: {
@@ -339,7 +395,11 @@ export function Contact(): JSX.Element {
                 />
               </>
             )}
-            <ImageMasonry images={currentInfo.images} layout={imageLayout} />
+            {isContact ? (
+              <ContactImagePlaceholders />
+            ) : (
+              <ImageMasonry images={currentInfo.images} layout={imageLayout} />
+            )}
           </div>
 
           {/* Contact Form */}
@@ -389,6 +449,22 @@ export function Contact(): JSX.Element {
 
               {isContact ? (
                 <>
+                  <div>
+                    <label htmlFor="team" className="block text-gray-700 text-sm mb-2">Direct your enquiry to</label>
+                    <select
+                      id="team"
+                      name="team"
+                      className={INPUT_CLASS}
+                      onChange={() => handleInputChange('team')}
+                    >
+                      <option value="">Select a local team or Admin...</option>
+                      <option value="admin">Admin — Adventist Community Services</option>
+                      {teams.map(t => (
+                        <option key={t.id} value={t.id}>{t.name}, {t.state} ({t.conference})</option>
+                      ))}
+                    </select>
+                  </div>
+
                   <div>
                     <label htmlFor="subject" className="block text-gray-700 text-sm mb-2">Subject</label>
                     <input

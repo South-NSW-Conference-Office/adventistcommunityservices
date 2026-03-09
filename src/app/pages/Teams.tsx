@@ -67,77 +67,82 @@ export function Teams(): JSX.Element {
   return (
     <div>
       {/* Hero */}
-      <div className="relative h-[420px] md:h-[500px] overflow-hidden">
-        <iframe
-          src="https://www.youtube-nocookie.com/embed/Mzwy_gkPjbw?autoplay=1&mute=1&loop=1&playlist=Mzwy_gkPjbw&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1&start=55"
-          allow="autoplay; encrypted-media"
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none"
-          style={{ width: 'max(100%, 177.78vh)', height: 'max(100%, 56.25vw)' }}
-          title="ACS background video"
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/30 to-black/70" />
-        <div className="relative h-full flex items-end pb-12">
-          <div className="max-w-4xl mx-auto px-6 text-center w-full">
-            <p className="text-white/80 text-sm font-semibold tracking-wider uppercase mb-4">{heroLabel}</p>
-            <h1 className="text-white text-5xl md:text-6xl font-bold mb-6 leading-tight">{heroTitle}</h1>
-            <p className="text-white/80 text-lg max-w-2xl mx-auto">{heroSubtitle}</p>
-          </div>
+      <div className="bg-[#F8F7F5] py-16 md:py-24">
+        <div className="max-w-4xl mx-auto px-6 text-center">
+          <p className="text-[#F44314] text-sm font-semibold tracking-wider uppercase mb-4">{heroLabel}</p>
+          <h1 className="text-[#1F2937] text-5xl md:text-6xl font-bold mb-6 leading-tight">{heroTitle}</h1>
+          <p className="text-gray-600 text-lg max-w-2xl mx-auto">{heroSubtitle}</p>
         </div>
       </div>
 
       {/* Filters + Content */}
       <div className="bg-white py-12">
         <div className="max-w-7xl mx-auto px-6">
-          {/* Compact Filter Bar */}
-          <div className="flex flex-wrap items-center gap-3 mb-8">
-            <span className="text-gray-500 text-xs font-medium uppercase tracking-wide">Filter by</span>
-
-            <div className="flex items-center gap-2 px-3 py-1.5 bg-gray-50 border border-gray-200 rounded-lg">
-              <Search className="w-3.5 h-3.5 text-gray-400" />
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search teams..."
-                className="bg-transparent outline-none text-gray-700 text-sm placeholder:text-gray-400 w-36"
-              />
+          {/* Filter Bar */}
+          <div className="mb-10">
+            <div className="flex items-center gap-3 mb-6">
+              <Filter className="w-5 h-5 text-gray-400" />
+              <h2 className="text-[#1F2937] text-xl font-semibold">Filter Teams</h2>
             </div>
 
-            <select
-              value={selectedChurch}
-              onChange={(e) => setSelectedChurch(e.target.value)}
-              className="px-3 py-1.5 rounded-lg bg-gray-50 border border-gray-200 text-gray-700 text-sm focus:outline-none focus:border-[#F44314] transition-colors cursor-pointer"
-            >
-              {churches.map((church) => (
-                <option key={church} value={church}>{church}</option>
-              ))}
-            </select>
+            <div className="grid md:grid-cols-3 gap-4">
+              <div>
+                <label htmlFor="search" className="block text-gray-600 text-sm mb-2 flex items-center gap-2">
+                  <Search className="w-4 h-4" />
+                  Search
+                </label>
+                <input
+                  id="search"
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Search teams..."
+                  className="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#F44314] transition-colors"
+                />
+              </div>
 
-            <select
-              value={selectedCategory}
-              onChange={(e) => setSelectedCategory(e.target.value)}
-              className="px-3 py-1.5 rounded-lg bg-gray-50 border border-gray-200 text-gray-700 text-sm focus:outline-none focus:border-[#F44314] transition-colors cursor-pointer"
-            >
-              {categories.map((category) => (
-                <option key={category} value={category}>{category}</option>
-              ))}
-            </select>
+              <div>
+                <label htmlFor="church" className="block text-gray-600 text-sm mb-2 flex items-center gap-2">
+                  <MapPin className="w-4 h-4" />
+                  Location
+                </label>
+                <select
+                  id="church"
+                  value={selectedChurch}
+                  onChange={(e) => setSelectedChurch(e.target.value)}
+                  className="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 text-gray-900 focus:outline-none focus:border-[#F44314] transition-colors"
+                >
+                  {churches.map((church) => (
+                    <option key={church} value={church}>{church}</option>
+                  ))}
+                </select>
+              </div>
 
-            {(searchQuery || selectedChurch !== 'All Locations' || selectedCategory !== 'All Categories') && (
-              <button
-                onClick={() => { setSearchQuery(''); setSelectedChurch('All Locations'); setSelectedCategory('All Categories'); }}
-                className="text-[#F44314] text-xs font-semibold hover:underline"
-              >
-                Clear filters
-              </button>
-            )}
+              <div>
+                <label htmlFor="category" className="block text-gray-600 text-sm mb-2">
+                  Category
+                </label>
+                <select
+                  id="category"
+                  value={selectedCategory}
+                  onChange={(e) => setSelectedCategory(e.target.value)}
+                  className="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 text-gray-900 focus:outline-none focus:border-[#F44314] transition-colors"
+                >
+                  {categories.map((category) => (
+                    <option key={category} value={category}>{category}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
 
-            <span className="text-gray-400 text-xs ml-auto">
-              {filteredTeams.length} team{filteredTeams.length !== 1 ? 's' : ''}
-              {selectedChurch !== 'All Locations' && ` at ${selectedChurch}`}
-              {selectedCategory !== 'All Categories' && ` · ${selectedCategory}`}
-              {searchQuery && ` matching "${searchQuery}"`}
-            </span>
+            <div className="mt-4">
+              <p className="text-gray-500 text-sm">
+                Showing <span className="font-semibold text-[#1F2937]">{filteredTeams.length}</span> team{filteredTeams.length !== 1 ? 's' : ''}
+                {selectedChurch !== 'All Locations' && ` at ${selectedChurch}`}
+                {selectedCategory !== 'All Categories' && ` in ${selectedCategory}`}
+                {searchQuery && ` matching "${searchQuery}"`}
+              </p>
+            </div>
           </div>
 
           {/* Loading */}
@@ -150,15 +155,27 @@ export function Teams(): JSX.Element {
           {/* Error */}
           {error && (
             <div className="text-center py-16">
-              <div className="bg-gray-50 border border-gray-200 rounded-2xl p-12 max-w-md mx-auto">
-                <p className="text-gray-700 text-lg mb-4">{error}</p>
-                <button
-                  onClick={() => refetch()}
-                  className="inline-flex items-center gap-2 bg-[#F44314] text-white px-6 py-3 rounded-xl font-semibold hover:bg-[#d93a10] transition-colors"
-                >
-                  <RefreshCw className="w-5 h-5" />
-                  Try Again
-                </button>
+              <div className="bg-gray-50 border border-gray-200 rounded-2xl p-12 max-w-lg mx-auto">
+                <p className="text-[#1F2937] text-xl font-semibold mb-4">Community service teams are being registered</p>
+                <p className="text-gray-600 mb-6">
+                  Teams across Australia are setting up their profiles. Check back soon to see services available in your area, 
+                  or contact us directly if you need immediate assistance.
+                </p>
+                <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                  <button
+                    onClick={() => refetch()}
+                    className="inline-flex items-center gap-2 bg-[#F44314] text-white px-6 py-3 rounded-xl font-semibold hover:bg-[#d93a10] transition-colors"
+                  >
+                    <RefreshCw className="w-5 h-5" />
+                    Check Again
+                  </button>
+                  <a
+                    href="/contact"
+                    className="inline-flex items-center gap-2 bg-white border-2 border-[#F44314] text-[#F44314] px-6 py-3 rounded-xl font-semibold hover:bg-[#F44314] hover:text-white transition-colors"
+                  >
+                    Contact Us
+                  </a>
+                </div>
               </div>
             </div>
           )}
@@ -176,15 +193,26 @@ export function Teams(): JSX.Element {
           {!loading && !error && filteredTeams.length === 0 && (
             <div className="text-center py-16">
               <div className="bg-[#F8F7F5] border border-gray-200 rounded-2xl p-12 max-w-lg mx-auto">
-                <p className="text-[#1F2937] text-xl font-semibold mb-2">No teams found</p>
-                <p className="text-gray-500 mb-6">
+                <p className="text-[#1F2937] text-xl font-semibold mb-4">Community service teams are being registered</p>
+                <p className="text-gray-600 mb-6">
                   {teams.length === 0
-                    ? "No teams have been listed in this area yet. Check back soon as more teams join the platform."
-                    : "Try adjusting your filters to find teams in other locations or categories."}
+                    ? "Teams across Australia are setting up their services. Check back soon, or contact us if you need help now!"
+                    : "Try adjusting your search to find teams in other locations. We're here to help connect you with the right support."}
                 </p>
-                <button className="bg-[#F44314] text-white px-8 py-3 rounded-xl font-semibold hover:bg-[#d93a10] transition-colors">
-                  List Your Team
-                </button>
+                <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                  <a
+                    href="/contact"
+                    className="bg-[#F44314] text-white px-8 py-3 rounded-xl font-semibold hover:bg-[#d93a10] transition-colors inline-block"
+                  >
+                    Contact Us
+                  </a>
+                  <a
+                    href="/services"
+                    className="bg-white border-2 border-[#F44314] text-[#F44314] px-8 py-3 rounded-xl font-semibold hover:bg-[#F44314] hover:text-white transition-colors inline-block"
+                  >
+                    View All Services
+                  </a>
+                </div>
               </div>
             </div>
           )}
