@@ -106,7 +106,7 @@ export function ChurchCard({ church }: ChurchCardProps) {
           </div>
         )}
 
-        {/* ACS Coordinator Info */}
+        {/* Adventist Community Services Coordinator Info */}
         {acsCoordinator && (
           <div>
             <div className="flex items-center gap-2 text-white/90 text-sm font-medium mb-1">

@@ -277,7 +277,7 @@ export function Fellowship(): JSX.Element {
           allow="autoplay; encrypted-media"
           className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none"
           style={{ width: 'max(100%, 177.78vh)', height: 'max(100%, 56.25vw)' }}
-          title="ACS background video"
+          title="Adventist Community Services background video"
         />
         <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/30 to-black/70" />
         <div className="relative h-full flex items-end pb-10">
@@ -334,7 +334,7 @@ export function Fellowship(): JSX.Element {
           <div className="flex flex-wrap items-center gap-3 mb-6">
             <span className="text-gray-500 text-xs font-medium uppercase tracking-wide">Filter by</span>
 
-            {/* Conference tabs */}
+            {/* Region tabs */}
             <button
               onClick={() => handleFilterChange(setActiveConference)('all')}
               className={`px-4 py-1.5 rounded-lg text-sm font-semibold transition-colors ${

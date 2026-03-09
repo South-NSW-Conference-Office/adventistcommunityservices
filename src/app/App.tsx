@@ -82,13 +82,13 @@ function AppContent() {
             <div>
               <h3 className="text-[#1F2937] font-semibold mb-4">Contact</h3>
               <ul className="space-y-2 text-sm text-gray-500">
-                <li>info@communityservices.org.au</li>
+                <li>acs@adventist.org.au</li>
                 <li>Monday – Friday: 9am – 5pm</li>
               </ul>
             </div>
           </div>
           <div className="border-t border-gray-200 mt-8 pt-8 text-center text-gray-400 text-sm">
-            <p>&copy; 2026 Adventist Community Services Australia. All rights reserved.</p>
+            <p>&copy; 2026 Adventist Community Services. All rights reserved.</p>
           </div>
         </div>
       </footer>
