@@ -247,7 +247,7 @@ export function ChurchDetails(): JSX.Element {
   const email = church.contact?.email;
   const website = church.contact?.website;
   const conferenceName =
-    typeof church.conferenceId === 'object' ? church.conferenceId.name : 'Conference';
+    typeof church.conferenceId === 'object' ? church.conferenceId.name?.replace(/\s*Conference$/i, ' Region') : 'Region';
 
   // Service times
   const sabbathSchool = church.services?.sabbathSchool;

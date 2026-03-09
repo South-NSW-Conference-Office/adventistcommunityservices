@@ -65,7 +65,7 @@ export function Home(): JSX.Element {
           allow="autoplay; encrypted-media"
           className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none"
           style={{ width: 'max(100%, 177.78vh)', height: 'max(100%, 56.25vw)' }}
-          title="ACS background video"
+          title="Adventist Community Services background video"
         />
         {/* White wash overlay — keeps video ambient, not distracting */}
         <div className="absolute inset-0 bg-white/80" />
@@ -85,7 +85,7 @@ export function Home(): JSX.Element {
               Adventist<br />Community Services
             </h1>
             <p className="text-gray-600 text-base md:text-lg mb-6">
-              Select your conference to find local services
+              Select your region to find local services
             </p>
 
             {/* Search Bar */}

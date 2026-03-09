@@ -73,7 +73,7 @@ export function Teams(): JSX.Element {
           allow="autoplay; encrypted-media"
           className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none"
           style={{ width: 'max(100%, 177.78vh)', height: 'max(100%, 56.25vw)' }}
-          title="ACS background video"
+          title="Adventist Community Services background video"
         />
         <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/30 to-black/70" />
         <div className="relative h-full flex items-end pb-12">

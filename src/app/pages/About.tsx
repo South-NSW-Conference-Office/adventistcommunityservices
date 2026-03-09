@@ -32,8 +32,8 @@ const STATIC_DATA = {
     { icon: 'Award', title: 'Integrity', description: 'Providing reliable, quality community services you can trust' },
   ] as ValueItem[],
   teamMembers: [
-    { image: '/images/team/steve-teale.jpg', title: 'North NSW Director — Steve Teale', department: 'North NSW Conference', description: 'Leading Adventist Community Services across the North NSW region' },
-    { image: '/images/team/kyle-morrison.jpg', title: 'South NSW Director — Kyle Morrison', department: 'South NSW Conference', description: 'Leading Adventist Community Services across the South NSW region' },
+    { image: '/images/team/steve-teale.jpg', title: 'North NSW Director — Steve Teale', department: 'North NSW Region', description: 'Leading Adventist Community Services across the North NSW region' },
+    { image: '/images/team/kyle-morrison.jpg', title: 'South NSW Director — Kyle Morrison', department: 'South NSW Region', description: 'Leading Adventist Community Services across the South NSW region' },
   ] as TeamMember[],
   storyImages: [
     { url: '/images/team/stormco-group.jpg', alt: 'StormCo volunteer team on site' },
@@ -141,7 +141,7 @@ export function About(): JSX.Element {
             allow="autoplay; encrypted-media"
             className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none"
             style={{ width: 'max(100%, 177.78vh)', height: 'max(100%, 56.25vw)' }}
-            title="ACS background video"
+            title="Adventist Community Services background video"
           />
           <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/30 to-black/60" />
           <div className="absolute bottom-0 left-0 right-0 pb-12">
