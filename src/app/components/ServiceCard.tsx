@@ -1,4 +1,4 @@
-import { MapPin, Users } from 'lucide-react';
+import { MapPin } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import type { ServiceLocation, ServiceCapacity, ServiceImage } from '../types/service.types';
 
@@ -26,16 +26,9 @@ function formatLocation(locations?: ServiceLocation[]): string {
   return loc.label || 'Location TBA';
 }
 
-function formatCapacity(capacity?: ServiceCapacity): string {
-  if (!capacity) return 'Contact us';
-  if (capacity.maxParticipants) return `${capacity.maxParticipants}+ served`;
-  return 'Contact us';
-}
-
-export function ServiceCard({ id, name, descriptionShort, locations, capacity, primaryImage, teamName }: ServiceCardProps) {
+export function ServiceCard({ id, name, descriptionShort, locations, primaryImage, teamName }: ServiceCardProps) {
   const imageUrl = primaryImage?.url || DEFAULT_SERVICE_IMAGE;
   const location = formatLocation(locations);
-  const capacityText = formatCapacity(capacity);
 
   const content = (
     <div className="bg-[#EDEEED] rounded-3xl shadow-sm hover:shadow-md transition-all duration-300 h-full flex flex-col group">
@@ -60,15 +53,9 @@ export function ServiceCard({ id, name, descriptionShort, locations, capacity, p
 
         {/* Bottom bar */}
         <div className="flex items-center justify-between mt-4">
-          <div className="flex items-center gap-4">
-            <div className="flex items-center gap-1.5 text-[#9CA3AF]">
-              <MapPin className="w-4 h-4" />
-              <span className="text-[#374151] text-sm font-medium truncate max-w-[90px]">{location}</span>
-            </div>
-            <div className="flex items-center gap-1.5 text-[#9CA3AF]">
-              <Users className="w-4 h-4" />
-              <span className="text-[#374151] text-sm font-medium">{capacityText}</span>
-            </div>
+          <div className="flex items-center gap-1.5 text-[#9CA3AF]">
+            <MapPin className="w-4 h-4" />
+            <span className="text-[#374151] text-sm font-medium truncate max-w-[120px]">{location}</span>
           </div>
           <span className="bg-white text-[#1F2937] text-sm font-semibold px-4 py-2 rounded-full shadow-sm flex-shrink-0">
             Learn More
