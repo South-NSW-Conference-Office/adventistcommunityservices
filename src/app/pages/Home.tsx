@@ -221,43 +221,49 @@ export function Home(): JSX.Element {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-            {/* Need Help */}
-            <div className="bg-white rounded-2xl p-8 text-center shadow-lg hover:shadow-xl transition-shadow">
-              <div className="w-16 h-16 bg-[#F44314]/10 rounded-full flex items-center justify-center mx-auto mb-6">
-                <svg className="w-8 h-8 text-[#F44314]" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                </svg>
+          <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+            {/* Need Support */}
+            <div className="group relative rounded-3xl overflow-hidden h-[480px] shadow-lg hover:shadow-xl transition-shadow hover:-translate-y-1 duration-300">
+              <img
+                src="https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080"
+                alt="Community support"
+                className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
+              <div className="absolute bottom-0 left-0 right-0 p-8">
+                <h3 className="text-white text-2xl font-bold mb-3">Need Support?</h3>
+                <p className="text-white/80 text-sm mb-6 leading-relaxed">
+                  Our services are here for you. No judgment, just genuine care and practical help when you need it most.
+                </p>
+                <Link
+                  to="/services"
+                  className="inline-block bg-[#F44314] text-white px-7 py-2.5 rounded-xl font-semibold hover:bg-[#d93a10] transition-colors text-sm"
+                >
+                  Find Services
+                </Link>
               </div>
-              <h3 className="text-[#1F2937] text-2xl font-bold mb-4">Need Support?</h3>
-              <p className="text-gray-600 mb-6">
-                Our services are here for you. No judgment, just genuine care and practical help when you need it most.
-              </p>
-              <Link 
-                to="/services" 
-                className="inline-block bg-[#F44314] text-white px-8 py-3 rounded-xl font-semibold hover:bg-[#d93a10] transition-colors"
-              >
-                Find Services
-              </Link>
             </div>
 
-            {/* Want to Help */}
-            <div className="bg-white rounded-2xl p-8 text-center shadow-lg hover:shadow-xl transition-shadow">
-              <div className="w-16 h-16 bg-[#F44314]/10 rounded-full flex items-center justify-center mx-auto mb-6">
-                <svg className="w-8 h-8 text-[#F44314]" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M16 4c0-1.11.89-2 2-2s2 .89 2 2-.89 2-2 2-2-.89-2-2zM4 18v-6h3v6h2v-6h2l2.54-7.63A1.5 1.5 0 0 0 12.11 3H11.9c-.41 0-.8.17-1.08.46L8.5 6H4c-1.11 0-2 .89-2 2s.89 2 2 2h3l1.8-2.4L10 11H8v7c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2v-7h-4.5L14 8.5z"/>
-                </svg>
+            {/* Volunteer */}
+            <div className="group relative rounded-3xl overflow-hidden h-[480px] shadow-lg hover:shadow-xl transition-shadow hover:-translate-y-1 duration-300">
+              <img
+                src="https://images.unsplash.com/photo-1559027615-cd4628902d4a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080"
+                alt="Volunteers serving the community"
+                className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
+              <div className="absolute bottom-0 left-0 right-0 p-8">
+                <h3 className="text-white text-2xl font-bold mb-3">Want to Volunteer?</h3>
+                <p className="text-white/80 text-sm mb-6 leading-relaxed">
+                  Join hundreds of volunteers making a real difference in Australian communities. We provide training and support.
+                </p>
+                <Link
+                  to="/contact"
+                  className="inline-block bg-white text-[#1F2937] px-7 py-2.5 rounded-xl font-semibold hover:bg-[#F44314] hover:text-white transition-colors text-sm"
+                >
+                  Get Involved
+                </Link>
               </div>
-              <h3 className="text-[#1F2937] text-2xl font-bold mb-4">Want to Volunteer?</h3>
-              <p className="text-gray-600 mb-6">
-                Join hundreds of volunteers making a real difference in Australian communities. We provide training and support.
-              </p>
-              <Link 
-                to="/contact" 
-                className="inline-block bg-white border-2 border-[#F44314] text-[#F44314] px-8 py-3 rounded-xl font-semibold hover:bg-[#F44314] hover:text-white transition-colors"
-              >
-                Get Involved
-              </Link>
             </div>
           </div>
         </div>
