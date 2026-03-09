@@ -221,48 +221,52 @@ export function Home(): JSX.Element {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+          <div className="grid md:grid-cols-2 gap-6 max-w-3xl mx-auto">
             {/* Need Support */}
-            <div className="group relative rounded-3xl overflow-hidden h-[480px] shadow-lg hover:shadow-xl transition-shadow hover:-translate-y-1 duration-300">
-              <img
-                src="https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080"
-                alt="Community support"
-                className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
-              <div className="absolute bottom-0 left-0 right-0 p-8">
-                <h3 className="text-white text-2xl font-bold mb-3">Need Support?</h3>
-                <p className="text-white/80 text-sm mb-6 leading-relaxed">
-                  Our services are here for you. No judgment, just genuine care and practical help when you need it most.
-                </p>
-                <Link
-                  to="/services"
-                  className="inline-block bg-[#F44314] text-white px-7 py-2.5 rounded-xl font-semibold hover:bg-[#d93a10] transition-colors text-sm"
-                >
-                  Find Services
-                </Link>
+            <div className="group bg-[#EDEEED] rounded-3xl p-3 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300">
+              <div className="relative rounded-2xl overflow-hidden h-[420px]">
+                <img
+                  src="https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080"
+                  alt="Community support"
+                  className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
+                <div className="absolute bottom-0 left-0 right-0 p-6">
+                  <h3 className="text-white text-xl font-bold mb-2">Need Support?</h3>
+                  <p className="text-white/80 text-sm mb-5 leading-relaxed">
+                    Our services are here for you. No judgment, just genuine care and practical help when you need it most.
+                  </p>
+                  <Link
+                    to="/services"
+                    className="inline-block bg-[#F44314] text-white px-6 py-2 rounded-xl font-semibold hover:bg-[#d93a10] transition-colors text-sm"
+                  >
+                    Find Services
+                  </Link>
+                </div>
               </div>
             </div>
 
             {/* Volunteer */}
-            <div className="group relative rounded-3xl overflow-hidden h-[480px] shadow-lg hover:shadow-xl transition-shadow hover:-translate-y-1 duration-300">
-              <img
-                src="https://images.unsplash.com/photo-1559027615-cd4628902d4a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080"
-                alt="Volunteers serving the community"
-                className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
-              <div className="absolute bottom-0 left-0 right-0 p-8">
-                <h3 className="text-white text-2xl font-bold mb-3">Want to Volunteer?</h3>
-                <p className="text-white/80 text-sm mb-6 leading-relaxed">
-                  Join hundreds of volunteers making a real difference in Australian communities. We provide training and support.
-                </p>
-                <Link
-                  to="/contact"
-                  className="inline-block bg-white text-[#1F2937] px-7 py-2.5 rounded-xl font-semibold hover:bg-[#F44314] hover:text-white transition-colors text-sm"
-                >
-                  Get Involved
-                </Link>
+            <div className="group bg-[#EDEEED] rounded-3xl p-3 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300">
+              <div className="relative rounded-2xl overflow-hidden h-[420px]">
+                <img
+                  src="https://images.unsplash.com/photo-1559027615-cd4628902d4a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080"
+                  alt="Volunteers serving the community"
+                  className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
+                <div className="absolute bottom-0 left-0 right-0 p-6">
+                  <h3 className="text-white text-xl font-bold mb-2">Want to Volunteer?</h3>
+                  <p className="text-white/80 text-sm mb-5 leading-relaxed">
+                    Join hundreds of volunteers making a real difference in Australian communities. We provide training and support.
+                  </p>
+                  <Link
+                    to="/contact"
+                    className="inline-block bg-white text-[#1F2937] px-6 py-2 rounded-xl font-semibold hover:bg-[#F44314] hover:text-white transition-colors text-sm"
+                  >
+                    Get Involved
+                  </Link>
+                </div>
               </div>
             </div>
           </div>
