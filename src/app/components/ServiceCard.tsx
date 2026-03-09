@@ -31,7 +31,7 @@ export function ServiceCard({ id, name, descriptionShort, locations, primaryImag
   const location = formatLocation(locations);
 
   const content = (
-    <div className="bg-[#EDEEED] rounded-3xl shadow-sm hover:shadow-md transition-all duration-300 h-full flex flex-col group">
+    <div className="bg-white/30 backdrop-blur-md border border-white/50 rounded-3xl shadow-md hover:shadow-lg transition-all duration-300 h-full flex flex-col group">
       {/* Image — inset from card edges */}
       <div className="mx-3 mt-3 rounded-2xl overflow-hidden flex-shrink-0" style={{ height: '220px' }}>
         <img
@@ -57,7 +57,7 @@ export function ServiceCard({ id, name, descriptionShort, locations, primaryImag
             <MapPin className="w-4 h-4" />
             <span className="text-[#374151] text-sm font-medium truncate max-w-[120px]">{location}</span>
           </div>
-          <span className="bg-white text-[#1F2937] text-sm font-semibold px-4 py-2 rounded-full shadow-sm flex-shrink-0">
+          <span className="bg-white/40 backdrop-blur-sm border border-white/60 text-[#1F2937] text-sm font-semibold px-4 py-2 rounded-full shadow-sm flex-shrink-0">
             Learn More
           </span>
         </div>

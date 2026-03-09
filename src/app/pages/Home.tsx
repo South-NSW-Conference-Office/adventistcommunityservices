@@ -89,9 +89,9 @@ export function Home(): JSX.Element {
             </p>
 
             {/* Search Bar */}
-            <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-2 flex flex-row items-center gap-2">
-              <div className="flex-1 flex items-center gap-2 px-3 py-2.5 bg-gray-50 rounded-xl min-w-0">
-                <Search className="w-4 h-4 text-gray-400 flex-shrink-0" />
+            <div className="bg-white/30 backdrop-blur-md border border-white/50 shadow-lg rounded-2xl p-2 flex flex-row items-center gap-2">
+              <div className="flex-1 flex items-center gap-2 px-3 py-2.5 bg-white/30 rounded-xl min-w-0">
+                <Search className="w-4 h-4 text-gray-500 flex-shrink-0" />
                 <input
                   type="text"
                   placeholder="Service..."
@@ -100,8 +100,8 @@ export function Home(): JSX.Element {
                   className="flex-1 bg-transparent outline-none text-gray-900 placeholder:text-gray-400 text-sm min-w-0"
                 />
               </div>
-              <div className="flex-1 flex items-center gap-2 px-3 py-2.5 bg-gray-50 rounded-xl min-w-0">
-                <MapPin className="w-4 h-4 text-gray-400 flex-shrink-0" />
+              <div className="flex-1 flex items-center gap-2 px-3 py-2.5 bg-white/30 rounded-xl min-w-0">
+                <MapPin className="w-4 h-4 text-gray-500 flex-shrink-0" />
                 <input
                   type="text"
                   placeholder="Postcode"
@@ -121,7 +121,7 @@ export function Home(): JSX.Element {
                 <a
                   key={cat}
                   href={`/services?type=${cat.toLowerCase().replace(/ /g, '_')}`}
-                  className="px-2 py-0.5 rounded-full bg-white/80 border border-gray-200 text-gray-500 text-[10px] font-medium hover:border-[#F44314] hover:text-[#F44314] transition-colors"
+                  className="px-2 py-0.5 rounded-full bg-white/20 backdrop-blur-sm border border-white/40 text-gray-600 text-[10px] font-medium hover:bg-white/40 hover:text-[#F44314] transition-colors"
                 >
                   {cat}
                 </a>
@@ -223,7 +223,7 @@ export function Home(): JSX.Element {
 
           <div className="grid md:grid-cols-2 gap-6 max-w-3xl mx-auto">
             {/* Need Support */}
-            <div className="group bg-[#EDEEED] rounded-3xl p-3 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300">
+            <div className="group bg-white/20 backdrop-blur-md border border-white/40 rounded-3xl p-3 shadow-md hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
               <div className="relative rounded-2xl overflow-hidden h-[420px]">
                 <img
                   src="https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080"
@@ -248,7 +248,7 @@ export function Home(): JSX.Element {
             </div>
 
             {/* Volunteer */}
-            <div className="group bg-[#EDEEED] rounded-3xl p-3 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300">
+            <div className="group bg-white/20 backdrop-blur-md border border-white/40 rounded-3xl p-3 shadow-md hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
               <div className="relative rounded-2xl overflow-hidden h-[420px]">
                 <img
                   src="https://images.unsplash.com/photo-1559027615-cd4628902d4a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080"
