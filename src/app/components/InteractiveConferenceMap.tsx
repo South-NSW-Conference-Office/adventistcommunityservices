@@ -135,6 +135,7 @@ export const InteractiveConferenceMap: React.FC = () => {
         alt="Australian SDA Conference Map"
         className="w-full h-auto pointer-events-none"
         draggable={false}
+        style={{ filter: 'drop-shadow(1px 0 0 white) drop-shadow(-1px 0 0 white) drop-shadow(0 1px 0 white) drop-shadow(0 -1px 0 white)' }}
       />
 
       {REGIONS.map((region, idx) => {
@@ -153,11 +154,9 @@ export const InteractiveConferenceMap: React.FC = () => {
               zIndex: isHovered ? 20 : 10,
               filter: [
                 region.tint ? 'url(#orange-tint)' : '',
-                region.tint
-                  ? 'drop-shadow(1px 0 0 white) drop-shadow(-1px 0 0 white) drop-shadow(0 1px 0 white) drop-shadow(0 -1px 0 white)'
-                  : '',
+                'drop-shadow(1px 0 0 white) drop-shadow(-1px 0 0 white) drop-shadow(0 1px 0 white) drop-shadow(0 -1px 0 white)',
                 isHovered ? 'brightness(1.15) drop-shadow(0 4px 12px rgba(0,0,0,0.3))' : '',
-              ].filter(Boolean).join(' ') || 'none',
+              ].filter(Boolean).join(' '),
             }}
           />
         );
