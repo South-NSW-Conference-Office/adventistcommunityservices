@@ -1,5 +1,18 @@
 import { useState, useMemo, useEffect } from 'react';
-import { Search, MapPin, UtensilsCrossed, Heart, Users, Clock, Loader2 } from 'lucide-react';
+import { Search, MapPin, UtensilsCrossed, Heart, Users, Clock } from 'lucide-react';
+
+// Rotating default images for communities that have no photo
+const DEFAULT_IMAGES = [
+  'https://images.unsplash.com/photo-1438032005730-c779502df39b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080',
+  'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080',
+  'https://images.unsplash.com/photo-1609234656388-0ff363383899?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080',
+  'https://images.unsplash.com/photo-1559027615-cd4628902d4a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080',
+  'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080',
+  'https://images.unsplash.com/photo-1593113646773-028c64a8f1b8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080',
+];
+
+const INITIAL_COUNT = 12;
+const LOAD_MORE_COUNT = 12;
 
 interface ChurchData {
   id: string;
@@ -96,15 +109,108 @@ function mapChurchData(raw: ChurchData[]): { churches: FellowshipChurch[]; confe
   return { churches, conferences };
 }
 
-const OUTREACH_LABELS: Record<string, string> = {
-  food_assistance: 'Food Assistance',
-  clothing: 'Clothing',
-  health_services: 'Health Services',
-  education: 'Education',
-  disaster_relief: 'Disaster Response',
-  community_development: 'Community Development',
-  family_services: 'Family Services',
-};
+function getStateBadgeColor(state?: string | null): string {
+  switch (state?.toUpperCase()) {
+    case 'ACT': return 'bg-blue-500/20 text-blue-200';
+    case 'VIC': return 'bg-purple-500/20 text-purple-200';
+    default:    return 'bg-white/20 text-white';
+  }
+}
+
+interface CommunityCardProps {
+  community: FellowshipChurch;
+  imageIndex: number;
+}
+
+function CommunityCard({ community, imageIndex }: CommunityCardProps): JSX.Element {
+  const imageUrl = DEFAULT_IMAGES[imageIndex % DEFAULT_IMAGES.length];
+
+  return (
+    <div className="h-full hover:-translate-y-1 transition-transform duration-200">
+      {/* Outer card — gray bezel */}
+      <div className="bg-[#EDEEED] rounded-3xl shadow-sm hover:shadow-md transition-all duration-300 h-full p-3 group">
+        {/* Inner image with text overlay */}
+        <div className="relative rounded-2xl overflow-hidden h-full min-h-[280px]">
+          {/* Background image */}
+          <img
+            src={imageUrl}
+            alt={community.name}
+            className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+          />
+
+          {/* Gradient overlay — bottom-heavy */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent" />
+
+          {/* State badge — top right */}
+          {community.state && (
+            <div className="absolute top-3 right-3">
+              <span className={`px-3 py-1 rounded-full text-xs font-semibold backdrop-blur-sm ${getStateBadgeColor(community.state)}`}>
+                {community.state}
+              </span>
+            </div>
+          )}
+
+          {/* Meals badge — top left */}
+          {community.hasMeals && (
+            <div className="absolute top-3 left-3">
+              <span className="flex items-center gap-1 bg-green-500/80 text-white text-xs font-semibold px-2.5 py-1 rounded-full backdrop-blur-sm">
+                <UtensilsCrossed className="w-3 h-3" />
+                Free Meals
+              </span>
+            </div>
+          )}
+
+          {/* Content overlay — bottom */}
+          <div className="absolute bottom-0 left-0 right-0 p-4">
+            <h3 className="text-white text-lg font-bold leading-snug mb-0.5">{community.name}</h3>
+
+            <p className="text-white/70 text-xs flex items-center gap-1 mb-2">
+              <MapPin className="w-3 h-3 flex-shrink-0" />
+              {community.city}, {community.state}
+            </p>
+
+            {/* Quick info */}
+            <div className="space-y-1 mb-3">
+              {community.hasMeals && community.mealDay && (
+                <div className="flex items-center gap-1.5 text-white/80 text-xs">
+                  <Clock className="w-3 h-3 flex-shrink-0 text-green-300" />
+                  <span>Free meal: <span className="text-white font-medium">{community.mealDay}</span></span>
+                </div>
+              )}
+              {community.worshipTime && (
+                <div className="flex items-center gap-1.5 text-white/70 text-xs">
+                  <span>🕐</span>
+                  <span>Worship: <span className="text-white/90">{community.worshipTime}</span>
+                    {community.sabbathSchoolTime && (
+                      <span className="text-white/50"> · Study: {community.sabbathSchoolTime}</span>
+                    )}
+                  </span>
+                </div>
+              )}
+              {!community.worshipTime && !community.hasMeals && (
+                <p className="text-white/40 text-xs italic">Contact for service times</p>
+              )}
+            </div>
+
+            {/* Bottom bar */}
+            <div className="flex items-center justify-between">
+              {(community.teamCount > 0 || community.serviceCount > 0) && (
+                <span className="text-white/50 text-xs">
+                  {community.teamCount > 0 && `${community.teamCount} team${community.teamCount !== 1 ? 's' : ''}`}
+                  {community.teamCount > 0 && community.serviceCount > 0 && ' · '}
+                  {community.serviceCount > 0 && `${community.serviceCount} service${community.serviceCount !== 1 ? 's' : ''}`}
+                </span>
+              )}
+              <span className="ml-auto bg-white text-[#1F2937] text-xs font-semibold px-3 py-1.5 rounded-full shadow-sm">
+                {community.conference}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export function Fellowship(): JSX.Element {
   const [conferences, setConferences] = useState<ConferenceInfo[]>([]);
@@ -113,11 +219,11 @@ export function Fellowship(): JSX.Element {
   const [search, setSearch] = useState('');
   const [mealsOnly, setMealsOnly] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [visibleCount, setVisibleCount] = useState(INITIAL_COUNT);
 
   useEffect(() => {
     async function fetchData() {
       try {
-        // Fetch from backend API (MongoDB)
         const apiUrl = import.meta.env.VITE_API_URL || '';
         const res = await fetch(`${apiUrl}/api/public/fellowship`);
         if (res.ok) {
@@ -137,6 +243,11 @@ export function Fellowship(): JSX.Element {
     fetchData();
   }, []);
 
+  const handleFilterChange = (setter: (v: string) => void) => (v: string) => {
+    setter(v);
+    setVisibleCount(INITIAL_COUNT);
+  };
+
   const filtered = useMemo(() => {
     return churches.filter(c => {
       if (activeConference !== 'all' && c.conferenceId !== activeConference) return false;
@@ -153,202 +264,187 @@ export function Fellowship(): JSX.Element {
     });
   }, [churches, activeConference, search, mealsOnly]);
 
+  const visibleCommunities = filtered.slice(0, visibleCount);
+  const hasMore = filtered.length > visibleCount;
   const mealsCount = churches.filter(c => c.hasMeals).length;
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Hero */}
-      <div className="bg-gradient-to-br from-[#FFF7ED] to-[#FFF1E6] pt-20 pb-12 px-6">
-        <div className="max-w-4xl mx-auto text-center">
-          <p className="text-[#F44314] text-sm font-semibold tracking-wider uppercase mb-4">Fellowship</p>
-          <h1 className="text-[#1F2937] text-4xl md:text-5xl font-bold mb-4">
-            Find Friends, Fellowship and Faith
-          </h1>
-          <p className="text-gray-600 text-lg max-w-2xl mx-auto mb-8">
-            Come for a meal, meet some kind neighbours, and find a place that you belong. 
-            No membership or admission fees required — just come as you are.
-          </p>
-          
-          {/* Stats */}
-          <div className="flex flex-wrap justify-center gap-4 mb-8">
-            <div className="flex items-center gap-2 bg-white rounded-full px-5 py-2 shadow-sm">
-              <Users className="w-4 h-4 text-[#F44314]" />
-              <span className="text-sm font-medium">{churches.length} Communities</span>
-            </div>
-            {mealsCount > 0 && (
-              <div className="flex items-center gap-2 bg-white rounded-full px-5 py-2 shadow-sm">
-                <UtensilsCrossed className="w-4 h-4 text-[#F44314]" />
-                <span className="text-sm font-medium">{mealsCount} with Weekly Meals</span>
+      {/* Hero — video background matching site style */}
+      <div className="relative h-[460px] md:h-[520px] overflow-hidden">
+        <iframe
+          src="https://www.youtube-nocookie.com/embed/Mzwy_gkPjbw?autoplay=1&mute=1&loop=1&playlist=Mzwy_gkPjbw&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1&start=50"
+          allow="autoplay; encrypted-media"
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none"
+          style={{ width: 'max(100%, 177.78vh)', height: 'max(100%, 56.25vw)' }}
+          title="ACS background video"
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/30 to-black/70" />
+        <div className="relative h-full flex items-end pb-10">
+          <div className="max-w-4xl mx-auto px-6 text-center w-full">
+            <p className="text-white/80 text-sm font-semibold tracking-wider uppercase mb-4">Fellowship</p>
+            <h1 className="text-white text-5xl md:text-6xl font-bold mb-4 leading-tight">
+              Find Friends, Fellowship and Faith
+            </h1>
+            <p className="text-white/80 text-lg max-w-2xl mx-auto mb-8">
+              Come for a meal, meet kind neighbours, and find a place you belong.
+              No membership or admission fees — just come as you are.
+            </p>
+            {/* Search in hero */}
+            <div className="max-w-xl mx-auto">
+              <div className="flex items-center gap-3 px-4 py-3 bg-white rounded-xl shadow-md border border-gray-200">
+                <Search className="w-4 h-4 text-gray-400 flex-shrink-0" />
+                <input
+                  type="text"
+                  value={search}
+                  onChange={e => { setSearch(e.target.value); setVisibleCount(INITIAL_COUNT); }}
+                  placeholder="Search communities, cities, or addresses..."
+                  className="flex-1 bg-transparent outline-none text-gray-900 text-sm placeholder:text-gray-400"
+                />
               </div>
-            )}
-            <div className="flex items-center gap-2 bg-white rounded-full px-5 py-2 shadow-sm">
-              <Heart className="w-4 h-4 text-[#F44314]" />
-              <span className="text-sm font-medium">Everyone Welcome</span>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Conference Tabs */}
-      <div className="max-w-7xl mx-auto px-6 -mt-6">
-        <div className="bg-white border border-gray-200 rounded-xl shadow-sm p-2 flex flex-wrap gap-2">
-          <button
-            onClick={() => setActiveConference('all')}
-            className={`px-5 py-2.5 rounded-lg text-sm font-semibold transition-colors ${
-              activeConference === 'all'
-                ? 'bg-[#F44314] text-white'
-                : 'text-gray-600 hover:bg-gray-100'
-            }`}
-          >
-            All Regions ({churches.length})
-          </button>
-          {conferences.map(conf => (
+      {/* Stats bar */}
+      <div className="bg-[#F8F7F5] border-b border-gray-200 py-4 px-6">
+        <div className="max-w-7xl mx-auto flex flex-wrap justify-center gap-6">
+          <div className="flex items-center gap-2 text-sm text-gray-600">
+            <Users className="w-4 h-4 text-[#F44314]" />
+            <span><span className="font-semibold text-[#1F2937]">{churches.length}</span> Communities</span>
+          </div>
+          {mealsCount > 0 && (
+            <div className="flex items-center gap-2 text-sm text-gray-600">
+              <UtensilsCrossed className="w-4 h-4 text-[#F44314]" />
+              <span><span className="font-semibold text-[#1F2937]">{mealsCount}</span> with Weekly Meals</span>
+            </div>
+          )}
+          <div className="flex items-center gap-2 text-sm text-gray-600">
+            <Heart className="w-4 h-4 text-[#F44314]" />
+            <span className="font-semibold text-[#1F2937]">Everyone Welcome</span>
+          </div>
+        </div>
+      </div>
+
+      <div className="bg-white py-10">
+        <div className="max-w-7xl mx-auto px-6">
+
+          {/* Compact filter bar */}
+          <div className="flex flex-wrap items-center gap-3 mb-6">
+            <span className="text-gray-500 text-xs font-medium uppercase tracking-wide">Filter by</span>
+
+            {/* Conference tabs */}
             <button
-              key={conf.id}
-              onClick={() => setActiveConference(conf.id)}
-              className={`px-5 py-2.5 rounded-lg text-sm font-semibold transition-colors ${
-                activeConference === conf.id
+              onClick={() => handleFilterChange(setActiveConference)('all')}
+              className={`px-4 py-1.5 rounded-lg text-sm font-semibold transition-colors ${
+                activeConference === 'all'
                   ? 'bg-[#F44314] text-white'
-                  : 'text-gray-600 hover:bg-gray-100'
+                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
               }`}
             >
-              {conf.name} ({conf.churchCount})
+              All Regions
             </button>
-          ))}
-        </div>
-      </div>
+            {conferences.map(conf => (
+              <button
+                key={conf.id}
+                onClick={() => handleFilterChange(setActiveConference)(conf.id)}
+                className={`px-4 py-1.5 rounded-lg text-sm font-semibold transition-colors ${
+                  activeConference === conf.id
+                    ? 'bg-[#F44314] text-white'
+                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                }`}
+              >
+                {conf.name}
+              </button>
+            ))}
 
-      {/* Meals Callout */}
-      <div className="max-w-7xl mx-auto px-6 mt-6">
-        <div className="bg-[#F44314] text-white rounded-xl p-6 flex flex-col md:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-4">
-            <UtensilsCrossed className="w-8 h-8 flex-shrink-0" />
-            <div>
-              <h3 className="font-bold text-lg">Looking for a Free Community Meal?</h3>
-              <p className="text-white/80 text-sm">
-                {mealsCount > 0
-                  ? `${mealsCount} communities serve free weekly meals — everyone is welcome, no questions asked.`
-                  : 'We\'re collecting meal data from churches — check back soon for updates.'}
-              </p>
-            </div>
+            {/* Meals toggle */}
+            <button
+              onClick={() => { setMealsOnly(!mealsOnly); setVisibleCount(INITIAL_COUNT); }}
+              className={`ml-auto flex items-center gap-1.5 px-4 py-1.5 rounded-lg text-sm font-semibold transition-colors border ${
+                mealsOnly
+                  ? 'bg-green-50 border-green-300 text-green-700'
+                  : 'bg-gray-50 border-gray-200 text-gray-600 hover:border-green-300'
+              }`}
+            >
+              <UtensilsCrossed className="w-3.5 h-3.5" />
+              {mealsOnly ? '✓ Meals only' : 'With meals'}
+            </button>
+
+            {(search || activeConference !== 'all' || mealsOnly) && (
+              <button
+                onClick={() => { setSearch(''); setActiveConference('all'); setMealsOnly(false); setVisibleCount(INITIAL_COUNT); }}
+                className="text-[#F44314] text-xs font-semibold hover:underline"
+              >
+                Clear filters
+              </button>
+            )}
+
+            <span className="text-gray-400 text-xs">
+              {filtered.length} communit{filtered.length !== 1 ? 'ies' : 'y'}
+              {mealsOnly && ' with meals'}
+              {activeConference !== 'all' && ` in ${conferences.find(c => c.id === activeConference)?.name || ''}`}
+              {search && ` matching "${search}"`}
+            </span>
           </div>
-          <button 
-            onClick={() => setMealsOnly(!mealsOnly)}
-            className={`px-6 py-2.5 rounded-lg font-semibold text-sm transition-colors flex-shrink-0 ${
-              mealsOnly 
-                ? 'bg-white text-[#F44314]' 
-                : 'bg-white/20 text-white hover:bg-white/30'
-            }`}
-          >
-            {mealsOnly ? '✓ Showing Meal Communities' : 'Show Communities with Meals'}
-          </button>
-        </div>
-      </div>
 
-      {/* Search */}
-      <div className="max-w-7xl mx-auto px-6 py-6">
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-          <input
-            type="text"
-            value={search}
-            onChange={e => setSearch(e.target.value)}
-            placeholder="Search by community name, city, or address..."
-            className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:border-[#F44314] transition-colors"
-          />
-        </div>
-        <p className="text-sm text-gray-500 mt-3">
-          Showing <span className="font-semibold text-[#F44314]">{filtered.length}</span> communit{filtered.length !== 1 ? 'ies' : 'y'}
-          {mealsOnly && ' with weekly meals'}
-          {activeConference !== 'all' && ` in ${conferences.find(c => c.id === activeConference)?.name || ''}`}
-        </p>
-      </div>
+          {/* Loading */}
+          {loading && (
+            <div className="flex justify-center py-20">
+              <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-[#F44314]" />
+            </div>
+          )}
 
-      {/* Loading */}
-      {loading && (
-        <div className="flex justify-center py-12">
-          <Loader2 className="w-8 h-8 text-[#F44314] animate-spin" />
-        </div>
-      )}
+          {/* Community Grid */}
+          {!loading && visibleCommunities.length > 0 && (
+            <>
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {visibleCommunities.map((community, index) => (
+                  <CommunityCard key={community.id} community={community} imageIndex={index} />
+                ))}
+              </div>
 
-      {/* Communities Grid */}
-      {!loading && (
-        <div className="max-w-7xl mx-auto px-6 pb-16">
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filtered.map(community => (
-              <div key={community.id} className="bg-white border border-gray-200 rounded-xl p-6 hover:shadow-lg transition-shadow">
-                <div className="flex items-start justify-between mb-3">
-                  <div>
-                    <h3 className="text-lg font-bold text-[#1F2937]">{community.name}</h3>
-                    <span className="text-xs text-gray-400 font-medium">{community.conferenceCode}</span>
-                  </div>
-                  {community.hasMeals && (
-                    <span className="flex items-center gap-1 bg-green-50 text-green-700 text-xs font-semibold px-2.5 py-1 rounded-full">
-                      <UtensilsCrossed className="w-3 h-3" />
-                      Meals
+              {/* Load More */}
+              {hasMore && (
+                <div className="mt-10 text-center">
+                  <button
+                    onClick={() => setVisibleCount(prev => prev + LOAD_MORE_COUNT)}
+                    className="inline-flex items-center gap-2 bg-[#F44314] text-white px-8 py-3 rounded-full font-semibold hover:bg-[#d93a10] transition-colors shadow-sm"
+                  >
+                    View More Communities
+                    <span className="text-white/70 text-sm">
+                      ({filtered.length - visibleCount} remaining)
                     </span>
-                  )}
+                  </button>
                 </div>
-                
-                <div className="flex items-center gap-1 text-sm text-gray-500 mb-1">
-                  <MapPin className="w-4 h-4" />
-                  {community.city}, {community.state}
-                </div>
+              )}
+            </>
+          )}
 
-                {community.address && (
-                  <p className="text-xs text-gray-400 mb-3 ml-5">{community.address}</p>
-                )}
-
-                {community.hasMeals && community.mealDay && (
-                  <div className="flex items-center gap-1 text-sm text-green-700 bg-green-50 rounded-lg px-3 py-2 mb-3">
-                    <Clock className="w-4 h-4" />
-                    Free meal: {community.mealDay}
-                  </div>
-                )}
-
-                {community.worshipTime && (
-                  <div className="text-sm text-gray-500 mb-3">
-                    🕐 Worship: {community.worshipTime} {community.sabbathSchoolTime && `• Study: ${community.sabbathSchoolTime}`}
-                  </div>
-                )}
-
-                {community.outreachFocus.length > 0 && (
-                  <div className="flex flex-wrap gap-1.5 mb-3">
-                    {community.outreachFocus.map(f => (
-                      <span key={f} className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded">
-                        {OUTREACH_LABELS[f] || f}
-                      </span>
-                    ))}
-                  </div>
-                )}
-
-                {(community.teamCount > 0 || community.serviceCount > 0) && (
-                  <div className="flex items-center gap-3 mt-4 pt-3 border-t border-gray-100 text-xs text-gray-400">
-                    {community.teamCount > 0 && (
-                      <span><Users className="w-3 h-3 inline mr-1" />{community.teamCount} team{community.teamCount !== 1 ? 's' : ''}</span>
-                    )}
-                    {community.serviceCount > 0 && (
-                      <span>{community.serviceCount} service{community.serviceCount !== 1 ? 's' : ''}</span>
-                    )}
-                  </div>
+          {/* Empty State */}
+          {!loading && filtered.length === 0 && (
+            <div className="text-center py-16">
+              <div className="bg-[#F8F7F5] border border-gray-200 rounded-2xl p-12 max-w-lg mx-auto">
+                <p className="text-[#1F2937] text-xl font-semibold mb-2">No communities found</p>
+                <p className="text-gray-500 mb-6">
+                  {churches.length === 0
+                    ? 'No communities have been listed yet. Check back soon.'
+                    : 'Try adjusting your filters or search term.'}
+                </p>
+                {(search || activeConference !== 'all' || mealsOnly) && (
+                  <button
+                    onClick={() => { setSearch(''); setActiveConference('all'); setMealsOnly(false); }}
+                    className="text-[#F44314] font-semibold hover:underline"
+                  >
+                    Clear filters
+                  </button>
                 )}
               </div>
-            ))}
-          </div>
-
-          {filtered.length === 0 && (
-            <div className="text-center py-16">
-              <p className="text-gray-500 text-lg">No communities found matching your search.</p>
-              <button 
-                onClick={() => { setSearch(''); setActiveConference('all'); setMealsOnly(false); }}
-                className="mt-4 text-[#F44314] font-medium hover:underline"
-              >
-                Clear all filters
-              </button>
             </div>
           )}
         </div>
-      )}
+      </div>
 
       {/* CTA */}
       <div className="bg-[#FFF7ED] py-16 px-6">
@@ -357,11 +453,11 @@ export function Fellowship(): JSX.Element {
             Want to List Your Community?
           </h2>
           <p className="text-gray-600 mb-6">
-            If your Adventist community runs services, meals, or programs that welcome the public, 
-            we want to feature you. Get in touch and we&apos;ll add you to the directory.
+            If your Adventist community runs services, meals, or programs that welcome the public,
+            we want to feature you. Get in touch and we'll add you to the directory.
           </p>
-          <a 
-            href="/contact" 
+          <a
+            href="/contact"
             className="inline-block bg-[#F44314] text-white px-8 py-3 rounded-xl font-semibold hover:bg-[#d93a11] transition-colors"
           >
             Get in Touch
