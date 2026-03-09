@@ -8,8 +8,8 @@ interface HeaderProps {
   isAuthenticated?: boolean;
 }
 
-// Detail pages all have image banners — header text must be white when at top
-const DETAIL_ROUTE = /^\/(churches|teams|services)\/[^/]+$/;
+// Pages with dark hero backgrounds — header text must be white when at top
+const DETAIL_ROUTE = /^\/(churches|teams|services)\/[^/]+$|^\/about$/;
 
 export function Header({ onLogout, isAuthenticated = false }: HeaderProps) {
   const [mobileOpen, setMobileOpen] = useState(false);
