@@ -33,7 +33,7 @@ export function Services(): JSX.Element {
   const heroTitle = getBlock('hero', 'title') || 'Find a Service';
   const heroSubtitle =
     getBlock('hero', 'subtitle') ||
-    'Browse community services by type or search for what you\'re looking for. Every service is provided by a local team of volunteers.';
+    'Find the help you need close to home. Our services are run by caring volunteers who are here to support you.';
 
   const { serviceTypeCounts, filteredServices } = useMemo(() => {
     const typeCounts: Record<string, number> = {};
@@ -63,23 +63,11 @@ export function Services(): JSX.Element {
   return (
     <div>
       {/* Hero */}
-      <div className="relative h-[420px] md:h-[500px] overflow-hidden">
-        {/* YouTube video background */}
-        <iframe
-          src="https://www.youtube-nocookie.com/embed/Mzwy_gkPjbw?autoplay=1&mute=1&loop=1&playlist=Mzwy_gkPjbw&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1&start=30"
-          allow="autoplay; encrypted-media"
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none"
-          style={{ width: 'max(100%, 177.78vh)', height: 'max(100%, 56.25vw)' }}
-          title="ACS background video"
-        />
-        {/* Dark overlay */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/30 to-black/70" />
-
-        <div className="relative h-full flex items-end pb-12">
-        <div className="max-w-4xl mx-auto px-6 text-center w-full">
-          <p className="text-white/80 text-sm font-semibold tracking-wider uppercase mb-4">{heroLabel}</p>
-          <h1 className="text-white text-5xl md:text-6xl font-bold mb-6 leading-tight">{heroTitle}</h1>
-          <p className="text-white/80 text-lg max-w-2xl mx-auto">{heroSubtitle}</p>
+      <div className="bg-[#F8F7F5] py-16 md:py-24">
+        <div className="max-w-4xl mx-auto px-6 text-center">
+          <p className="text-[#F44314] text-sm font-semibold tracking-wider uppercase mb-4">{heroLabel}</p>
+          <h1 className="text-[#1F2937] text-5xl md:text-6xl font-bold mb-6 leading-tight">{heroTitle}</h1>
+          <p className="text-gray-600 text-lg max-w-2xl mx-auto">{heroSubtitle}</p>
 
           {/* Search */}
           <div className="mt-10 max-w-xl mx-auto">
@@ -89,12 +77,11 @@ export function Services(): JSX.Element {
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search services, teams, or locations..."
+                placeholder="What do you need help with today?"
                 className="flex-1 bg-transparent outline-none text-gray-900 placeholder:text-gray-400"
               />
             </div>
           </div>
-        </div>
         </div>
       </div>
 
@@ -182,12 +169,12 @@ export function Services(): JSX.Element {
             <div className="text-center py-16">
               <div className="bg-white border border-gray-200 rounded-2xl p-12 max-w-lg mx-auto">
                 <p className="text-[#1F2937] text-xl font-semibold mb-2">
-                  {searchQuery || selectedType ? 'No services match your search' : 'No services listed yet'}
+                  {searchQuery || selectedType ? 'No services found' : 'Services coming soon'}
                 </p>
                 <p className="text-gray-500 mb-6">
                   {searchQuery || selectedType
-                    ? 'Try different search terms or browse all service types.'
-                    : 'Teams are still setting up their services. Check back soon!'}
+                    ? 'Try different search terms or browse all categories. We might still be able to help!'
+                    : 'Our teams are setting up their services. Please check back soon or contact us directly for immediate help.'}
                 </p>
                 {(searchQuery || selectedType) && (
                   <button
