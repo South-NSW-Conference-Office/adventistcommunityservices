@@ -39,55 +39,62 @@ export function TeamCard({ team }: TeamCardProps) {
       to={`/teams/${team._id}`}
       className="block h-full hover:-translate-y-1 transition-transform duration-200"
     >
-      <div className="bg-[#EDEEED] rounded-3xl shadow-sm hover:shadow-md transition-all duration-300 h-full flex flex-col group">
-        {/* Image — inset from card edges */}
-        <div className="mx-3 mt-3 rounded-2xl overflow-hidden flex-shrink-0 relative" style={{ height: '220px' }}>
+      {/* Outer card — gray bezel */}
+      <div className="bg-[#EDEEED] rounded-3xl shadow-sm hover:shadow-md transition-all duration-300 h-full p-3 group">
+        {/* Inner image fills remaining space, text overlaid */}
+        <div className="relative rounded-2xl overflow-hidden h-full min-h-[280px]">
+          {/* Full image */}
           <img
             src={imageUrl}
             alt={team.banner?.alt || team.name}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+            className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
           />
-          {/* Category badge */}
+
+          {/* Gradient overlay — bottom-heavy */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
+
+          {/* Category badge — top right */}
           <div className="absolute top-3 right-3">
             <span className={`px-3 py-1 rounded-full text-xs font-semibold ${getCategoryBadgeColor(category)}`}>
               {category}
             </span>
           </div>
-        </div>
 
-        {/* Content */}
-        <div className="px-5 pt-4 pb-5 flex flex-col flex-1">
-          <h3 className="text-[#1A1A1A] text-xl font-bold mb-1 leading-snug">{team.name}</h3>
-          {churchName && (
-            <p className="text-[#F44314] text-xs font-medium mb-2 flex items-center gap-1">
-              <Building2 className="w-3 h-3" />{churchName}
-            </p>
-          )}
-          {team.description && (
-            <p className="text-[#6B7280] text-sm leading-relaxed line-clamp-2 flex-1">
-              {team.description}
-            </p>
-          )}
+          {/* Content overlay — bottom */}
+          <div className="absolute bottom-0 left-0 right-0 p-4">
+            <h3 className="text-white text-lg font-bold leading-snug mb-0.5">{team.name}</h3>
 
-          {/* Bottom bar */}
-          <div className="flex items-center justify-between mt-4">
-            <div className="flex items-center gap-4">
-              <div className="flex items-center gap-1.5 text-[#9CA3AF]">
-                <Users className="w-4 h-4" />
-                <span className="text-[#374151] text-sm font-medium">
-                  {memberCount} {memberCount === 1 ? 'member' : 'members'}
-                </span>
-              </div>
-              {location && (
-                <div className="flex items-center gap-1.5 text-[#9CA3AF]">
-                  <MapPin className="w-4 h-4" />
-                  <span className="text-[#374151] text-sm font-medium truncate max-w-[80px]">{location}</span>
+            {churchName && (
+              <p className="text-white/70 text-xs flex items-center gap-1 mb-2">
+                <Building2 className="w-3 h-3 flex-shrink-0" />
+                {churchName}
+              </p>
+            )}
+
+            {team.description && (
+              <p className="text-white/60 text-sm line-clamp-2 mb-3">{team.description}</p>
+            )}
+
+            {/* Bottom bar */}
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="flex items-center gap-1 text-white/70">
+                  <Users className="w-3.5 h-3.5" />
+                  <span className="text-white text-xs font-medium">
+                    {memberCount} {memberCount === 1 ? 'member' : 'members'}
+                  </span>
                 </div>
-              )}
+                {location && (
+                  <div className="flex items-center gap-1 text-white/70">
+                    <MapPin className="w-3.5 h-3.5" />
+                    <span className="text-white text-xs font-medium truncate max-w-[80px]">{location}</span>
+                  </div>
+                )}
+              </div>
+              <span className="bg-white text-[#1F2937] text-xs font-semibold px-3 py-1.5 rounded-full shadow-sm flex-shrink-0">
+                View Team
+              </span>
             </div>
-            <span className="bg-white text-[#1F2937] text-sm font-semibold px-4 py-2 rounded-full shadow-sm flex-shrink-0">
-              View Team
-            </span>
           </div>
         </div>
       </div>
