@@ -88,71 +88,56 @@ export function Teams(): JSX.Element {
       {/* Filters + Content */}
       <div className="bg-white py-12">
         <div className="max-w-7xl mx-auto px-6">
-          {/* Filter Bar */}
-          <div className="mb-10">
-            <div className="flex items-center gap-3 mb-6">
-              <Filter className="w-5 h-5 text-gray-400" />
-              <h2 className="text-[#1F2937] text-xl font-semibold">Filter Teams</h2>
+          {/* Compact Filter Bar */}
+          <div className="flex flex-wrap items-center gap-3 mb-8">
+            <span className="text-gray-500 text-xs font-medium uppercase tracking-wide">Filter by</span>
+
+            <div className="flex items-center gap-2 px-3 py-1.5 bg-gray-50 border border-gray-200 rounded-lg">
+              <Search className="w-3.5 h-3.5 text-gray-400" />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search teams..."
+                className="bg-transparent outline-none text-gray-700 text-sm placeholder:text-gray-400 w-36"
+              />
             </div>
 
-            <div className="grid md:grid-cols-3 gap-4">
-              <div>
-                <label htmlFor="search" className="block text-gray-600 text-sm mb-2 flex items-center gap-2">
-                  <Search className="w-4 h-4" />
-                  Search
-                </label>
-                <input
-                  id="search"
-                  type="text"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Search teams..."
-                  className="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#F44314] transition-colors"
-                />
-              </div>
+            <select
+              value={selectedChurch}
+              onChange={(e) => setSelectedChurch(e.target.value)}
+              className="px-3 py-1.5 rounded-lg bg-gray-50 border border-gray-200 text-gray-700 text-sm focus:outline-none focus:border-[#F44314] transition-colors cursor-pointer"
+            >
+              {churches.map((church) => (
+                <option key={church} value={church}>{church}</option>
+              ))}
+            </select>
 
-              <div>
-                <label htmlFor="church" className="block text-gray-600 text-sm mb-2 flex items-center gap-2">
-                  <MapPin className="w-4 h-4" />
-                  Location
-                </label>
-                <select
-                  id="church"
-                  value={selectedChurch}
-                  onChange={(e) => setSelectedChurch(e.target.value)}
-                  className="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 text-gray-900 focus:outline-none focus:border-[#F44314] transition-colors"
-                >
-                  {churches.map((church) => (
-                    <option key={church} value={church}>{church}</option>
-                  ))}
-                </select>
-              </div>
+            <select
+              value={selectedCategory}
+              onChange={(e) => setSelectedCategory(e.target.value)}
+              className="px-3 py-1.5 rounded-lg bg-gray-50 border border-gray-200 text-gray-700 text-sm focus:outline-none focus:border-[#F44314] transition-colors cursor-pointer"
+            >
+              {categories.map((category) => (
+                <option key={category} value={category}>{category}</option>
+              ))}
+            </select>
 
-              <div>
-                <label htmlFor="category" className="block text-gray-600 text-sm mb-2">
-                  Category
-                </label>
-                <select
-                  id="category"
-                  value={selectedCategory}
-                  onChange={(e) => setSelectedCategory(e.target.value)}
-                  className="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 text-gray-900 focus:outline-none focus:border-[#F44314] transition-colors"
-                >
-                  {categories.map((category) => (
-                    <option key={category} value={category}>{category}</option>
-                  ))}
-                </select>
-              </div>
-            </div>
+            {(searchQuery || selectedChurch !== 'All Locations' || selectedCategory !== 'All Categories') && (
+              <button
+                onClick={() => { setSearchQuery(''); setSelectedChurch('All Locations'); setSelectedCategory('All Categories'); }}
+                className="text-[#F44314] text-xs font-semibold hover:underline"
+              >
+                Clear filters
+              </button>
+            )}
 
-            <div className="mt-4">
-              <p className="text-gray-500 text-sm">
-                Showing <span className="font-semibold text-[#1F2937]">{filteredTeams.length}</span> team{filteredTeams.length !== 1 ? 's' : ''}
-                {selectedChurch !== 'All Locations' && ` at ${selectedChurch}`}
-                {selectedCategory !== 'All Categories' && ` in ${selectedCategory}`}
-                {searchQuery && ` matching "${searchQuery}"`}
-              </p>
-            </div>
+            <span className="text-gray-400 text-xs ml-auto">
+              {filteredTeams.length} team{filteredTeams.length !== 1 ? 's' : ''}
+              {selectedChurch !== 'All Locations' && ` at ${selectedChurch}`}
+              {selectedCategory !== 'All Categories' && ` · ${selectedCategory}`}
+              {searchQuery && ` matching "${searchQuery}"`}
+            </span>
           </div>
 
           {/* Loading */}
