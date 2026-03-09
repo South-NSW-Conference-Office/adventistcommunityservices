@@ -128,7 +128,7 @@ function CommunityCard({ community, imageIndex }: CommunityCardProps): JSX.Eleme
   return (
     <div className="h-full hover:-translate-y-1 transition-transform duration-200">
       {/* Outer card — gray bezel */}
-      <div className="bg-[#EDEEED] rounded-3xl shadow-sm hover:shadow-md transition-all duration-300 h-full p-3 group">
+      <div className="rounded-3xl transition-all duration-300 h-full p-3 group" style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.55) 0%, rgba(255,255,255,0.2) 100%)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', border: '1px solid rgba(255,255,255,0.6)', boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.8), inset 0 -1px 0 rgba(0,0,0,0.04), 0 4px 24px rgba(0,0,0,0.08)' }}>
         {/* Inner image with text overlay */}
         <div className="relative rounded-2xl overflow-hidden h-full min-h-[280px]">
           {/* Background image */}
@@ -201,7 +201,7 @@ function CommunityCard({ community, imageIndex }: CommunityCardProps): JSX.Eleme
                   {community.serviceCount > 0 && `${community.serviceCount} service${community.serviceCount !== 1 ? 's' : ''}`}
                 </span>
               )}
-              <span className="ml-auto bg-white text-[#1F2937] text-xs font-semibold px-3 py-1.5 rounded-full shadow-sm">
+              <span className="ml-auto text-[#1F2937] text-xs font-semibold px-3 py-1.5 rounded-full" style={{ background: 'rgba(255,255,255,0.6)', border: '1px solid rgba(255,255,255,0.8)', boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.9)' }}>
                 {community.conference}
               </span>
             </div>
@@ -292,7 +292,7 @@ export function Fellowship(): JSX.Element {
             </p>
             {/* Search in hero */}
             <div className="max-w-xl mx-auto">
-              <div className="flex items-center gap-3 px-4 py-3 bg-white rounded-xl shadow-md border border-gray-200">
+              <div className="flex items-center gap-3 px-4 py-3 rounded-xl" style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.55) 0%, rgba(255,255,255,0.2) 100%)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', border: '1px solid rgba(255,255,255,0.6)', boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.8), 0 4px 24px rgba(0,0,0,0.08)' }}>
                 <Search className="w-4 h-4 text-gray-400 flex-shrink-0" />
                 <input
                   type="text"

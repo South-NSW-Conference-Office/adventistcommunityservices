@@ -83,7 +83,7 @@ export function Services(): JSX.Element {
 
           {/* Search */}
           <div className="mt-10 max-w-xl mx-auto">
-            <div className="flex items-center gap-3 px-5 py-4 bg-white rounded-2xl shadow-md border border-gray-200">
+            <div className="flex items-center gap-3 px-5 py-4 rounded-2xl" style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.55) 0%, rgba(255,255,255,0.2) 100%)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', border: '1px solid rgba(255,255,255,0.6)', boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.8), 0 4px 24px rgba(0,0,0,0.08)' }}>
               <Search className="w-5 h-5 text-gray-400 flex-shrink-0" />
               <input
                 type="text"
@@ -110,11 +110,8 @@ export function Services(): JSX.Element {
                 <button
                   key={st.value}
                   onClick={() => setSelectedType(isSelected ? null : st.value)}
-                  className={`rounded-2xl p-5 text-center transition-all border ${
-                    isSelected
-                      ? 'bg-[#FFF1EE] border-[#F44314] shadow-sm'
-                      : 'bg-gray-50 border-gray-200 hover:border-[#F44314] hover:bg-[#FFF8F6]'
-                  }`}
+                  className={`rounded-2xl p-5 text-center transition-all ${isSelected ? 'ring-2 ring-[#F44314]' : ''}`}
+                  style={{ background: isSelected ? 'linear-gradient(135deg, rgba(244,67,20,0.15) 0%, rgba(244,67,20,0.05) 100%)' : 'linear-gradient(135deg, rgba(255,255,255,0.55) 0%, rgba(255,255,255,0.2) 100%)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', border: isSelected ? '1px solid rgba(244,67,20,0.4)' : '1px solid rgba(255,255,255,0.6)', boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.8), inset 0 -1px 0 rgba(0,0,0,0.04), 0 4px 24px rgba(0,0,0,0.06)' }}
                 >
                   <Icon className={`w-7 h-7 mx-auto mb-3 ${isSelected ? 'text-[#F44314]' : 'text-gray-400'}`} />
                   <h3 className={`font-semibold text-sm mb-1 ${isSelected ? 'text-[#F44314]' : 'text-[#1F2937]'}`}>{st.name}</h3>

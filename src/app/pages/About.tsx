@@ -60,7 +60,7 @@ function TestimonialCard({ testimonial }: TestimonialCardProps): JSX.Element {
     .toUpperCase();
   
   return (
-    <div className="bg-white border border-gray-200 rounded-2xl p-6 hover:shadow-md transition-all duration-300 shadow-sm">
+    <div className="rounded-2xl p-6 hover:-translate-y-0.5 transition-all duration-300" style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.55) 0%, rgba(255,255,255,0.2) 100%)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', border: '1px solid rgba(255,255,255,0.6)', boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.8), inset 0 -1px 0 rgba(0,0,0,0.04), 0 4px 24px rgba(0,0,0,0.08)' }}>
       <div className="flex items-center gap-4 mb-4">
         {testimonial.image ? (
           <img

@@ -48,7 +48,7 @@ export function ChurchCard({ church }: ChurchCardProps) {
   const imageUrl = church.primaryImage?.url || DEFAULT_CHURCH_IMAGE;
 
   return (
-    <Link to={`/churches/${church._id}`} className="group cursor-pointer transition-all hover:scale-[1.02] block">
+    <Link to={`/churches/${church._id}`} className="group cursor-pointer transition-all hover:-translate-y-1 block rounded-2xl overflow-hidden" style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.55) 0%, rgba(255,255,255,0.2) 100%)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', border: '1px solid rgba(255,255,255,0.6)', boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.8), inset 0 -1px 0 rgba(0,0,0,0.04), 0 4px 24px rgba(0,0,0,0.08)' }}>
       {/* Image Section */}
       <div className="relative h-56 overflow-hidden rounded-t-2xl">
         <img
@@ -81,7 +81,7 @@ export function ChurchCard({ church }: ChurchCardProps) {
       </div>
 
       {/* Content Section */}
-      <div className="bg-white/10 backdrop-blur-sm border border-white/20 border-t-0 rounded-b-2xl p-5">
+      <div className="p-5" style={{ background: 'rgba(255,255,255,0.15)' }}>
         {/* Pastor Info */}
         {pastor && (
           <div className="mb-3 pb-3 border-b border-white/10">
