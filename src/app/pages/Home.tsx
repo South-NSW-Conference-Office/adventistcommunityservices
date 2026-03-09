@@ -89,8 +89,8 @@ export function Home(): JSX.Element {
             </p>
 
             {/* Search Bar */}
-            <div className="bg-white/30 backdrop-blur-md border border-white/50 shadow-lg rounded-2xl p-2 flex flex-row items-center gap-2">
-              <div className="flex-1 flex items-center gap-2 px-3 py-2.5 bg-white/30 rounded-xl min-w-0">
+            <div className="rounded-2xl p-2 flex flex-row items-center gap-2" style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.55) 0%, rgba(255,255,255,0.2) 100%)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', border: '1px solid rgba(255,255,255,0.6)', boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.8), 0 4px 24px rgba(0,0,0,0.08)' }}>
+              <div className="flex-1 flex items-center gap-2 px-3 py-2.5 rounded-xl min-w-0" style={{ background: 'rgba(255,255,255,0.3)' }}>
                 <Search className="w-4 h-4 text-gray-500 flex-shrink-0" />
                 <input
                   type="text"
@@ -100,7 +100,7 @@ export function Home(): JSX.Element {
                   className="flex-1 bg-transparent outline-none text-gray-900 placeholder:text-gray-400 text-sm min-w-0"
                 />
               </div>
-              <div className="flex-1 flex items-center gap-2 px-3 py-2.5 bg-white/30 rounded-xl min-w-0">
+              <div className="flex-1 flex items-center gap-2 px-3 py-2.5 rounded-xl min-w-0" style={{ background: 'rgba(255,255,255,0.3)' }}>
                 <MapPin className="w-4 h-4 text-gray-500 flex-shrink-0" />
                 <input
                   type="text"
@@ -121,7 +121,7 @@ export function Home(): JSX.Element {
                 <a
                   key={cat}
                   href={`/services?type=${cat.toLowerCase().replace(/ /g, '_')}`}
-                  className="px-2 py-0.5 rounded-full bg-white/20 backdrop-blur-sm border border-white/40 text-gray-600 text-[10px] font-medium hover:bg-white/40 hover:text-[#F44314] transition-colors"
+                  className="px-2 py-0.5 rounded-full text-gray-600 text-[10px] font-medium hover:text-[#F44314] transition-colors" style={{ background: 'rgba(255,255,255,0.4)', border: '1px solid rgba(255,255,255,0.6)' }}
                 >
                   {cat}
                 </a>
@@ -135,7 +135,7 @@ export function Home(): JSX.Element {
         </div>
       </section>
 
-      {/* Services Section — white background */}
+      {/* Services Section */}
       {isSectionEnabled('services-preview') && (
         <section className="bg-white py-16">
           <div className="max-w-7xl mx-auto px-6">
@@ -210,7 +210,7 @@ export function Home(): JSX.Element {
         </section>
       )}
 
-      {/* Get Involved — warm grey background */}
+      {/* Get Involved */}
       <section className="bg-[#F8F7F5] py-16">
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center mb-12">
@@ -223,7 +223,7 @@ export function Home(): JSX.Element {
 
           <div className="grid md:grid-cols-2 gap-6 max-w-3xl mx-auto">
             {/* Need Support */}
-            <div className="group bg-white/20 backdrop-blur-md border border-white/40 rounded-3xl p-3 shadow-md hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
+            <div className="group rounded-3xl p-3 hover:-translate-y-1 transition-all duration-300" style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.55) 0%, rgba(255,255,255,0.2) 100%)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', border: '1px solid rgba(255,255,255,0.6)', boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.8), inset 0 -1px 0 rgba(0,0,0,0.04), 0 4px 24px rgba(0,0,0,0.08)' }}>
               <div className="relative rounded-2xl overflow-hidden h-[420px]">
                 <img
                   src="https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080"
@@ -248,7 +248,7 @@ export function Home(): JSX.Element {
             </div>
 
             {/* Volunteer */}
-            <div className="group bg-white/20 backdrop-blur-md border border-white/40 rounded-3xl p-3 shadow-md hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
+            <div className="group rounded-3xl p-3 hover:-translate-y-1 transition-all duration-300" style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.55) 0%, rgba(255,255,255,0.2) 100%)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', border: '1px solid rgba(255,255,255,0.6)', boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.8), inset 0 -1px 0 rgba(0,0,0,0.04), 0 4px 24px rgba(0,0,0,0.08)' }}>
               <div className="relative rounded-2xl overflow-hidden h-[420px]">
                 <img
                   src="https://images.unsplash.com/photo-1559027615-cd4628902d4a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080"

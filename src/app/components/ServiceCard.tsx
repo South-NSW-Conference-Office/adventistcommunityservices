@@ -31,7 +31,16 @@ export function ServiceCard({ id, name, descriptionShort, locations, primaryImag
   const location = formatLocation(locations);
 
   const content = (
-    <div className="bg-white/30 backdrop-blur-md border border-white/50 rounded-3xl shadow-md hover:shadow-lg transition-all duration-300 h-full flex flex-col group">
+    <div
+      className="rounded-3xl transition-all duration-300 h-full flex flex-col group hover:-translate-y-0.5"
+      style={{
+        background: 'linear-gradient(135deg, rgba(255,255,255,0.55) 0%, rgba(255,255,255,0.2) 100%)',
+        backdropFilter: 'blur(20px)',
+        WebkitBackdropFilter: 'blur(20px)',
+        border: '1px solid rgba(255,255,255,0.6)',
+        boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.8), inset 0 -1px 0 rgba(0,0,0,0.04), 0 4px 24px rgba(0,0,0,0.08)',
+      }}
+    >
       {/* Image — inset from card edges */}
       <div className="mx-3 mt-3 rounded-2xl overflow-hidden flex-shrink-0" style={{ height: '220px' }}>
         <img
@@ -57,7 +66,7 @@ export function ServiceCard({ id, name, descriptionShort, locations, primaryImag
             <MapPin className="w-4 h-4" />
             <span className="text-[#374151] text-sm font-medium truncate max-w-[120px]">{location}</span>
           </div>
-          <span className="bg-white/40 backdrop-blur-sm border border-white/60 text-[#1F2937] text-sm font-semibold px-4 py-2 rounded-full shadow-sm flex-shrink-0">
+          <span className="text-[#1F2937] text-sm font-semibold px-4 py-2 rounded-full flex-shrink-0" style={{ background: 'rgba(255,255,255,0.6)', border: '1px solid rgba(255,255,255,0.8)', boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.9)' }}>
             Learn More
           </span>
         </div>
