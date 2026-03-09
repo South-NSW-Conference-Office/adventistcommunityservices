@@ -78,7 +78,7 @@ export function Home(): JSX.Element {
             <h1
               className="text-[#1F2937] text-3xl md:text-5xl font-bold mb-4 leading-tight whitespace-nowrap"
               style={{
-                WebkitTextStroke: '3px white',
+                WebkitTextStroke: '8px white',
                 paintOrder: 'stroke fill',
               }}
             >
