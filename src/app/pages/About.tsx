@@ -7,7 +7,7 @@ import {
   TeamMember,
   CMSImage,
 } from '../hooks/useCMSContent';
-import { EditableText, EditableRichText, EditableImage } from '../components/editable';
+import { EditableText, EditableRichText } from '../components/editable';
 
 const VALUE_ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
   Heart,
@@ -123,16 +123,16 @@ export function About(): JSX.Element {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Hero Image Section */}
+      {/* Hero Video Section */}
       {isSectionEnabled('hero') && (
         <div className="relative h-[500px] overflow-hidden">
-          <EditableImage
-            pageId="about"
-            sectionId="hero"
-            blockKey="background_image"
-            src={cms.hero.image}
-            alt="Community helping together"
-            className="w-full h-full object-cover"
+          {/* YouTube video background */}
+          <iframe
+            src="https://www.youtube-nocookie.com/embed/Mzwy_gkPjbw?autoplay=1&mute=1&loop=1&playlist=Mzwy_gkPjbw&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1"
+            allow="autoplay; encrypted-media"
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none"
+            style={{ width: 'max(100%, 177.78vh)', height: 'max(100%, 56.25vw)' }}
+            title="ACS background video"
           />
           <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/30 to-black/60" />
           <div className="absolute bottom-0 left-0 right-0 pb-12">
