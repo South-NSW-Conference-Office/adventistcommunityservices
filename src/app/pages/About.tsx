@@ -135,13 +135,13 @@ export function About(): JSX.Element {
       {/* Hero Image Section */}
       {isSectionEnabled('hero') && (
         <div className="relative h-[500px] overflow-hidden">
-          {/* YouTube background video */}
+          {/* YouTube video background */}
           <iframe
-            className="absolute inset-0 w-full h-full pointer-events-none"
-            src="https://www.youtube.com/embed/Mzwy_gkPjbw?autoplay=1&mute=1&loop=1&playlist=Mzwy_gkPjbw&controls=0&showinfo=0&modestbranding=1&playsinline=1"
-            title="Adventist Community Services"
+            src="https://www.youtube-nocookie.com/embed/Mzwy_gkPjbw?autoplay=1&mute=1&loop=1&playlist=Mzwy_gkPjbw&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1&start=10"
             allow="autoplay; encrypted-media"
-            style={{ transform: 'scale(1.5)', transformOrigin: 'center center' }}
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none"
+            style={{ width: 'max(100%, 177.78vh)', height: 'max(100%, 56.25vw)' }}
+            title="ACS background video"
           />
           <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/30 to-black/60" />
           <div className="absolute bottom-0 left-0 right-0 pb-12">

@@ -58,18 +58,34 @@ export function Home(): JSX.Element {
     <div>
       {/* Conference Map Hero — full bleed, nav overlays on top */}
       {/* Conference Map Hero — full bleed, nav overlays on top */}
-      <section className="relative bg-[#F8F7F5] md:min-h-screen flex items-start md:items-center justify-center pb-6 md:pb-0">
-        <div className="w-full mt-24 md:mt-0 md:pt-20 flex flex-col-reverse md:flex-row items-center gap-4 md:gap-6 justify-end pr-4 pl-6 md:pl-[15%]">
+      <section className="relative bg-[#F8F7F5] md:min-h-screen flex items-start md:items-center justify-center pb-6 md:pb-0 overflow-hidden">
+        {/* Subtle video background — heavy white overlay so map stays focal point */}
+        <iframe
+          src="https://www.youtube-nocookie.com/embed/Mzwy_gkPjbw?autoplay=1&mute=1&loop=1&playlist=Mzwy_gkPjbw&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1&start=20"
+          allow="autoplay; encrypted-media"
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none"
+          style={{ width: 'max(100%, 177.78vh)', height: 'max(100%, 56.25vw)' }}
+          title="ACS background video"
+        />
+        {/* White wash overlay — keeps video ambient, not distracting */}
+        <div className="absolute inset-0 bg-white/80" />
+        <div className="relative z-10 w-full mt-24 md:mt-0 md:pt-20 flex flex-col-reverse md:flex-row items-center gap-4 md:gap-6 justify-end pr-4 pl-6 md:pl-[15%]">
           {/* Copy — left column on desktop, below map on mobile */}
           <div className="md:w-[480px] text-center md:text-left shrink-0 px-4 md:px-0">
             <p className="text-[#F44314] font-semibold text-base uppercase tracking-widest mb-4">
               Here to Serve
             </p>
-            <h1 className="text-[#1F2937] text-3xl md:text-5xl font-bold mb-4 leading-tight whitespace-nowrap">
+            <h1
+              className="text-[#1F2937] text-3xl md:text-5xl font-bold mb-4 leading-tight whitespace-nowrap"
+              style={{
+                WebkitTextStroke: '8px white',
+                paintOrder: 'stroke fill',
+              }}
+            >
               Adventist<br />Community Services
             </h1>
             <p className="text-gray-600 text-base md:text-lg mb-6">
-              Select your region to find local services
+              Select your conference to find local services
             </p>
 
             {/* Search Bar */}
