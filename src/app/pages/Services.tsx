@@ -180,24 +180,22 @@ export function Services(): JSX.Element {
 
           {!loading && !error && filteredServices.length === 0 && (
             <div className="text-center py-16">
-              <div className="bg-white border border-gray-200 rounded-2xl p-12 max-w-lg mx-auto">
-                <p className="text-[#1F2937] text-xl font-semibold mb-2">
-                  {searchQuery || selectedType ? 'No services found' : 'Services coming soon'}
-                </p>
-                <p className="text-gray-500 mb-6">
-                  {searchQuery || selectedType
-                    ? 'Try different search terms or browse all categories. We might still be able to help!'
-                    : 'Our teams are setting up their services. Please check back soon or contact us directly for immediate help.'}
-                </p>
-                {(searchQuery || selectedType) && (
-                  <button
-                    onClick={() => { setSearchQuery(''); setSelectedType(null); }}
-                    className="text-[#F44314] font-semibold hover:underline"
-                  >
-                    Clear filters
-                  </button>
-                )}
-              </div>
+              <p className="text-[#1F2937] text-xl font-semibold mb-2">
+                {searchQuery || selectedType ? 'No services found' : 'Services coming soon'}
+              </p>
+              <p className="text-gray-500 mb-6">
+                {searchQuery || selectedType
+                  ? 'Try different search terms or browse all categories. We might still be able to help!'
+                  : 'Our teams are setting up their services. Please check back soon or contact us directly for immediate help.'}
+              </p>
+              {(searchQuery || selectedType) && (
+                <button
+                  onClick={() => { setSearchQuery(''); setSelectedType(null); }}
+                  className="text-[#F44314] font-semibold hover:underline"
+                >
+                  Clear filters
+                </button>
+              )}
             </div>
           )}
         </div>
