@@ -1,7 +1,10 @@
 import { Menu, LogOut, X } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import acsLogo from '@/assets/68ee6e4764f54c4a5a0a4c46b17e9e2662a774ac.png';
+
+// Pages whose hero has a dark video overlay — nav should be white when not scrolled
+const DARK_HERO_ROUTES = ['/about', '/services', '/teams', '/fellowship', '/churches'];
 
 interface HeaderProps {
   onLogout?: () => void;
@@ -11,12 +14,22 @@ interface HeaderProps {
 export function Header({ onLogout, isAuthenticated = false }: HeaderProps) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const { pathname } = useLocation();
+
+  const isDarkHero = DARK_HERO_ROUTES.some(r => pathname === r || pathname.startsWith(r + '/'));
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
+
+  // When not scrolled on a dark-video page → white text; otherwise gray
+  const navLinkClass = scrolled || !isDarkHero
+    ? 'text-gray-700 hover:text-[#F44314]'
+    : 'text-white/90 hover:text-white';
+
+  const iconClass = scrolled || !isDarkHero ? 'text-gray-600' : 'text-white/90';
 
   return (
     <header
@@ -30,39 +43,41 @@ export function Header({ onLogout, isAuthenticated = false }: HeaderProps) {
         <div className="flex items-center justify-between">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-3">
-            <img 
-              src={acsLogo} 
-              alt="Adventist Community Services" 
+            <img
+              src={acsLogo}
+              alt="Adventist Community Services"
               className="h-10 rounded-lg"
             />
           </Link>
 
           {/* Navigation */}
           <nav className="hidden md:flex items-center gap-8">
-            <Link to="/" className="text-gray-700 hover:text-[#F44314] transition-colors font-medium">Home</Link>
-            <Link to="/services" className="text-gray-700 hover:text-[#F44314] transition-colors font-medium">Services</Link>
-            <Link to="/teams" className="text-gray-700 hover:text-[#F44314] transition-colors font-medium">Teams</Link>
-            <Link to="/fellowship" className="text-gray-700 hover:text-[#F44314] transition-colors font-medium">Fellowship</Link>
-            <Link to="/about" className="text-gray-700 hover:text-[#F44314] transition-colors font-medium">About</Link>
-            <Link to="/contact" className="text-gray-700 hover:text-[#F44314] transition-colors font-medium">Contact</Link>
+            <Link to="/" className={`transition-colors font-medium ${navLinkClass}`}>Home</Link>
+            <Link to="/services" className={`transition-colors font-medium ${navLinkClass}`}>Services</Link>
+            <Link to="/teams" className={`transition-colors font-medium ${navLinkClass}`}>Teams</Link>
+            <Link to="/fellowship" className={`transition-colors font-medium ${navLinkClass}`}>Fellowship</Link>
+            <Link to="/about" className={`transition-colors font-medium ${navLinkClass}`}>About</Link>
+            <Link to="/contact" className={`transition-colors font-medium ${navLinkClass}`}>Contact</Link>
           </nav>
 
           {/* Actions */}
           <div className="flex items-center gap-3">
             {isAuthenticated && onLogout && (
-              <button 
+              <button
                 onClick={onLogout}
                 className="p-2 hover:bg-gray-100 rounded-full transition-colors"
                 title="Logout"
               >
-                <LogOut className="w-5 h-5 text-gray-600" />
+                <LogOut className={`w-5 h-5 ${iconClass}`} />
               </button>
             )}
-            <button 
+            <button
               className="md:hidden p-2 hover:bg-gray-100 rounded-full transition-colors"
               onClick={() => setMobileOpen(!mobileOpen)}
             >
-              {mobileOpen ? <X className="w-5 h-5 text-gray-600" /> : <Menu className="w-5 h-5 text-gray-600" />}
+              {mobileOpen
+                ? <X className={`w-5 h-5 ${iconClass}`} />
+                : <Menu className={`w-5 h-5 ${iconClass}`} />}
             </button>
           </div>
         </div>
