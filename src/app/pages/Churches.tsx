@@ -83,23 +83,32 @@ export function Churches(): JSX.Element {
   return (
     <div>
       {/* Hero */}
-      <div className="bg-[#F8F7F5] py-16 md:py-24">
-        <div className="max-w-4xl mx-auto px-6 text-center">
-          <p className="text-[#F44314] text-sm font-semibold tracking-wider uppercase mb-4">{heroLabel}</p>
-          <h1 className="text-[#1F2937] text-5xl md:text-6xl font-bold mb-6 leading-tight">{heroTitle}</h1>
-          <p className="text-gray-600 text-lg max-w-2xl mx-auto">{heroSubtitle}</p>
-
-          {/* Search */}
-          <div className="mt-10 max-w-xl mx-auto">
-            <div className="flex items-center gap-3 px-4 py-3 bg-white rounded-xl shadow-md border border-gray-200">
-              <Search className="w-4 h-4 text-gray-400 flex-shrink-0" />
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={handleSearch}
-                placeholder="Search churches, cities, or conferences..."
-                className="flex-1 bg-transparent outline-none text-gray-900 text-sm placeholder:text-gray-400"
-              />
+      <div className="relative h-[460px] md:h-[520px] overflow-hidden">
+        <iframe
+          src="https://www.youtube-nocookie.com/embed/Mzwy_gkPjbw?autoplay=1&mute=1&loop=1&playlist=Mzwy_gkPjbw&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1&start=80"
+          allow="autoplay; encrypted-media"
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none"
+          style={{ width: 'max(100%, 177.78vh)', height: 'max(100%, 56.25vw)' }}
+          title="ACS background video"
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/30 to-black/70" />
+        <div className="relative h-full flex items-end pb-10">
+          <div className="max-w-4xl mx-auto px-6 text-center w-full">
+            <p className="text-white/80 text-sm font-semibold tracking-wider uppercase mb-4">{heroLabel}</p>
+            <h1 className="text-white text-5xl md:text-6xl font-bold mb-4 leading-tight">{heroTitle}</h1>
+            <p className="text-white/80 text-lg max-w-2xl mx-auto mb-8">{heroSubtitle}</p>
+            {/* Search */}
+            <div className="max-w-xl mx-auto">
+              <div className="flex items-center gap-3 px-4 py-3 bg-white rounded-xl shadow-md border border-gray-200">
+                <Search className="w-4 h-4 text-gray-400 flex-shrink-0" />
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={handleSearch}
+                  placeholder="Search churches, cities, or conferences..."
+                  className="flex-1 bg-transparent outline-none text-gray-900 text-sm placeholder:text-gray-400"
+                />
+              </div>
             </div>
           </div>
         </div>

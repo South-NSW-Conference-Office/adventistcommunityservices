@@ -128,7 +128,7 @@ export function About(): JSX.Element {
         <div className="relative h-[500px] overflow-hidden">
           {/* YouTube video background */}
           <iframe
-            src="https://www.youtube-nocookie.com/embed/Mzwy_gkPjbw?autoplay=1&mute=1&loop=1&playlist=Mzwy_gkPjbw&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1&start=30"
+            src="https://www.youtube-nocookie.com/embed/Mzwy_gkPjbw?autoplay=1&mute=1&loop=1&playlist=Mzwy_gkPjbw&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1&start=10"
             allow="autoplay; encrypted-media"
             className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none"
             style={{ width: 'max(100%, 177.78vh)', height: 'max(100%, 56.25vw)' }}
