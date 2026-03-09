@@ -75,7 +75,13 @@ export function Home(): JSX.Element {
             <p className="text-[#F44314] font-semibold text-base uppercase tracking-widest mb-4">
               Here to Serve
             </p>
-            <h1 className="text-[#1F2937] text-3xl md:text-5xl font-bold mb-4 leading-tight whitespace-nowrap [-webkit-text-stroke:1px_white] [paint-order:stroke_fill]">
+            <h1
+              className="text-[#1F2937] text-3xl md:text-5xl font-bold mb-4 leading-tight whitespace-nowrap"
+              style={{
+                WebkitTextStroke: '3px white',
+                paintOrder: 'stroke fill',
+              }}
+            >
               Adventist<br />Community Services
             </h1>
             <p className="text-gray-600 text-base md:text-lg mb-6">
