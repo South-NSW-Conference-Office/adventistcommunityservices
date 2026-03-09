@@ -1,4 +1,4 @@
-import { MapPin, Users, User, Building2 } from 'lucide-react';
+import { MapPin, Users, Building2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import type { Team } from '../types/team.types';
 
@@ -23,9 +23,7 @@ function getCategoryBadgeColor(category?: string): string {
 }
 
 function getChurchName(churchId: Team['churchId']): string {
-  if (typeof churchId === 'object' && churchId?.name) {
-    return churchId.name;
-  }
+  if (typeof churchId === 'object' && churchId?.name) return churchId.name;
   return '';
 }
 
@@ -34,21 +32,22 @@ export function TeamCard({ team }: TeamCardProps) {
   const churchName = getChurchName(team.churchId);
   const memberCount = team.memberCount ?? 0;
   const imageUrl = team.banner?.url || team.profilePhoto?.url || DEFAULT_TEAM_IMAGE;
+  const location = team.location || '';
 
   return (
     <Link
       to={`/teams/${team._id}`}
-      className="group cursor-pointer transition-all hover:scale-[1.02] block"
+      className="block h-full hover:-translate-y-1 transition-transform duration-200"
     >
-      <div className="bg-white border border-gray-200 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden h-full">
-        {/* Image */}
-        <div className="relative h-48 overflow-hidden">
+      <div className="bg-[#EDEEED] rounded-3xl shadow-sm hover:shadow-md transition-all duration-300 h-full flex flex-col group">
+        {/* Image — inset from card edges */}
+        <div className="mx-3 mt-3 rounded-2xl overflow-hidden flex-shrink-0 relative" style={{ height: '220px' }}>
           <img
             src={imageUrl}
-            alt={team.banner?.alt || team.profilePhoto?.alt || team.name}
-            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+            alt={team.banner?.alt || team.name}
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
           />
-          {/* Category Badge */}
+          {/* Category badge */}
           <div className="absolute top-3 right-3">
             <span className={`px-3 py-1 rounded-full text-xs font-semibold ${getCategoryBadgeColor(category)}`}>
               {category}
@@ -57,42 +56,38 @@ export function TeamCard({ team }: TeamCardProps) {
         </div>
 
         {/* Content */}
-        <div className="p-5">
-          <h3 className="text-[#1F2937] text-lg font-semibold mb-1">{team.name}</h3>
+        <div className="px-5 pt-4 pb-5 flex flex-col flex-1">
+          <h3 className="text-[#1A1A1A] text-xl font-bold mb-1 leading-snug">{team.name}</h3>
+          {churchName && (
+            <p className="text-[#F44314] text-xs font-medium mb-2 flex items-center gap-1">
+              <Building2 className="w-3 h-3" />{churchName}
+            </p>
+          )}
           {team.description && (
-            <p className="text-gray-500 text-sm mb-4 line-clamp-2">{team.description}</p>
+            <p className="text-[#6B7280] text-sm leading-relaxed line-clamp-2 flex-1">
+              {team.description}
+            </p>
           )}
 
-          <div className="space-y-2 text-sm">
-            {churchName && (
-              <div className="flex items-center gap-2 text-gray-500">
-                <Building2 className="w-4 h-4 flex-shrink-0 text-gray-400" />
-                <span className="truncate">{churchName}</span>
+          {/* Bottom bar */}
+          <div className="flex items-center justify-between mt-4">
+            <div className="flex items-center gap-4">
+              <div className="flex items-center gap-1.5 text-[#9CA3AF]">
+                <Users className="w-4 h-4" />
+                <span className="text-[#374151] text-sm font-medium">
+                  {memberCount} {memberCount === 1 ? 'member' : 'members'}
+                </span>
               </div>
-            )}
-
-            {team.location && (
-              <div className="flex items-center gap-2 text-gray-500">
-                <MapPin className="w-4 h-4 flex-shrink-0 text-gray-400" />
-                <span className="truncate">{team.location}</span>
-              </div>
-            )}
-
-            {team.leaderId && typeof team.leaderId === 'object' && team.leaderId.name && (
-              <div className="flex items-center gap-2 text-gray-500">
-                <User className="w-4 h-4 flex-shrink-0 text-gray-400" />
-                <span className="truncate">Led by {team.leaderId.name}</span>
-              </div>
-            )}
-
-            <div className="flex items-center gap-2 text-gray-500">
-              <Users className="w-4 h-4 flex-shrink-0 text-gray-400" />
-              <span>{memberCount} {memberCount === 1 ? 'member' : 'members'}</span>
+              {location && (
+                <div className="flex items-center gap-1.5 text-[#9CA3AF]">
+                  <MapPin className="w-4 h-4" />
+                  <span className="text-[#374151] text-sm font-medium truncate max-w-[80px]">{location}</span>
+                </div>
+              )}
             </div>
-          </div>
-
-          <div className="mt-4 pt-3 border-t border-gray-100">
-            <span className="text-[#F44314] font-semibold text-sm">View Team →</span>
+            <span className="bg-white text-[#1F2937] text-sm font-semibold px-4 py-2 rounded-full shadow-sm flex-shrink-0">
+              View Team
+            </span>
           </div>
         </div>
       </div>
