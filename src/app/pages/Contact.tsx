@@ -131,7 +131,7 @@ function ContactImagePlaceholders(): JSX.Element {
           <svg className="w-12 h-12 mx-auto mb-2" fill="currentColor" viewBox="0 0 24 24">
             <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
           </svg>
-          <p className="text-sm font-medium">Community Centre</p>
+          <p className="text-sm font-medium">Here To Serve</p>
         </div>
       </div>
       <div className="col-span-1 h-40 bg-gradient-to-br from-[#F44314] to-[#D63912] rounded-2xl shadow-lg flex items-center justify-center">
