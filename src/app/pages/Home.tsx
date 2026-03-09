@@ -69,7 +69,7 @@ export function Home(): JSX.Element {
         />
         {/* White wash overlay — keeps video ambient, not distracting */}
         <div className="absolute inset-0 bg-white/80" />
-        <div className="w-full mt-24 md:mt-0 md:pt-20 flex flex-col-reverse md:flex-row items-center gap-4 md:gap-6 justify-end pr-4 pl-6 md:pl-[15%]">
+        <div className="relative z-10 w-full mt-24 md:mt-0 md:pt-20 flex flex-col-reverse md:flex-row items-center gap-4 md:gap-6 justify-end pr-4 pl-6 md:pl-[15%]">
           {/* Copy — left column on desktop, below map on mobile */}
           <div className="md:w-[480px] text-center md:text-left shrink-0 px-4 md:px-0">
             <p className="text-[#F44314] font-semibold text-base uppercase tracking-widest mb-4">
