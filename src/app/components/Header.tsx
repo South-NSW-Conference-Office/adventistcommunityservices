@@ -9,7 +9,7 @@ interface HeaderProps {
 }
 
 // Pages with dark hero backgrounds — header text must be white when at top
-const DETAIL_ROUTE = /^\/(churches|teams|services)\/[^/]+$|^\/about$/;
+const DETAIL_ROUTE = /^\/(churches|teams|services)\/[^/]+$|^\/about$|^\/services$/;
 
 export function Header({ onLogout, isAuthenticated = false }: HeaderProps) {
   const [mobileOpen, setMobileOpen] = useState(false);
