@@ -1,4 +1,5 @@
 import { useState, useMemo, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { Search, MapPin, UtensilsCrossed, Heart, Users, Clock } from 'lucide-react';
 
 // Rotating default images for communities that have no photo
@@ -126,7 +127,7 @@ function CommunityCard({ community, imageIndex }: CommunityCardProps): JSX.Eleme
   const imageUrl = DEFAULT_IMAGES[imageIndex % DEFAULT_IMAGES.length];
 
   return (
-    <div className="h-full hover:-translate-y-1 transition-transform duration-200">
+    <Link to={`/churches/${community.id}`} className="block h-full hover:-translate-y-1 transition-transform duration-200 cursor-pointer">
       {/* Outer card — gray bezel */}
       <div className="rounded-3xl transition-all duration-300 h-full p-3 group" style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.55) 0%, rgba(255,255,255,0.2) 100%)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', border: '1px solid rgba(255,255,255,0.6)', boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.8), inset 0 -1px 0 rgba(0,0,0,0.04), 0 4px 24px rgba(0,0,0,0.08)' }}>
         {/* Inner image with text overlay */}
@@ -208,7 +209,7 @@ function CommunityCard({ community, imageIndex }: CommunityCardProps): JSX.Eleme
           </div>
         </div>
       </div>
-    </div>
+    </Link>
   );
 }
 
