@@ -362,14 +362,14 @@ export function Fellowship(): JSX.Element {
             {/* Meals toggle */}
             <button
               onClick={() => { setMealsOnly(!mealsOnly); setVisibleCount(INITIAL_COUNT); }}
-              className={`ml-auto flex items-center gap-1.5 px-4 py-1.5 rounded-lg text-sm font-semibold transition-colors border ${
+              className={`ml-auto flex items-center gap-2 px-5 py-2 rounded-xl text-sm font-bold transition-all ${
                 mealsOnly
-                  ? 'bg-green-50 border-green-300 text-green-700'
-                  : 'bg-gray-50 border-gray-200 text-gray-600 hover:border-green-300'
+                  ? 'bg-green-600 text-white shadow-lg shadow-green-600/25'
+                  : 'bg-green-50 border-2 border-green-200 text-green-700 hover:bg-green-100 hover:border-green-300'
               }`}
             >
-              <UtensilsCrossed className="w-3.5 h-3.5" />
-              {mealsOnly ? '✓ Meals only' : 'With meals'}
+              <UtensilsCrossed className="w-4 h-4" />
+              {mealsOnly ? '✓ Showing meals only' : `🍽️ ${mealsCount} with Free Meals`}
             </button>
 
             {(search || activeConference !== 'all' || mealsOnly) && (
