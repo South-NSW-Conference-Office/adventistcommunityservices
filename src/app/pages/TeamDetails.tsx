@@ -330,27 +330,29 @@ export function TeamDetails() {
       <ServiceRequestBanner contextName={team.name} teamId={id} pageType="team" />
 
       {/* Recommended Services */}
-      <div className="max-w-7xl mx-auto px-6 pb-16">
-        <h3 className="text-[#1F2937] text-2xl font-bold mb-1">Other Services in the Area</h3>
-        <p className="text-gray-400 text-sm mb-4">Trusted community resources — not operated by us.</p>
-        <div className="divide-y divide-gray-100">
-          {RECOMMENDED_SERVICES.map((svc, i) => (
-            <div key={i} className="py-3 flex items-center justify-between gap-4">
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2">
-                  <span className="text-gray-900 font-medium text-sm truncate">{svc.name}</span>
-                  <span className="text-gray-400 text-xs flex-shrink-0">· {svc.type}</span>
+      <div className="bg-[#1a2332] py-16">
+        <div className="max-w-7xl mx-auto px-6">
+          <h3 className="text-white text-2xl font-bold mb-1">Other Services in the Area</h3>
+          <p className="text-gray-400 text-sm mb-6">Trusted community resources — not operated by us.</p>
+          <div className="divide-y divide-white/10">
+            {RECOMMENDED_SERVICES.map((svc, i) => (
+              <div key={i} className="py-3 flex items-center justify-between gap-4">
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2">
+                    <span className="text-white font-medium text-sm truncate">{svc.name}</span>
+                    <span className="text-gray-400 text-xs flex-shrink-0">· {svc.type}</span>
+                  </div>
+                  {svc.phone && <span className="text-gray-400 text-xs">{svc.phone}</span>}
                 </div>
-                {svc.phone && <span className="text-gray-400 text-xs">{svc.phone}</span>}
+                <a href={svc.url} target="_blank" rel="noopener noreferrer"
+                  className="text-gray-400 hover:text-[#F44314] transition-colors flex-shrink-0" title={`Visit ${svc.name}`}>
+                  <ExternalLink className="w-4 h-4" />
+                </a>
               </div>
-              <a href={svc.url} target="_blank" rel="noopener noreferrer"
-                className="text-gray-400 hover:text-[#F44314] transition-colors flex-shrink-0" title={`Visit ${svc.name}`}>
-                <ExternalLink className="w-4 h-4" />
-              </a>
-            </div>
-          ))}
+            ))}
+          </div>
+          <p className="text-gray-500 text-xs mt-4">Independent organisations. Listing does not imply affiliation.</p>
         </div>
-        <p className="text-gray-300 text-xs mt-4">Independent organisations. Listing does not imply affiliation.</p>
       </div>
 
     </div>
