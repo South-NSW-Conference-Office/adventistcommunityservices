@@ -1,6 +1,6 @@
 import { useState, useMemo, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { Search, MapPin, UtensilsCrossed, Heart, Users, Clock } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
+import { Search, MapPin, UtensilsCrossed, Heart, Users, Clock, ExternalLink } from 'lucide-react';
 
 // Rotating default images for communities that have no photo
 const DEFAULT_IMAGES = [
@@ -54,6 +54,8 @@ interface FellowshipChurch {
   outreachFocus: string[];
   teamCount: number;
   serviceCount: number;
+  address: string | null;
+  website: string | null;
 }
 
 interface ConferenceInfo {
@@ -66,12 +68,17 @@ interface ConferenceInfo {
 const CONFERENCE_NAMES: Record<string, string> = {
   SNSW: 'South NSW',
   NNSW: 'North NSW',
-  VIC: 'Victoria',
-  SQ: 'South Queensland',
-  NQ: 'North Queensland',
-  SA: 'South Australia',
-  WA: 'Western Australia',
-  TAS: 'Tasmania',
+  GSYD: 'Greater Sydney',
+  VIC: 'VIC',
+  SQ: 'South QLD',
+  SQLD: 'South QLD',
+  NQ: 'North QLD',
+  SA: 'SA',
+  WA: 'WA',
+  WAC: 'WA',
+  TAS: 'TAS',
+  NAC: 'North Aus',
+  NA: 'North Aus',
 };
 
 function mapChurchData(raw: ChurchData[]): { churches: FellowshipChurch[]; conferences: ConferenceInfo[] } {
@@ -97,6 +104,8 @@ function mapChurchData(raw: ChurchData[]): { churches: FellowshipChurch[]; confe
         outreachFocus: c.outreachFocus,
         teamCount: c.teamCount,
         serviceCount: c.serviceCount,
+        address: c.address || null,
+        website: c.website || null,
       };
     });
 
@@ -125,9 +134,10 @@ interface CommunityCardProps {
 
 function CommunityCard({ community, imageIndex }: CommunityCardProps): JSX.Element {
   const imageUrl = DEFAULT_IMAGES[imageIndex % DEFAULT_IMAGES.length];
+  const navigate = useNavigate();
 
   return (
-    <Link to={`/churches/${community.id}`} className="block h-full hover:-translate-y-1 transition-transform duration-200 cursor-pointer">
+    <div onClick={() => navigate(`/churches/${community.id}`)} className="block h-full hover:-translate-y-1 transition-transform duration-200 cursor-pointer">
       {/* Outer card — gray bezel */}
       <div className="rounded-3xl transition-all duration-300 h-full p-3 group" style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.55) 0%, rgba(255,255,255,0.2) 100%)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', border: '1px solid rgba(255,255,255,0.6)', boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.8), inset 0 -1px 0 rgba(0,0,0,0.04), 0 4px 24px rgba(0,0,0,0.08)' }}>
         {/* Inner image with text overlay */}
@@ -141,15 +151,6 @@ function CommunityCard({ community, imageIndex }: CommunityCardProps): JSX.Eleme
 
           {/* Gradient overlay — bottom-heavy */}
           <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent" />
-
-          {/* State badge — top right */}
-          {community.state && (
-            <div className="absolute top-3 right-3">
-              <span className={`px-3 py-1 rounded-full text-xs font-semibold backdrop-blur-sm ${getStateBadgeColor(community.state)}`}>
-                {community.state}
-              </span>
-            </div>
-          )}
 
           {/* Meals badge — top left */}
           {community.hasMeals && (
@@ -194,22 +195,43 @@ function CommunityCard({ community, imageIndex }: CommunityCardProps): JSX.Eleme
             </div>
 
             {/* Bottom bar */}
-            <div className="flex items-center justify-between">
-              {(community.teamCount > 0 || community.serviceCount > 0) && (
-                <span className="text-white/50 text-xs">
-                  {community.teamCount > 0 && `${community.teamCount} team${community.teamCount !== 1 ? 's' : ''}`}
-                  {community.teamCount > 0 && community.serviceCount > 0 && ' · '}
-                  {community.serviceCount > 0 && `${community.serviceCount} service${community.serviceCount !== 1 ? 's' : ''}`}
-                </span>
+            <div className="flex items-center gap-2">
+              {/* Maps button — always shown */}
+              <a
+                href={`https://www.google.com/maps/search/${encodeURIComponent(community.address || `${community.name} ${community.city} ${community.state} Australia`)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={e => e.stopPropagation()}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold text-white transition-all hover:bg-white/30 active:scale-95"
+                style={{ background: 'rgba(255,255,255,0.2)', border: '1px solid rgba(255,255,255,0.35)', backdropFilter: 'blur(8px)' }}
+              >
+                <MapPin className="w-3 h-3" />
+                Maps
+              </a>
+
+              {/* Website button — only if URL available */}
+              {community.website && (
+                <a
+                  href={community.website.startsWith('http') ? community.website : `https://${community.website}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={e => e.stopPropagation()}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold text-white transition-all hover:bg-white/30 active:scale-95"
+                  style={{ background: 'rgba(255,255,255,0.2)', border: '1px solid rgba(255,255,255,0.35)', backdropFilter: 'blur(8px)' }}
+                >
+                  <ExternalLink className="w-3 h-3" />
+                  Website
+                </a>
               )}
-              <span className="ml-auto text-[#1F2937] text-xs font-semibold px-3 py-1.5 rounded-full" style={{ background: 'rgba(255,255,255,0.6)', border: '1px solid rgba(255,255,255,0.8)', boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.9)' }}>
-                {community.conference}
+
+              <span className="ml-auto text-[#1F2937] text-xs font-semibold px-3 py-1.5 rounded-full flex-shrink-0" style={{ background: 'rgba(255,255,255,0.6)', border: '1px solid rgba(255,255,255,0.8)', boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.9)' }}>
+                {CONFERENCE_NAMES[community.conferenceCode] || community.conference}
               </span>
             </div>
           </div>
         </div>
       </div>
-    </Link>
+    </div>
   );
 }
 
@@ -356,7 +378,7 @@ export function Fellowship(): JSX.Element {
                     : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                 }`}
               >
-                {conf.name}
+                {CONFERENCE_NAMES[conf.code] || CONFERENCE_NAMES[conf.name] || conf.code || conf.name}
               </button>
             ))}
 
