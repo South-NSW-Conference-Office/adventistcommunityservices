@@ -1,6 +1,6 @@
 import { useState, useMemo, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Search, MapPin, UtensilsCrossed, Heart, Users, Clock } from 'lucide-react';
+import { Search, MapPin, UtensilsCrossed, Heart, Users, Clock, ExternalLink } from 'lucide-react';
 
 // Rotating default images for communities that have no photo
 const DEFAULT_IMAGES = [
@@ -54,6 +54,9 @@ interface FellowshipChurch {
   outreachFocus: string[];
   teamCount: number;
   serviceCount: number;
+  address: string | null;
+  website: string | null;
+  coordinates: { lat?: number; lng?: number } | null;
 }
 
 interface ConferenceInfo {
@@ -97,6 +100,9 @@ function mapChurchData(raw: ChurchData[]): { churches: FellowshipChurch[]; confe
         outreachFocus: c.outreachFocus,
         teamCount: c.teamCount,
         serviceCount: c.serviceCount,
+        address: c.address || null,
+        website: c.website || null,
+        coordinates: c.coordinates || null,
       };
     });
 
@@ -194,16 +200,37 @@ function CommunityCard({ community, imageIndex }: CommunityCardProps): JSX.Eleme
             </div>
 
             {/* Bottom bar */}
-            <div className="flex items-center justify-between">
-              {(community.teamCount > 0 || community.serviceCount > 0) && (
-                <span className="text-white/50 text-xs">
-                  {community.teamCount > 0 && `${community.teamCount} team${community.teamCount !== 1 ? 's' : ''}`}
-                  {community.teamCount > 0 && community.serviceCount > 0 && ' · '}
-                  {community.serviceCount > 0 && `${community.serviceCount} service${community.serviceCount !== 1 ? 's' : ''}`}
-                </span>
+            <div className="flex items-center gap-2">
+              {/* Maps button — always shown */}
+              <a
+                href={`https://www.google.com/maps/search/${encodeURIComponent(community.address || `${community.name} ${community.city} ${community.state}`)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={e => e.stopPropagation()}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold text-white transition-all hover:bg-white/30 active:scale-95"
+                style={{ background: 'rgba(255,255,255,0.2)', border: '1px solid rgba(255,255,255,0.35)', backdropFilter: 'blur(8px)' }}
+              >
+                <MapPin className="w-3 h-3" />
+                Maps
+              </a>
+
+              {/* Website button — only if URL available */}
+              {community.website && (
+                <a
+                  href={community.website.startsWith('http') ? community.website : `https://${community.website}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={e => e.stopPropagation()}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold text-white transition-all hover:bg-white/30 active:scale-95"
+                  style={{ background: 'rgba(255,255,255,0.2)', border: '1px solid rgba(255,255,255,0.35)', backdropFilter: 'blur(8px)' }}
+                >
+                  <ExternalLink className="w-3 h-3" />
+                  Website
+                </a>
               )}
-              <span className="ml-auto text-[#1F2937] text-xs font-semibold px-3 py-1.5 rounded-full" style={{ background: 'rgba(255,255,255,0.6)', border: '1px solid rgba(255,255,255,0.8)', boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.9)' }}>
-                {community.conference}
+
+              <span className="ml-auto text-[#1F2937] text-xs font-semibold px-3 py-1.5 rounded-full flex-shrink-0" style={{ background: 'rgba(255,255,255,0.6)', border: '1px solid rgba(255,255,255,0.8)', boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.9)' }}>
+                {community.conferenceCode || community.conference}
               </span>
             </div>
           </div>
