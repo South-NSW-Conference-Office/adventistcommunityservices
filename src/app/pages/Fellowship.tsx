@@ -356,7 +356,7 @@ export function Fellowship(): JSX.Element {
                     : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                 }`}
               >
-                {conf.name}
+                {conf.code || conf.name.replace(/\b(North|South|East|West)\b\s+/g, m => m.trim()[0]).replace(/\s*(New South Wales|NSW)\s*(Conference)?/gi, 'NSW').replace(/\s+/g, '')}
               </button>
             ))}
 
