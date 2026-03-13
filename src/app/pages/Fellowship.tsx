@@ -56,7 +56,6 @@ interface FellowshipChurch {
   serviceCount: number;
   address: string | null;
   website: string | null;
-  coordinates: { lat?: number; lng?: number } | null;
 }
 
 interface ConferenceInfo {
@@ -69,12 +68,17 @@ interface ConferenceInfo {
 const CONFERENCE_NAMES: Record<string, string> = {
   SNSW: 'South NSW',
   NNSW: 'North NSW',
-  VIC: 'Victoria',
-  SQ: 'South Queensland',
-  NQ: 'North Queensland',
-  SA: 'South Australia',
-  WA: 'Western Australia',
-  TAS: 'Tasmania',
+  GSYD: 'Greater Sydney',
+  VIC: 'VIC',
+  SQ: 'South QLD',
+  SQLD: 'South QLD',
+  NQ: 'North QLD',
+  SA: 'SA',
+  WA: 'WA',
+  WAC: 'WA',
+  TAS: 'TAS',
+  NAC: 'North Aus',
+  NA: 'North Aus',
 };
 
 function mapChurchData(raw: ChurchData[]): { churches: FellowshipChurch[]; conferences: ConferenceInfo[] } {
@@ -102,7 +106,6 @@ function mapChurchData(raw: ChurchData[]): { churches: FellowshipChurch[]; confe
         serviceCount: c.serviceCount,
         address: c.address || null,
         website: c.website || null,
-        coordinates: c.coordinates || null,
       };
     });
 
@@ -147,15 +150,6 @@ function CommunityCard({ community, imageIndex }: CommunityCardProps): JSX.Eleme
 
           {/* Gradient overlay — bottom-heavy */}
           <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent" />
-
-          {/* State badge — top right */}
-          {community.state && (
-            <div className="absolute top-3 right-3">
-              <span className={`px-3 py-1 rounded-full text-xs font-semibold backdrop-blur-sm ${getStateBadgeColor(community.state)}`}>
-                {community.state}
-              </span>
-            </div>
-          )}
 
           {/* Meals badge — top left */}
           {community.hasMeals && (
@@ -203,7 +197,7 @@ function CommunityCard({ community, imageIndex }: CommunityCardProps): JSX.Eleme
             <div className="flex items-center gap-2">
               {/* Maps button — always shown */}
               <a
-                href={`https://www.google.com/maps/search/${encodeURIComponent(community.address || `${community.name} ${community.city} ${community.state}`)}`}
+                href={`https://www.google.com/maps/search/${encodeURIComponent(community.address || `${community.name} ${community.city} ${community.state} Australia`)}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={e => e.stopPropagation()}
@@ -230,7 +224,7 @@ function CommunityCard({ community, imageIndex }: CommunityCardProps): JSX.Eleme
               )}
 
               <span className="ml-auto text-[#1F2937] text-xs font-semibold px-3 py-1.5 rounded-full flex-shrink-0" style={{ background: 'rgba(255,255,255,0.6)', border: '1px solid rgba(255,255,255,0.8)', boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.9)' }}>
-                {community.conferenceCode || community.conference}
+                {CONFERENCE_NAMES[community.conferenceCode] || community.conference}
               </span>
             </div>
           </div>
@@ -383,7 +377,7 @@ export function Fellowship(): JSX.Element {
                     : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                 }`}
               >
-                {conf.code || conf.name.replace(/\b(North|South|East|West)\b\s+/g, m => m.trim()[0]).replace(/\s*(New South Wales|NSW)\s*(Conference)?/gi, 'NSW').replace(/\s+/g, '')}
+                {CONFERENCE_NAMES[conf.code] || CONFERENCE_NAMES[conf.name] || conf.code || conf.name}
               </button>
             ))}
 
