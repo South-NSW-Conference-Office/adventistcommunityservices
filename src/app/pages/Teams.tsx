@@ -1,4 +1,5 @@
 import { useState, useMemo } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { TeamCard } from '../components/TeamCard';
 import { RefreshCw, Search, MapPin } from 'lucide-react';
 import { useTeams } from '../hooks/useTeams';
@@ -28,7 +29,8 @@ export function Teams(): JSX.Element {
     'Browse community service teams by location. Every team is run by local volunteers ready to serve.';
 
   const { teams, loading, error, refetch } = useTeams();
-  const [selectedChurch, setSelectedChurch] = useState('All Locations');
+  const [searchParams] = useSearchParams();
+  const [selectedChurch, setSelectedChurch] = useState(searchParams.get('church') || 'All Locations');
   const [selectedCategory, setSelectedCategory] = useState('All Categories');
   const [searchQuery, setSearchQuery] = useState('');
 
