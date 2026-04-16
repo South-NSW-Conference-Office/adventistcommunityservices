@@ -160,7 +160,7 @@ export function useChurchDetail(id: string | undefined): UseChurchDetailResult {
     setLoading(true);
     setError(null);
     try {
-      const res = await churchesApi.getChurchById(id);
+      const res = await churchesApi.getPublicChurchById(id);
       if (res.success && res.data) {
         setChurch(res.data as unknown as Church);
       } else {

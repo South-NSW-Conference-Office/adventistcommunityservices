@@ -1,6 +1,6 @@
 import { useState, useMemo, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Search, MapPin, UtensilsCrossed, Heart, Users, Clock } from 'lucide-react';
+import { Search, MapPin, UtensilsCrossed, Heart, Users, Clock, ExternalLink } from 'lucide-react';
 
 // Rotating default images for communities that have no photo
 const DEFAULT_IMAGES = [
@@ -35,6 +35,8 @@ interface ChurchData {
   website: string | null;
   phone: string | null;
   isActive: boolean;
+  lat: number | null;
+  lng: number | null;
 }
 
 interface FellowshipChurch {
@@ -54,6 +56,8 @@ interface FellowshipChurch {
   outreachFocus: string[];
   teamCount: number;
   serviceCount: number;
+  lat: number | null;
+  lng: number | null;
 }
 
 interface ConferenceInfo {
@@ -97,6 +101,8 @@ function mapChurchData(raw: ChurchData[]): { churches: FellowshipChurch[]; confe
         outreachFocus: c.outreachFocus,
         teamCount: c.teamCount,
         serviceCount: c.serviceCount,
+        lat: c.lat,
+        lng: c.lng,
       };
     });
 
@@ -123,8 +129,19 @@ interface CommunityCardProps {
   imageIndex: number;
 }
 
+function getMapsUrl(community: FellowshipChurch): string | null {
+  if (community.lat && community.lng) {
+    return `https://www.google.com/maps/dir/?api=1&destination=${community.lat},${community.lng}`;
+  }
+  if (community.address) {
+    return `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(community.address)}`;
+  }
+  return null;
+}
+
 function CommunityCard({ community, imageIndex }: CommunityCardProps): JSX.Element {
   const imageUrl = DEFAULT_IMAGES[imageIndex % DEFAULT_IMAGES.length];
+  const mapsUrl = getMapsUrl(community);
 
   return (
     <Link to={`/churches/${community.id}`} className="block h-full hover:-translate-y-1 transition-transform duration-200 cursor-pointer">
@@ -202,8 +219,24 @@ function CommunityCard({ community, imageIndex }: CommunityCardProps): JSX.Eleme
                   {community.serviceCount > 0 && `${community.serviceCount} service${community.serviceCount !== 1 ? 's' : ''}`}
                 </span>
               )}
-              <span className="ml-auto text-[#1F2937] text-xs font-semibold px-3 py-1.5 rounded-full" style={{ background: 'rgba(255,255,255,0.6)', border: '1px solid rgba(255,255,255,0.8)', boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.9)' }}>
-                {community.conference}
+              <span className="flex items-center gap-2 ml-auto">
+                {mapsUrl && (
+                  <a
+                    href={mapsUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={(e) => e.stopPropagation()}
+                    className="flex items-center gap-1 text-[#1F2937] text-xs font-semibold px-2.5 py-1.5 rounded-full hover:bg-white/80 transition-colors"
+                    style={{ background: 'rgba(255,255,255,0.6)', border: '1px solid rgba(255,255,255,0.8)', boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.9)' }}
+                    title="Open in Google Maps"
+                  >
+                    <MapPin className="w-3 h-3" />
+                    <ExternalLink className="w-3 h-3" />
+                  </a>
+                )}
+                <span className="text-[#1F2937] text-xs font-semibold px-3 py-1.5 rounded-full" style={{ background: 'rgba(255,255,255,0.6)', border: '1px solid rgba(255,255,255,0.8)', boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.9)' }}>
+                  {community.conference}
+                </span>
               </span>
             </div>
           </div>
