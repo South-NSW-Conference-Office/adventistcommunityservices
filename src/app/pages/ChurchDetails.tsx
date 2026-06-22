@@ -69,15 +69,17 @@ function getDirectionsUrl(location: ChurchLocation | undefined, address: string)
   return null;
 }
 
-function getMapEmbedUrl(location: ChurchLocation | undefined): string | null {
+function getMapEmbedUrl(location: ChurchLocation | undefined, address: string): string | null {
   const coordinates = location?.coordinates;
-  if (!coordinates) return null;
+  if (!coordinates) {
+    return address ? `https://www.google.com/maps?q=${encodeURIComponent(address)}&z=15&output=embed` : null;
+  }
 
   const lat = Number(coordinates.latitude);
   const lng = Number(coordinates.longitude);
   if (!Number.isFinite(lat) || !Number.isFinite(lng)) return null;
 
-  return `https://www.openstreetmap.org/export/embed.html?bbox=${lng - 0.02},${lat - 0.015},${lng + 0.02},${lat + 0.015}&layer=mapnik&marker=${lat},${lng}`;
+  return `https://www.google.com/maps?q=${lat},${lng}&z=15&output=embed`;
 }
 
 function getWebsiteUrl(website: string): string {
@@ -237,7 +239,7 @@ export function ChurchDetails(): JSX.Element {
   const email = church.contact?.email;
   const website = church.contact?.website;
   const directionsUrl = getDirectionsUrl(church.location, address);
-  const mapEmbedUrl = getMapEmbedUrl(church.location);
+  const mapEmbedUrl = getMapEmbedUrl(church.location, address);
   const conferenceName =
     church.conference?.name?.replace(/\s*Conference$/i, '') || 'Region';
 
