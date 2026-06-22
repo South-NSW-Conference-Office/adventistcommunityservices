@@ -1,6 +1,7 @@
 import { useState, useMemo, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Search, MapPin, UtensilsCrossed, Heart, Users, Clock, ExternalLink } from 'lucide-react';
+import { API_BASE_URL } from '../services/config';
 
 // Rotating default images for communities that have no photo
 const DEFAULT_IMAGES = [
@@ -258,8 +259,7 @@ export function Fellowship(): JSX.Element {
   useEffect(() => {
     async function fetchData() {
       try {
-        const apiUrl = import.meta.env.VITE_API_URL || '';
-        const res = await fetch(`${apiUrl}/api/public/fellowship`);
+        const res = await fetch(`${API_BASE_URL}/api/public/fellowship`);
         if (res.ok) {
           const data = await res.json();
           if (data.success && data.churches) {

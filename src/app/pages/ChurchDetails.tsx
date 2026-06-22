@@ -69,6 +69,19 @@ function getDirectionsUrl(location: ChurchLocation | undefined, address: string)
   return null;
 }
 
+function getMapEmbedUrl(location: ChurchLocation | undefined, address: string): string | null {
+  const coordinates = location?.coordinates;
+  if (!coordinates) {
+    return address ? `https://www.google.com/maps?q=${encodeURIComponent(address)}&z=15&output=embed` : null;
+  }
+
+  const lat = Number(coordinates.latitude);
+  const lng = Number(coordinates.longitude);
+  if (!Number.isFinite(lat) || !Number.isFinite(lng)) return null;
+
+  return `https://www.google.com/maps?q=${lat},${lng}&z=15&output=embed`;
+}
+
 function getWebsiteUrl(website: string): string {
   return website.startsWith('http') ? website : `https://${website}`;
 }
@@ -226,6 +239,7 @@ export function ChurchDetails(): JSX.Element {
   const email = church.contact?.email;
   const website = church.contact?.website;
   const directionsUrl = getDirectionsUrl(church.location, address);
+  const mapEmbedUrl = getMapEmbedUrl(church.location, address);
   const conferenceName =
     church.conference?.name?.replace(/\s*Conference$/i, '') || 'Region';
 
@@ -619,17 +633,25 @@ export function ChurchDetails(): JSX.Element {
                   className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden"
                 >
                   <div className="aspect-[4/3] w-full">
-                    <iframe
-                      title={`Map of ${church.name}`}
-                      className="w-full h-full border-0"
-                      loading="lazy"
-                      referrerPolicy="no-referrer-when-downgrade"
-                      src={
-                        church.location?.coordinates
-                          ? `https://www.google.com/maps/embed/v1/place?key=${import.meta.env.VITE_GOOGLE_MAPS_API_KEY}&q=${church.location.coordinates.latitude},${church.location.coordinates.longitude}&zoom=15`
-                          : `https://www.google.com/maps/embed/v1/place?key=${import.meta.env.VITE_GOOGLE_MAPS_API_KEY}&q=${encodeURIComponent(address)}&zoom=15`
-                      }
-                    />
+                    {mapEmbedUrl ? (
+                      <iframe
+                        title={`Map of ${church.name}`}
+                        className="w-full h-full border-0"
+                        loading="lazy"
+                        referrerPolicy="no-referrer-when-downgrade"
+                        src={mapEmbedUrl}
+                      />
+                    ) : (
+                      <div className="h-full bg-[#F8FAFC] flex flex-col items-center justify-center text-center px-6">
+                        <div className="w-12 h-12 rounded-full bg-[#FFF1EE] flex items-center justify-center mb-4">
+                          <MapPin className="w-6 h-6 text-[#F44314]" />
+                        </div>
+                        <p className="text-[#1F2937] font-semibold text-sm">Map location not pinned yet</p>
+                        <p className="text-gray-500 text-xs mt-1 max-w-[220px]">
+                          Open directions to view this church in Google Maps.
+                        </p>
+                      </div>
+                    )}
                   </div>
                   {directionsUrl && (
                     <a

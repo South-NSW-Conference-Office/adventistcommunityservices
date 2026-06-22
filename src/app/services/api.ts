@@ -1,6 +1,5 @@
 import { AuthService } from './auth';
-
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+import { API_BASE_URL } from './config';
 
 interface RequestOptions<B = Record<string, unknown>> extends Omit<RequestInit, 'body'> {
   body?: B | FormData;

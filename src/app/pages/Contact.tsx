@@ -1,6 +1,7 @@
 import { Loader2 } from 'lucide-react';
 import { useState, useEffect, FormEvent } from 'react';
 import { contactApi, ContactFormData, VolunteerApplicationData } from '../services/contactApi';
+import { API_BASE_URL } from '../services/config';
 import { useCMSPage, CMSImage } from '../hooks/useCMSContent';
 import { EditableText, EditableRichText } from '../components/editable';
 
@@ -172,8 +173,7 @@ export function Contact(): JSX.Element {
   const [teams, setTeams] = useState<ChurchTeam[]>([]);
 
   useEffect(() => {
-    const apiUrl = import.meta.env.VITE_API_URL || '';
-    fetch(`${apiUrl}/api/public/fellowship`)
+    fetch(`${API_BASE_URL}/api/public/fellowship`)
       .then(r => r.json())
       .then((data: any) => {
         if (data.success && data.churches) {
