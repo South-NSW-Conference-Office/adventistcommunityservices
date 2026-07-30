@@ -4,6 +4,7 @@ import { useState, useRef } from 'react';
 import { useServiceDetail, useServices } from '../hooks/useServices';
 import { ServiceRequestBanner } from '../components/ServiceRequestBanner';
 import type { ServiceLocation, ServiceCapacity, ServiceScheduling } from '../types/service.types';
+import { getServiceImage } from '../constants/serviceImages';
 
 const DEFAULT_SERVICE_IMAGE = 'https://images.unsplash.com/photo-1559027615-cd4628902d4a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080';
 const DAY_NAMES = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
@@ -83,7 +84,7 @@ export function ServiceDetails() {
     );
   }
 
-  const imageUrl = service.primaryImage?.url || DEFAULT_SERVICE_IMAGE;
+  const imageUrl = service.primaryImage?.url || getServiceImage(service._id) || DEFAULT_SERVICE_IMAGE;
   const address = formatAddress(service.locations);
   const locationShort = formatLocationShort(service.locations);
   const capacityText = formatCapacity(service.capacity);

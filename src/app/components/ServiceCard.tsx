@@ -1,6 +1,7 @@
 import { MapPin } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import type { ServiceLocation, ServiceCapacity, ServiceImage } from '../types/service.types';
+import { getServiceImage } from '../constants/serviceImages';
 
 const DEFAULT_SERVICE_IMAGE = 'https://images.unsplash.com/photo-1559027615-cd4628902d4a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080';
 
@@ -27,7 +28,7 @@ function formatLocation(locations?: ServiceLocation[]): string {
 }
 
 export function ServiceCard({ id, name, descriptionShort, locations, primaryImage, teamName }: ServiceCardProps) {
-  const imageUrl = primaryImage?.url || DEFAULT_SERVICE_IMAGE;
+  const imageUrl = primaryImage?.url || (id && getServiceImage(id)) || DEFAULT_SERVICE_IMAGE;
   const location = formatLocation(locations);
 
   const content = (
