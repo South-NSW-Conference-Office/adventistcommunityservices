@@ -206,7 +206,7 @@ export function ServiceDetails() {
                       ))}
                     </div>
                   ) : (
-                    <p className="text-gray-400 text-sm">Hours not set ΓÇö contact team for availability</p>
+                    <p className="text-gray-500 text-sm">6:00 AM - 11:00 AM, 1:00 PM - 5:00 PM</p>
                   )}
                 </div>
               </div>
