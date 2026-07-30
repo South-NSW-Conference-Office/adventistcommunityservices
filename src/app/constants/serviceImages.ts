@@ -10,10 +10,17 @@
 // service details page (after the primary `url`). The grid card only ever uses
 // the primary `url`. A DB-uploaded gallery, if present, takes precedence.
 
+interface ServiceGalleryImage {
+  url: string;
+  position?: string;
+}
+
 interface ServiceImageOverride {
   url: string;
   position?: string;
-  gallery?: string[];
+  // Gallery entries may be a bare URL, or an object with its own crop position
+  // for photos (e.g. portraits) whose subject the default centre crop cuts off.
+  gallery?: Array<string | ServiceGalleryImage>;
 }
 
 export const SERVICE_IMAGE_OVERRIDES: Record<string, ServiceImageOverride> = {
@@ -27,7 +34,7 @@ export const SERVICE_IMAGE_OVERRIDES: Record<string, ServiceImageOverride> = {
   '6a50a2d021e0d200e99e4218': {
     url: '/images/services/bowral-yard-work-1-clean.jpg',
     gallery: [
-      '/images/services/bowral-yard-work-2-mow.jpg',
+      { url: '/images/services/bowral-yard-work-2-mow.jpg', position: '50% 40%' },
       '/images/services/bowral-yard-work-3-truck.jpg',
       '/images/services/bowral-yard-work-4-team.jpg',
       '/images/services/bowral-yard-work-5-group.jpg',
@@ -43,6 +50,7 @@ export function getServiceImagePosition(serviceId: string): string | undefined {
   return SERVICE_IMAGE_OVERRIDES[serviceId]?.position;
 }
 
-export function getServiceGallery(serviceId: string): string[] {
-  return SERVICE_IMAGE_OVERRIDES[serviceId]?.gallery ?? [];
+export function getServiceGallery(serviceId: string): ServiceGalleryImage[] {
+  const gallery = SERVICE_IMAGE_OVERRIDES[serviceId]?.gallery ?? [];
+  return gallery.map((item) => (typeof item === 'string' ? { url: item } : item));
 }

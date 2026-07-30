@@ -100,9 +100,9 @@ export function ServiceDetails() {
   const serviceType = formatUnderscoreString(service.type);
   // Prefer a DB-uploaded gallery; otherwise fall back to any local override gallery.
   const galleryImages = gallery.length > 0
-    ? gallery.map(g => ({ url: g.url, alt: g.alt || service.name }))
-    : (service.primaryImage?.url ? [] : getServiceGallery(service._id).map(url => ({ url, alt: service.name })));
-  const allImages = [{ url: imageUrl, alt: service.name }, ...galleryImages];
+    ? gallery.map(g => ({ url: g.url, alt: g.alt || service.name, position: 'center' }))
+    : (service.primaryImage?.url ? [] : getServiceGallery(service._id).map(g => ({ url: g.url, alt: service.name, position: g.position || 'center' })));
+  const allImages = [{ url: imageUrl, alt: service.name, position: imagePosition }, ...galleryImages];
 
   const loc = service.locations?.[0];
   const coords = loc?.coordinates;
@@ -138,7 +138,7 @@ export function ServiceDetails() {
                 src={allImages[galleryIndex]?.url}
                 alt={allImages[galleryIndex]?.alt}
                 className="w-full h-full object-cover"
-                style={{ objectPosition: galleryIndex === 0 ? imagePosition : 'center' }}
+                style={{ objectPosition: allImages[galleryIndex]?.position || 'center' }}
               />
               {allImages.length > 1 && (
                 <>
