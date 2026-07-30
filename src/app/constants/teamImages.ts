@@ -16,6 +16,11 @@ export const TEAM_IMAGE_OVERRIDES: Record<string, TeamImageOverride> = {
     card: '/images/teams/canberra-national-card.jpg',
     cover: '/images/teams/canberra-national-cover.jpg',
   },
+  // Wodonga Adventist Community Church
+  '6a502fff21e0d200e99e28f2': {
+    card: '/images/teams/wodonga-card.jpg',
+    cover: '/images/teams/wodonga-cover.jpg',
+  },
 };
 
 export function getTeamCardImage(teamId: string): string | undefined {
