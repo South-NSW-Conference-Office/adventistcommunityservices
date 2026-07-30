@@ -21,6 +21,11 @@ export const TEAM_IMAGE_OVERRIDES: Record<string, TeamImageOverride> = {
     card: '/images/teams/wodonga-card.jpg',
     cover: '/images/teams/wodonga-cover.jpg',
   },
+  // Bowral ACS Team
+  '6a50a1fe21e0d200e99e4115': {
+    card: '/images/teams/bowral-card.jpg',
+    cover: '/images/teams/bowral-cover.jpg',
+  },
 };
 
 export function getTeamCardImage(teamId: string): string | undefined {

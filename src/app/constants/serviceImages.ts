@@ -5,10 +5,15 @@
 // `position` is an optional CSS object-position value controlling how the
 // image is cropped inside cards (e.g. 'top' to keep the top of the photo
 // visible). Defaults to center.
+//
+// `gallery` is an optional list of extra image URLs shown as a carousel on the
+// service details page (after the primary `url`). The grid card only ever uses
+// the primary `url`. A DB-uploaded gallery, if present, takes precedence.
 
 interface ServiceImageOverride {
   url: string;
   position?: string;
+  gallery?: string[];
 }
 
 export const SERVICE_IMAGE_OVERRIDES: Record<string, ServiceImageOverride> = {
@@ -18,6 +23,16 @@ export const SERVICE_IMAGE_OVERRIDES: Record<string, ServiceImageOverride> = {
   '6a503cbb21e0d200e99e2c60': { url: '/images/services/wodonga-op-shop.jpg', position: '50% 40%' },
   // Community Yard Cleans — Narromine ACS Team
   '6a50af5821e0d200e99e524c': { url: '/images/services/narromine-community-yard-cleans.jpg' },
+  // Yard Work — Bowral ACS Team
+  '6a50a2d021e0d200e99e4218': {
+    url: '/images/services/bowral-yard-work-1-clean.jpg',
+    gallery: [
+      '/images/services/bowral-yard-work-2-mow.jpg',
+      '/images/services/bowral-yard-work-3-truck.jpg',
+      '/images/services/bowral-yard-work-4-team.jpg',
+      '/images/services/bowral-yard-work-5-group.jpg',
+    ],
+  },
 };
 
 export function getServiceImage(serviceId: string): string | undefined {
@@ -26,4 +41,8 @@ export function getServiceImage(serviceId: string): string | undefined {
 
 export function getServiceImagePosition(serviceId: string): string | undefined {
   return SERVICE_IMAGE_OVERRIDES[serviceId]?.position;
+}
+
+export function getServiceGallery(serviceId: string): string[] {
+  return SERVICE_IMAGE_OVERRIDES[serviceId]?.gallery ?? [];
 }

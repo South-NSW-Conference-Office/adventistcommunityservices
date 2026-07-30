@@ -4,7 +4,7 @@ import { useState, useRef } from 'react';
 import { useServiceDetail, useServices } from '../hooks/useServices';
 import { ServiceRequestBanner } from '../components/ServiceRequestBanner';
 import type { ServiceLocation, ServiceCapacity, ServiceScheduling } from '../types/service.types';
-import { getServiceImage, getServiceImagePosition } from '../constants/serviceImages';
+import { getServiceImage, getServiceImagePosition, getServiceGallery } from '../constants/serviceImages';
 
 const DEFAULT_SERVICE_IMAGE = 'https://images.unsplash.com/photo-1559027615-cd4628902d4a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080';
 const DAY_NAMES = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
@@ -98,7 +98,11 @@ export function ServiceDetails() {
   const tags = service.tags ?? [];
   const gallery = service.gallery ?? [];
   const serviceType = formatUnderscoreString(service.type);
-  const allImages = [{ url: imageUrl, alt: service.name }, ...gallery.map(g => ({ url: g.url, alt: g.alt || service.name }))];
+  // Prefer a DB-uploaded gallery; otherwise fall back to any local override gallery.
+  const galleryImages = gallery.length > 0
+    ? gallery.map(g => ({ url: g.url, alt: g.alt || service.name }))
+    : (service.primaryImage?.url ? [] : getServiceGallery(service._id).map(url => ({ url, alt: service.name })));
+  const allImages = [{ url: imageUrl, alt: service.name }, ...galleryImages];
 
   const loc = service.locations?.[0];
   const coords = loc?.coordinates;
