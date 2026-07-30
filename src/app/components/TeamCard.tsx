@@ -72,10 +72,6 @@ export function TeamCard({ team }: TeamCardProps) {
               </p>
             )}
 
-            {team.description && (
-              <p className="text-white/60 text-sm line-clamp-2 mb-3">{team.description}</p>
-            )}
-
             {/* Bottom bar */}
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
