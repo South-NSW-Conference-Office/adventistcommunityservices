@@ -8,6 +8,7 @@ import { useTeamDetail } from '../hooks/useTeams';
 import { useServices } from '../hooks/useServices';
 import { ServiceRequestBanner } from '../components/ServiceRequestBanner';
 import type { Team, TeamChurch, TeamLeader } from '../types/team.types';
+import { getTeamCoverImage } from '../constants/teamImages';
 
 const DEFAULT_TEAM_IMAGE =
   'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080';
@@ -90,7 +91,7 @@ export function TeamDetails() {
     );
   }
 
-  const imageUrl    = team.banner?.url || team.profilePhoto?.url || DEFAULT_TEAM_IMAGE;
+  const imageUrl    = team.banner?.url || team.profilePhoto?.url || getTeamCoverImage(team._id) || DEFAULT_TEAM_IMAGE;
   const churchName  = isPopulatedChurch(team.churchId) ? team.churchId.name : '';
   const leader      = isPopulatedLeader(team.leaderId) ? team.leaderId : null;
   const memberCount = team.memberCount ?? 0;

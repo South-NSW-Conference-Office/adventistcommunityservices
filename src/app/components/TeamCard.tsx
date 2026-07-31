@@ -1,6 +1,7 @@
 import { MapPin, Users, Building2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import type { Team } from '../types/team.types';
+import { getTeamCardImage } from '../constants/teamImages';
 
 const DEFAULT_TEAM_IMAGE = 'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080';
 
@@ -31,7 +32,7 @@ export function TeamCard({ team }: TeamCardProps) {
   const category = team.category || team.type || 'Team';
   const churchName = getChurchName(team.churchId);
   const memberCount = team.memberCount ?? 0;
-  const imageUrl = team.banner?.url || team.profilePhoto?.url || DEFAULT_TEAM_IMAGE;
+  const imageUrl = team.banner?.url || team.profilePhoto?.url || getTeamCardImage(team._id) || DEFAULT_TEAM_IMAGE;
   const location = team.location || '';
 
   return (
@@ -69,10 +70,6 @@ export function TeamCard({ team }: TeamCardProps) {
                 <Building2 className="w-3 h-3 flex-shrink-0" />
                 {churchName}
               </p>
-            )}
-
-            {team.description && (
-              <p className="text-white/60 text-sm line-clamp-2 mb-3">{team.description}</p>
             )}
 
             {/* Bottom bar */}

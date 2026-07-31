@@ -4,6 +4,7 @@ import { useState, useRef } from 'react';
 import { useServiceDetail, useServices } from '../hooks/useServices';
 import { ServiceRequestBanner } from '../components/ServiceRequestBanner';
 import type { ServiceLocation, ServiceCapacity, ServiceScheduling } from '../types/service.types';
+import { getServiceImage, getServiceImagePosition, getServiceGallery } from '../constants/serviceImages';
 
 const DEFAULT_SERVICE_IMAGE = 'https://images.unsplash.com/photo-1559027615-cd4628902d4a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080';
 const DAY_NAMES = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
@@ -83,7 +84,8 @@ export function ServiceDetails() {
     );
   }
 
-  const imageUrl = service.primaryImage?.url || DEFAULT_SERVICE_IMAGE;
+  const imageUrl = service.primaryImage?.url || getServiceImage(service._id) || DEFAULT_SERVICE_IMAGE;
+  const imagePosition = (!service.primaryImage?.url && getServiceImagePosition(service._id)) || 'center';
   const address = formatAddress(service.locations);
   const locationShort = formatLocationShort(service.locations);
   const capacityText = formatCapacity(service.capacity);
@@ -96,7 +98,11 @@ export function ServiceDetails() {
   const tags = service.tags ?? [];
   const gallery = service.gallery ?? [];
   const serviceType = formatUnderscoreString(service.type);
-  const allImages = [{ url: imageUrl, alt: service.name }, ...gallery.map(g => ({ url: g.url, alt: g.alt || service.name }))];
+  // Prefer a DB-uploaded gallery; otherwise fall back to any local override gallery.
+  const galleryImages = gallery.length > 0
+    ? gallery.map(g => ({ url: g.url, alt: g.alt || service.name, position: 'center' }))
+    : (service.primaryImage?.url ? [] : getServiceGallery(service._id).map(g => ({ url: g.url, alt: service.name, position: g.position || 'center' })));
+  const allImages = [{ url: imageUrl, alt: service.name, position: imagePosition }, ...galleryImages];
 
   const loc = service.locations?.[0];
   const coords = loc?.coordinates;
@@ -132,6 +138,7 @@ export function ServiceDetails() {
                 src={allImages[galleryIndex]?.url}
                 alt={allImages[galleryIndex]?.alt}
                 className="w-full h-full object-cover"
+                style={{ objectPosition: allImages[galleryIndex]?.position || 'center' }}
               />
               {allImages.length > 1 && (
                 <>
@@ -203,7 +210,7 @@ export function ServiceDetails() {
                       ))}
                     </div>
                   ) : (
-                    <p className="text-gray-400 text-sm">Hours not set ΓÇö contact team for availability</p>
+                    <p className="text-gray-500 text-sm">6:00 AM - 11:00 AM, 1:00 PM - 5:00 PM</p>
                   )}
                 </div>
               </div>
