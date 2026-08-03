@@ -40,6 +40,23 @@ export const SERVICE_IMAGE_OVERRIDES: Record<string, ServiceImageOverride> = {
       '/images/services/bowral-yard-work-5-group.jpg',
     ],
   },
+  // Food Pantry — Queanbeyan ACS Team
+  // (note: a second "Food Pantry" exists under Bathurst — different service id)
+  '6a50b1b821e0d200e99e567a': {
+    url: '/images/services/queanbeyan-food-pantry-1.jpg',
+    gallery: [
+      '/images/services/queanbeyan-food-pantry-2.jpg',
+      '/images/services/queanbeyan-food-pantry-3.jpg',
+      '/images/services/queanbeyan-food-pantry-4.jpg',
+      '/images/services/queanbeyan-food-pantry-5.jpg',
+      '/images/services/queanbeyan-food-pantry-6.jpg',
+      '/images/services/queanbeyan-food-pantry-7.jpg',
+      '/images/services/queanbeyan-food-pantry-8.jpg',
+      '/images/services/queanbeyan-food-pantry-9.jpg',
+      '/images/services/queanbeyan-food-pantry-10.jpg',
+      '/images/services/queanbeyan-food-pantry-11.jpg',
+    ],
+  },
 };
 
 export function getServiceImage(serviceId: string): string | undefined {
