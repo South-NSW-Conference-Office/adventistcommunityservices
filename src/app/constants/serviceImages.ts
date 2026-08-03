@@ -44,17 +44,18 @@ export const SERVICE_IMAGE_OVERRIDES: Record<string, ServiceImageOverride> = {
   // (note: a second "Food Pantry" exists under Bathurst — different service id)
   '6a50b1b821e0d200e99e567a': {
     url: '/images/services/queanbeyan-food-pantry-1.jpg',
+    position: '50% 40%',
     gallery: [
-      '/images/services/queanbeyan-food-pantry-2.jpg',
-      '/images/services/queanbeyan-food-pantry-3.jpg',
-      '/images/services/queanbeyan-food-pantry-4.jpg',
-      '/images/services/queanbeyan-food-pantry-5.jpg',
-      '/images/services/queanbeyan-food-pantry-6.jpg',
-      '/images/services/queanbeyan-food-pantry-7.jpg',
-      '/images/services/queanbeyan-food-pantry-8.jpg',
-      '/images/services/queanbeyan-food-pantry-9.jpg',
-      '/images/services/queanbeyan-food-pantry-10.jpg',
-      '/images/services/queanbeyan-food-pantry-11.jpg',
+      { url: '/images/services/queanbeyan-food-pantry-2.jpg', position: '50% 40%' },
+      { url: '/images/services/queanbeyan-food-pantry-3.jpg', position: '50% 40%' },
+      { url: '/images/services/queanbeyan-food-pantry-4.jpg', position: '50% 40%' },
+      { url: '/images/services/queanbeyan-food-pantry-5.jpg', position: '50% 40%' },
+      { url: '/images/services/queanbeyan-food-pantry-6.jpg', position: '50% 40%' },
+      { url: '/images/services/queanbeyan-food-pantry-7.jpg', position: '50% 40%' },
+      { url: '/images/services/queanbeyan-food-pantry-8.jpg', position: '50% 40%' },
+      { url: '/images/services/queanbeyan-food-pantry-9.jpg', position: '50% 40%' },
+      { url: '/images/services/queanbeyan-food-pantry-10.jpg', position: '50% 40%' },
+      { url: '/images/services/queanbeyan-food-pantry-11.jpg', position: '50% 40%' },
     ],
   },
 };
