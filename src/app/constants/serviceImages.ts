@@ -43,14 +43,15 @@ export const SERVICE_IMAGE_OVERRIDES: Record<string, ServiceImageOverride> = {
   // Food Pantry — Queanbeyan ACS Team
   // (note: a second "Food Pantry" exists under Bathurst — different service id)
   '6a50b1b821e0d200e99e567a': {
-    url: '/images/services/queanbeyan-food-pantry-1.jpg',
-    position: '50% 40%',
+    // Volunteers with the produce crates - used as the card thumbnail.
+    url: '/images/services/queanbeyan-food-pantry-6.jpg',
+    position: 'top',
     gallery: [
+      { url: '/images/services/queanbeyan-food-pantry-1.jpg', position: '50% 40%' },
       { url: '/images/services/queanbeyan-food-pantry-2.jpg', position: '50% 40%' },
       { url: '/images/services/queanbeyan-food-pantry-3.jpg', position: '50% 40%' },
       { url: '/images/services/queanbeyan-food-pantry-4.jpg', position: '50% 40%' },
       { url: '/images/services/queanbeyan-food-pantry-5.jpg', position: '50% 40%' },
-      { url: '/images/services/queanbeyan-food-pantry-6.jpg', position: '50% 40%' },
       { url: '/images/services/queanbeyan-food-pantry-7.jpg', position: '50% 40%' },
       { url: '/images/services/queanbeyan-food-pantry-8.jpg', position: '50% 40%' },
       { url: '/images/services/queanbeyan-food-pantry-9.jpg', position: '50% 40%' },
