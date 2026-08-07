@@ -2,6 +2,7 @@ import { useState, useMemo, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Search, MapPin, UtensilsCrossed, Heart, Users, Clock, ExternalLink } from 'lucide-react';
 import { API_BASE_URL } from '../services/config';
+import { getChurchImage, getChurchImagePosition } from '../constants/churchImages';
 
 // Rotating default images for communities that have no photo
 const DEFAULT_IMAGES = [
@@ -141,7 +142,12 @@ function getMapsUrl(community: FellowshipChurch): string | null {
 }
 
 function CommunityCard({ community, imageIndex }: CommunityCardProps): JSX.Element {
-  const imageUrl = DEFAULT_IMAGES[imageIndex % DEFAULT_IMAGES.length];
+  // A church with a real photo uses it; everyone else keeps the rotating stock
+  // default. Note the fallback is keyed on list position, so those images shift
+  // as filters reorder the list — an override pins the photo to the church.
+  const imageUrl =
+    getChurchImage(community.id) || DEFAULT_IMAGES[imageIndex % DEFAULT_IMAGES.length];
+  const imagePosition = getChurchImagePosition(community.id) || 'center';
   const mapsUrl = getMapsUrl(community);
 
   return (
@@ -155,6 +161,7 @@ function CommunityCard({ community, imageIndex }: CommunityCardProps): JSX.Eleme
             src={imageUrl}
             alt={community.name}
             className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+            style={{ objectPosition: imagePosition }}
           />
 
           {/* Gradient overlay — bottom-heavy */}

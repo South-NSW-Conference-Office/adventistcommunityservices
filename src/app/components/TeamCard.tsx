@@ -1,7 +1,7 @@
 import { MapPin, Users, Building2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import type { Team } from '../types/team.types';
-import { getTeamCardImage } from '../constants/teamImages';
+import { getTeamCardImage, getTeamImagePosition } from '../constants/teamImages';
 
 const DEFAULT_TEAM_IMAGE = 'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080';
 
@@ -33,6 +33,8 @@ export function TeamCard({ team }: TeamCardProps) {
   const churchName = getChurchName(team.churchId);
   const memberCount = team.memberCount ?? 0;
   const imageUrl = team.banner?.url || team.profilePhoto?.url || getTeamCardImage(team._id) || DEFAULT_TEAM_IMAGE;
+  const imagePosition =
+    (!team.banner?.url && !team.profilePhoto?.url && getTeamImagePosition(team._id)) || 'center';
   const location = team.location || '';
 
   return (
@@ -49,6 +51,7 @@ export function TeamCard({ team }: TeamCardProps) {
             src={imageUrl}
             alt={team.banner?.alt || team.name}
             className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+            style={{ objectPosition: imagePosition }}
           />
 
           {/* Gradient overlay — bottom-heavy */}

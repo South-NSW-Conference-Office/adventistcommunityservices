@@ -19,8 +19,15 @@ import {
   ExternalLink,
   Navigation,
   ChevronRight,
+  ChevronLeft,
+  Image as ImageIcon,
 } from 'lucide-react';
 import { useChurchDetail } from '../hooks/useChurches';
+import {
+  getChurchImage,
+  getChurchImagePosition,
+  getChurchGallery,
+} from '../constants/churchImages';
 import type {
   ChurchLeader,
   ChurchLocation,
@@ -211,6 +218,7 @@ export function ChurchDetails(): JSX.Element {
   const navigate = useNavigate();
   const { church, loading, error, refetch } = useChurchDetail(id);
   const [scrolled, setScrolled] = useState(false);
+  const [galleryIndex, setGalleryIndex] = useState(0);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 300);
@@ -232,7 +240,24 @@ export function ChurchDetails(): JSX.Element {
   if (error) return <PageState message={error} showRefresh onRefresh={refetch} />;
   if (!church) return <PageState message="Church not found" />;
 
-  const imageUrl = church.primaryImage?.url || DEFAULT_CHURCH_IMAGE;
+  // DB image wins; then a local override; then the stock default.
+  const imageUrl =
+    church.primaryImage?.url || getChurchImage(church._id) || DEFAULT_CHURCH_IMAGE;
+  const imagePosition =
+    (!church.primaryImage?.url && getChurchImagePosition(church._id)) || 'center';
+  // Only churches with an override gallery get carousel controls; every other
+  // church page renders exactly as before, with a single hero image.
+  const galleryImages = church.primaryImage?.url
+    ? []
+    : getChurchGallery(church._id).map((g) => ({
+        url: g.url,
+        position: g.position || 'center',
+      }));
+  const allImages = [
+    { url: imageUrl, position: imagePosition },
+    ...galleryImages,
+  ];
+  const activeImage = allImages[galleryIndex] ?? allImages[0];
   const address = formatAddress(church.location);
   const locationShort = formatLocationShort(church.location);
   const phone = church.contact?.phone || 'Contact for details';
@@ -302,11 +327,38 @@ export function ChurchDetails(): JSX.Element {
         {/* Image */}
         <div className="relative h-[420px] md:h-[520px] overflow-hidden">
           <img
-            src={imageUrl}
+            src={activeImage.url}
             alt={church.name || 'Church'}
             className="w-full h-full object-cover"
+            style={{ objectPosition: activeImage.position }}
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-black/10" />
+
+          {/* Photo carousel — only appears when this church has extra images */}
+          {allImages.length > 1 && (
+            <>
+              <button
+                aria-label="Previous photo"
+                onClick={() => setGalleryIndex((i) => (i > 0 ? i - 1 : allImages.length - 1))}
+                className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white/90 rounded-full flex items-center justify-center shadow-md hover:bg-white transition-colors z-10"
+              >
+                <ChevronLeft className="w-5 h-5 text-gray-700" />
+              </button>
+              <button
+                aria-label="Next photo"
+                onClick={() => setGalleryIndex((i) => (i < allImages.length - 1 ? i + 1 : 0))}
+                className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white/90 rounded-full flex items-center justify-center shadow-md hover:bg-white transition-colors z-10"
+              >
+                <ChevronRight className="w-5 h-5 text-gray-700" />
+              </button>
+              <div className="absolute top-24 right-6 flex items-center gap-1.5 bg-black/40 backdrop-blur-sm px-3 py-1.5 rounded-full z-10">
+                <ImageIcon className="w-3 h-3 text-white/70" />
+                <span className="text-white text-xs font-medium">
+                  {galleryIndex + 1} / {allImages.length}
+                </span>
+              </div>
+            </>
+          )}
 
           {/* Back button in hero */}
           <div className="absolute top-24 left-0 right-0">
@@ -356,6 +408,33 @@ export function ChurchDetails(): JSX.Element {
             </div>
           </div>
         </div>
+
+        {/* Thumbnail strip — only when this church has extra photos */}
+        {allImages.length > 1 && (
+          <div className="max-w-6xl mx-auto px-6 pt-4">
+            <div className="flex gap-2 overflow-x-auto pb-1">
+              {allImages.map((img, i) => (
+                <button
+                  key={img.url}
+                  aria-label={`Photo ${i + 1}`}
+                  onClick={() => setGalleryIndex(i)}
+                  className={`flex-shrink-0 w-20 h-14 rounded-lg overflow-hidden border-2 transition-all ${
+                    i === galleryIndex
+                      ? 'border-[#F44314]'
+                      : 'border-transparent opacity-60 hover:opacity-100'
+                  }`}
+                >
+                  <img
+                    src={img.url}
+                    alt=""
+                    className="w-full h-full object-cover"
+                    style={{ objectPosition: img.position }}
+                  />
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* Action bar — overlaps hero bottom */}
         <div className="max-w-6xl mx-auto px-6 -mt-6 relative z-10">

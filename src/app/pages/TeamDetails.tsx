@@ -1,14 +1,20 @@
-import { useParams, Link, useNavigate } from 'react-router-dom';
+﻿import { useParams, Link, useNavigate } from 'react-router-dom';
 import {
   MapPin, Users, User, Building2, Clock,
   ArrowLeft, Heart, RefreshCw, Target,
   Calendar, ExternalLink, AlertTriangle,
+  ChevronLeft, ChevronRight, Image as ImageIcon,
 } from 'lucide-react';
+import { useState } from 'react';
 import { useTeamDetail } from '../hooks/useTeams';
 import { useServices } from '../hooks/useServices';
 import { ServiceRequestBanner } from '../components/ServiceRequestBanner';
 import type { Team, TeamChurch, TeamLeader } from '../types/team.types';
-import { getTeamCoverImage } from '../constants/teamImages';
+import {
+  getTeamCoverImage,
+  getTeamImagePosition,
+  getTeamGallery,
+} from '../constants/teamImages';
 
 const DEFAULT_TEAM_IMAGE =
   'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080';
@@ -50,6 +56,8 @@ export function TeamDetails() {
   const navigate = useNavigate();
   const { team, loading, error, refetch } = useTeamDetail(id);
   const { services: allServices } = useServices();
+  // Declared before the early returns below so hook order stays stable.
+  const [galleryIndex, setGalleryIndex] = useState(0);
 
   if (loading) {
     return (
@@ -91,7 +99,16 @@ export function TeamDetails() {
     );
   }
 
+  const hasDbImage  = Boolean(team.banner?.url || team.profilePhoto?.url);
   const imageUrl    = team.banner?.url || team.profilePhoto?.url || getTeamCoverImage(team._id) || DEFAULT_TEAM_IMAGE;
+  const imagePosition = (!hasDbImage && getTeamImagePosition(team._id)) || 'center';
+  // Only teams with an override gallery get carousel controls; every other team
+  // page renders exactly as before, with a single hero image.
+  const galleryImages = hasDbImage
+    ? []
+    : getTeamGallery(team._id).map((g) => ({ url: g.url, position: g.position || 'center' }));
+  const allImages   = [{ url: imageUrl, position: imagePosition }, ...galleryImages];
+  const activeImage = allImages[galleryIndex] ?? allImages[0];
   const churchName  = isPopulatedChurch(team.churchId) ? team.churchId.name : '';
   const leader      = isPopulatedLeader(team.leaderId) ? team.leaderId : null;
   const memberCount = team.memberCount ?? 0;
@@ -111,7 +128,38 @@ export function TeamDetails() {
 
       {/* Hero — plain image, bottom strip only */}
       <div className="relative h-[400px] md:h-[500px] overflow-hidden">
-        <img src={imageUrl} alt={team.name} className="w-full h-full object-cover" />
+        <img
+          src={activeImage.url}
+          alt={team.name}
+          className="w-full h-full object-cover"
+          style={{ objectPosition: activeImage.position }}
+        />
+
+        {/* Photo carousel — only when this team has extra images */}
+        {allImages.length > 1 && (
+          <>
+            <button
+              aria-label="Previous photo"
+              onClick={() => setGalleryIndex((i) => (i > 0 ? i - 1 : allImages.length - 1))}
+              className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white/90 rounded-full flex items-center justify-center shadow-md hover:bg-white transition-colors z-20"
+            >
+              <ChevronLeft className="w-5 h-5 text-gray-700" />
+            </button>
+            <button
+              aria-label="Next photo"
+              onClick={() => setGalleryIndex((i) => (i < allImages.length - 1 ? i + 1 : 0))}
+              className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white/90 rounded-full flex items-center justify-center shadow-md hover:bg-white transition-colors z-20"
+            >
+              <ChevronRight className="w-5 h-5 text-gray-700" />
+            </button>
+            <div className="absolute top-24 right-6 flex items-center gap-1.5 bg-black/40 backdrop-blur-sm px-3 py-1.5 rounded-full z-20">
+              <ImageIcon className="w-3 h-3 text-white/70" />
+              <span className="text-white text-xs font-medium">
+                {galleryIndex + 1} / {allImages.length}
+              </span>
+            </div>
+          </>
+        )}
 
         {/* Back button */}
         <div className="absolute top-24 left-0 right-0 z-10">
@@ -150,6 +198,33 @@ export function TeamDetails() {
           </div>
         </div>
       </div>
+
+      {/* Thumbnail strip — only when this team has extra photos */}
+      {allImages.length > 1 && (
+        <div className="max-w-7xl mx-auto px-6 pt-4">
+          <div className="flex gap-2 overflow-x-auto pb-1">
+            {allImages.map((img, i) => (
+              <button
+                key={img.url}
+                aria-label={`Photo ${i + 1}`}
+                onClick={() => setGalleryIndex(i)}
+                className={`flex-shrink-0 w-20 h-14 rounded-lg overflow-hidden border-2 transition-all ${
+                  i === galleryIndex
+                    ? 'border-[#F44314]'
+                    : 'border-transparent opacity-60 hover:opacity-100'
+                }`}
+              >
+                <img
+                  src={img.url}
+                  alt=""
+                  className="w-full h-full object-cover"
+                  style={{ objectPosition: img.position }}
+                />
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Body */}
       <div className="max-w-7xl mx-auto px-6 py-12">

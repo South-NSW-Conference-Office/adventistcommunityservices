@@ -29,7 +29,28 @@ export const SERVICE_IMAGE_OVERRIDES: Record<string, ServiceImageOverride> = {
   // Wodonga OP Shop — Wodonga Adventist Community Church
   '6a503cbb21e0d200e99e2c60': { url: '/images/services/wodonga-op-shop.jpg', position: '50% 40%' },
   // Community Yard Cleans — Narromine ACS Team
-  '6a50af5821e0d200e99e524c': { url: '/images/services/narromine-community-yard-cleans.jpg' },
+  '6a50af5821e0d200e99e524c': {
+    url: '/images/services/narromine-community-yard-cleans.jpg',
+    gallery: [
+      '/images/services/narromine-yard-cleans-1.jpg',
+      '/images/services/narromine-yard-cleans-2.jpg',
+      '/images/services/narromine-yard-cleans-3.jpg',
+      '/images/services/narromine-yard-cleans-4.jpg',
+    ],
+  },
+  // Rubbish Disposal — Narromine ACS Team (tip run / trailer loading)
+  '6a50afa221e0d200e99e5444': {
+    url: '/images/services/narromine-rubbish-disposal-1.jpg',
+    gallery: [
+      '/images/services/narromine-rubbish-disposal-2.jpg',
+      '/images/services/narromine-rubbish-disposal-3.jpg',
+    ],
+  },
+  // Lawn Care (Overgrown Residents in Housing) — Narromine ACS Team
+  '6a50afcf21e0d200e99e54f4': {
+    url: '/images/services/narromine-lawn-care-1.jpg',
+    gallery: ['/images/services/narromine-lawn-care-2.jpg'],
+  },
   // Yard Work — Bowral ACS Team
   '6a50a2d021e0d200e99e4218': {
     url: '/images/services/bowral-yard-work-1-clean.jpg',
