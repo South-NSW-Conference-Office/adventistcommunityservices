@@ -46,10 +46,22 @@ export const SERVICE_IMAGE_OVERRIDES: Record<string, ServiceImageOverride> = {
       '/images/services/narromine-rubbish-disposal-3.jpg',
     ],
   },
-  // Lawn Care (Overgrown Residents in Housing) — Narromine ACS Team
+  // Lawn Care (Overgrown Residents in Housing) — Narromine ACS Team.
+  // Covers the broader property-maintenance work: garden and pruning, plus the
+  // house-cleaning working bee and community photos moved over from the team.
   '6a50afcf21e0d200e99e54f4': {
     url: '/images/services/narromine-lawn-care-1.jpg',
-    gallery: ['/images/services/narromine-lawn-care-2.jpg'],
+    gallery: [
+      '/images/services/narromine-lawn-care-2.jpg',
+      '/images/services/narromine-lawn-care-3.jpg',
+      '/images/services/narromine-lawn-care-4.jpg',
+      '/images/services/narromine-lawn-care-5.jpg',
+      '/images/services/narromine-lawn-care-6.jpg',
+      '/images/services/narromine-lawn-care-7.jpg',
+      '/images/services/narromine-lawn-care-8.jpg',
+      '/images/services/narromine-lawn-care-9.jpg',
+      '/images/services/narromine-lawn-care-10.jpg',
+    ],
   },
   // Yard Work — Bowral ACS Team
   '6a50a2d021e0d200e99e4218': {

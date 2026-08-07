@@ -41,21 +41,11 @@ export const TEAM_IMAGE_OVERRIDES: Record<string, TeamImageOverride> = {
     card: '/images/teams/bowral-card.jpg',
     cover: '/images/teams/bowral-cover.jpg',
   },
-  // Narromine ACS Team — house-cleaning working bee, group and community photos.
-  // (The team's yard/rubbish/lawn work lives on its services, see serviceImages.)
+  // Narromine ACS Team — team group photo.
+  // (All of Narromine's activity photos live on its services, see serviceImages.)
   '6a50af1e21e0d200e99e51e0': {
     card: '/images/teams/narromine-card.jpg',
     cover: '/images/teams/narromine-cover.jpg',
-    gallery: [
-      '/images/teams/narromine-2.jpg',
-      '/images/teams/narromine-3.jpg',
-      '/images/teams/narromine-4.jpg',
-      '/images/teams/narromine-5.jpg',
-      '/images/teams/narromine-6.jpg',
-      '/images/teams/narromine-7.jpg',
-      '/images/teams/narromine-8.jpg',
-      '/images/teams/narromine-9.jpg',
-    ],
   },
 };
 
