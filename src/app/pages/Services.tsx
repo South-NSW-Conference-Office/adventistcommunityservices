@@ -1,21 +1,10 @@
 import { useState, useMemo } from 'react';
 import { ServiceCard } from '../components/ServiceCard';
-import { Search, RefreshCw, ShoppingBag, Apple, UtensilsCrossed, AlertTriangle, HeartPulse, Users, Home, Brain, BookOpen, Flower2 } from 'lucide-react';
+import { Search, RefreshCw } from 'lucide-react';
+import { SERVICE_CATEGORIES as SERVICE_TYPES } from '../constants/categories';
 import { useServices } from '../hooks/useServices';
 import { useCMSPage } from '../hooks/useCMSContent';
 
-const SERVICE_TYPES = [
-  { value: 'op_shop', name: 'Op Shop', icon: ShoppingBag },
-  { value: 'food_pantry', name: 'Food Pantry', icon: Apple },
-  { value: 'soup_kitchen', name: 'Soup Kitchen', icon: UtensilsCrossed },
-  { value: 'disaster_response', name: 'Disaster Response', icon: AlertTriangle },
-  { value: 'health_program', name: 'Health Program', icon: HeartPulse },
-  { value: 'youth_outreach', name: 'Youth Outreach', icon: Users },
-  { value: 'emergency_shelter', name: 'Emergency Shelter', icon: Home },
-  { value: 'counseling_service', name: 'Counseling', icon: Brain },
-  { value: 'education_program', name: 'Education', icon: BookOpen },
-  { value: 'community_garden', name: 'Community Garden', icon: Flower2 },
-];
 
 function getTeamName(service: any): string {
   if (service.teamId?.name) return service.teamId.name;
@@ -39,7 +28,7 @@ export function Services(): JSX.Element {
     const typeCounts: Record<string, number> = {};
     const searchLower = searchQuery.toLowerCase();
 
-    SERVICE_TYPES.forEach(type => { typeCounts[type.value] = 0; });
+    SERVICE_TYPES.forEach(type => { typeCounts[type.type] = 0; });
 
     services.forEach(service => {
       const sType = service.type;
@@ -105,18 +94,18 @@ export function Services(): JSX.Element {
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
             {SERVICE_TYPES.map((st) => {
               const Icon = st.icon;
-              const isSelected = selectedType === st.value;
+              const isSelected = selectedType === st.type;
               return (
                 <button
-                  key={st.value}
-                  onClick={() => setSelectedType(isSelected ? null : st.value)}
+                  key={st.type}
+                  onClick={() => setSelectedType(isSelected ? null : st.type)}
                   className={`rounded-2xl p-5 text-center transition-all ${isSelected ? 'ring-2 ring-[#F44314]' : ''}`}
                   style={{ background: isSelected ? 'linear-gradient(135deg, rgba(244,67,20,0.15) 0%, rgba(244,67,20,0.05) 100%)' : 'linear-gradient(135deg, rgba(255,255,255,0.55) 0%, rgba(255,255,255,0.2) 100%)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', border: isSelected ? '1px solid rgba(244,67,20,0.4)' : '1px solid rgba(255,255,255,0.6)', boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.8), inset 0 -1px 0 rgba(0,0,0,0.04), 0 4px 24px rgba(0,0,0,0.06)' }}
                 >
                   <Icon className={`w-7 h-7 mx-auto mb-3 ${isSelected ? 'text-[#F44314]' : 'text-gray-400'}`} />
                   <h3 className={`font-semibold text-sm mb-1 ${isSelected ? 'text-[#F44314]' : 'text-[#1F2937]'}`}>{st.name}</h3>
                   <p className="text-gray-500 text-xs">
-                    {serviceTypeCounts[st.value]} {serviceTypeCounts[st.value] === 1 ? 'team' : 'teams'}
+                    {serviceTypeCounts[st.type]} {serviceTypeCounts[st.type] === 1 ? 'team' : 'teams'}
                   </p>
                 </button>
               );
@@ -131,7 +120,7 @@ export function Services(): JSX.Element {
           <div className="flex items-center justify-between mb-8">
             <h2 className="text-[#1F2937] text-2xl font-bold">
               {selectedType
-                ? `${SERVICE_TYPES.find(s => s.value === selectedType)?.name} Services`
+                ? `${SERVICE_TYPES.find(s => s.type === selectedType)?.name} Services`
                 : 'All Services'}
             </h2>
             <p className="text-gray-500 text-sm">{filteredServices.length} result{filteredServices.length !== 1 ? 's' : ''}</p>

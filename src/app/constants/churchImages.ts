@@ -30,6 +30,20 @@ interface ChurchImageOverride {
 }
 
 export const CHURCH_IMAGE_OVERRIDES: Record<string, ChurchImageOverride> = {
+  // --- Churches that own an ACS team, reusing that team's photo -------------
+  // These point at files under /images/teams rather than duplicating them.
+  // If a church ever gets its own distinct photo, just repoint the url.
+
+  // Bowral — reuses the Bowral ACS Team photo
+  '6967339b7394e82212d366f6': { url: '/images/teams/bowral-card.jpg' },
+  // Canberra National — reuses the Canberra National ACS Team photo
+  '695c8b6faa1380b9d1f2475f': { url: '/images/teams/canberra-national-card.jpg' },
+  // Narromine — reuses the Narromine ACS Team group photo
+  '696733977394e82212d36684': { url: '/images/teams/narromine-card.jpg' },
+  // Wodonga Adventist Community Church — reuses the Wodonga team photo
+  '696733967394e82212d36649': { url: '/images/teams/wodonga-card.jpg' },
+
+  // --- Churches with their own photo sets -----------------------------------
   // Parkes (SNSW) — community clean-up day.
   // Parkes has no ACS team or service record yet, so these sit on the church
   // itself; move them to the team once one exists.
@@ -56,6 +70,24 @@ export const CHURCH_IMAGE_OVERRIDES: Record<string, ChurchImageOverride> = {
       '/images/churches/parkes-19.jpg',
       '/images/churches/parkes-20.jpg',
       '/images/churches/parkes-21.jpg',
+      // STORM Co youth mission — worship, yard work and community service.
+      // Source photos are only 640px wide, so these look soft in the full-width
+      // hero; swap in higher-resolution originals if they become available.
+      '/images/churches/parkes-22.jpg',
+      '/images/churches/parkes-23.jpg',
+      '/images/churches/parkes-24.jpg',
+      '/images/churches/parkes-25.jpg',
+      '/images/churches/parkes-26.jpg',
+      '/images/churches/parkes-27.jpg',
+      '/images/churches/parkes-28.jpg',
+      '/images/churches/parkes-29.jpg',
+      '/images/churches/parkes-30.jpg',
+      '/images/churches/parkes-31.jpg',
+      '/images/churches/parkes-32.jpg',
+      '/images/churches/parkes-33.jpg',
+      '/images/churches/parkes-34.jpg',
+      '/images/churches/parkes-35.jpg',
+      '/images/churches/parkes-36.jpg',
     ],
   },
   // South Canberra (SNSW, ACT) — removalist / house-move help.

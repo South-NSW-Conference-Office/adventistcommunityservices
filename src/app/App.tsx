@@ -72,11 +72,11 @@ function AppContent() {
             <div>
               <h3 className="text-white font-semibold mb-4">Services</h3>
               <ul className="space-y-2 text-sm">
-                <li><a href="/services?type=op_shop" className="text-gray-400 hover:text-[#F44314] transition-colors">Op Shops</a></li>
+                <li><a href="/services?type=yard_work" className="text-gray-400 hover:text-[#F44314] transition-colors">Yard Work</a></li>
+                <li><a href="/services?type=odd_jobs" className="text-gray-400 hover:text-[#F44314] transition-colors">Odd Jobs</a></li>
                 <li><a href="/services?type=food_pantry" className="text-gray-400 hover:text-[#F44314] transition-colors">Food Pantry</a></li>
-                <li><a href="/services?type=counseling_service" className="text-gray-400 hover:text-[#F44314] transition-colors">Counseling</a></li>
-                <li><a href="/services?type=disaster_response" className="text-gray-400 hover:text-[#F44314] transition-colors">Disaster Response</a></li>
-                <li><a href="/services?type=emergency_shelter" className="text-gray-400 hover:text-[#F44314] transition-colors">Emergency Shelter</a></li>
+                <li><a href="/services?type=lawn_care" className="text-gray-400 hover:text-[#F44314] transition-colors">Lawn Care</a></li>
+                <li><a href="/services?type=op_shop" className="text-gray-400 hover:text-[#F44314] transition-colors">Op Shops</a></li>
               </ul>
             </div>
             <div>

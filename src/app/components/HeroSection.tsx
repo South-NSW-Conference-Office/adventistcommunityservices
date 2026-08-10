@@ -2,17 +2,8 @@ import { Search, MapPin } from 'lucide-react';
 import { useState } from 'react';
 import { useCMSPage } from '../hooks/useCMSContent';
 import { EditableText, EditableRichText } from './editable';
+import { CATEGORIES } from '../constants/categories';
 
-const CATEGORIES = [
-  { label: 'Op Shops', type: 'op_shop' },
-  { label: 'Food Pantry', type: 'food_pantry' },
-  { label: 'Soup Kitchen', type: 'soup_kitchen' },
-  { label: 'Disaster Response', type: 'disaster_response' },
-  { label: 'Health', type: 'health_program' },
-  { label: 'Counseling', type: 'counseling_service' },
-  { label: 'Shelter', type: 'emergency_shelter' },
-  { label: 'Education', type: 'education_program' },
-];
 
 export function HeroSection() {
   const [searchQuery, setSearchQuery] = useState('');

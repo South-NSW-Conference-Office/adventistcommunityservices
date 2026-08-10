@@ -14,6 +14,7 @@ import { useServices } from '../hooks/useServices';
 import { useTeams } from '../hooks/useTeams';
 import { EditableText, EditableRichText } from '../components/editable';
 import { Link } from 'react-router-dom';
+import { CATEGORIES } from '../constants/categories';
 
 const STATIC_SERVICES: ServicePreview[] = [
   { id: 1, name: 'Food Support', descriptionShort: 'Free nutritious food and essential supplies when you need them most.', location: 'Sydney, NSW', capacity: 200, image: 'https://images.unsplash.com/photo-1759709042164-0dd78a39028b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhdXN0cmFsaWElMjBjb21tdW5pdHklMjBoZWxwfGVufDF8fHx8MTc2NjE5NTgzNHww&ixlib=rb-4.1.0&q=80&w=1080' },
@@ -117,13 +118,13 @@ export function Home(): JSX.Element {
 
             {/* Category badges */}
             <div className="flex flex-wrap gap-1.5 mt-3">
-              {['Op Shops', 'Food Pantry', 'Soup Kitchen', 'Disaster Response', 'Health', 'Counseling', 'Shelter', 'Education'].map((cat) => (
+              {CATEGORIES.map((cat) => (
                 <a
-                  key={cat}
-                  href={`/services?type=${cat.toLowerCase().replace(/ /g, '_')}`}
+                  key={cat.type}
+                  href={`/services?type=${cat.type}`}
                   className="px-2 py-0.5 rounded-full text-gray-600 text-[10px] font-medium hover:text-[#F44314] transition-colors" style={{ background: 'rgba(255,255,255,0.4)', border: '1px solid rgba(255,255,255,0.6)' }}
                 >
-                  {cat}
+                  {cat.label}
                 </a>
               ))}
             </div>
