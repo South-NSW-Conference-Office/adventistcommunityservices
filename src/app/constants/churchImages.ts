@@ -58,6 +58,20 @@ export const CHURCH_IMAGE_OVERRIDES: Record<string, ChurchImageOverride> = {
       '/images/churches/parkes-21.jpg',
     ],
   },
+  // South Canberra (SNSW, ACT) — removalist / house-move help.
+  // No ACS team or "Removalist" service record exists for South Canberra yet,
+  // so these sit on the church; move them to the service once one exists.
+  // The removalist shots are portrait and taken at night, hence the top anchor
+  // so faces are not cropped out of the wide hero.
+  '696733967394e82212d36655': {
+    url: '/images/churches/south-canberra-1.jpg',
+    gallery: [
+      { url: '/images/churches/south-canberra-2.jpg', position: 'top' },
+      { url: '/images/churches/south-canberra-3.jpg', position: 'top' },
+      { url: '/images/churches/south-canberra-4.jpg', position: 'top' },
+      { url: '/images/churches/south-canberra-5.jpg', position: 'top' },
+    ],
+  },
 };
 
 export function getChurchImage(churchId: string): string | undefined {
