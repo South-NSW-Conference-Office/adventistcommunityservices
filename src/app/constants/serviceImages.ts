@@ -28,12 +28,13 @@ export const SERVICE_IMAGE_OVERRIDES: Record<string, ServiceImageOverride> = {
   '6a506d1821e0d200e99e3308': { url: '/images/services/canberra-cleanup-crew.jpg' },
   // Wodonga OP Shop — Wodonga Adventist Community Church
   '6a503cbb21e0d200e99e2c60': { url: '/images/services/wodonga-op-shop.jpg', position: '50% 40%' },
-  // Community Yard Cleans — Narromine ACS Team
+  // Community Yard Cleans — Narromine ACS Team.
+  // Thumbnail is the crew clearing a yard; it is the hero image so it is left out
+  // of the gallery below to avoid showing the same photo twice.
   '6a50af5821e0d200e99e524c': {
-    url: '/images/services/narromine-community-yard-cleans.jpg',
+    url: '/images/services/narromine-yard-cleans-2.jpg',
     gallery: [
       '/images/services/narromine-yard-cleans-1.jpg',
-      '/images/services/narromine-yard-cleans-2.jpg',
       '/images/services/narromine-yard-cleans-3.jpg',
       '/images/services/narromine-yard-cleans-4.jpg',
     ],

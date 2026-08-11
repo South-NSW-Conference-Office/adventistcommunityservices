@@ -31,9 +31,11 @@ export const TEAM_IMAGE_OVERRIDES: Record<string, TeamImageOverride> = {
     card: '/images/teams/canberra-national-card.jpg',
     cover: '/images/teams/canberra-national-cover.jpg',
   },
-  // Wodonga Adventist Community Church
+  // Wodonga Adventist Community Church — card is the crew group photo taken on the
+  // same job as the cover. (wodonga-card.jpg is still the Wodonga church image, see
+  // churchImages.)
   '6a502fff21e0d200e99e28f2': {
-    card: '/images/teams/wodonga-card.jpg',
+    card: '/images/teams/wodonga-crew-card.jpg',
     cover: '/images/teams/wodonga-cover.jpg',
   },
   // Bowral ACS Team
