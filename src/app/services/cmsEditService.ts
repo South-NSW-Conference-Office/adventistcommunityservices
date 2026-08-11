@@ -2,7 +2,7 @@ import { AuthService } from './auth';
 import type { Section, PageContent } from './pageContentService';
 import type { PendingChange } from '../types/editMode.types';
 
-const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+import { API_BASE_URL as API_BASE } from './config';
 
 // Debug helper - gated behind development mode to prevent leaking sensitive data in production
 const DEBUG_PREFIX = '[CMS DEBUG]';

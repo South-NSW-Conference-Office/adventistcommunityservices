@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Loader2, AlertCircle, Clock, Eye } from 'lucide-react';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+import { API_BASE_URL as API_URL } from '../services/config';
 
 interface PreviewData {
   isPreview: boolean;
