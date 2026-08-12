@@ -3,8 +3,13 @@ import { Link, useLocation } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import acsLogo from '@/assets/68ee6e4764f54c4a5a0a4c46b17e9e2662a774ac.png';
 
-// Pages whose hero has a dark video overlay — nav should be white when not scrolled
+// Pages whose hero has a dark video overlay — nav needs white text to stay legible
 const DARK_HERO_ROUTES = ['/about', '/services', '/teams', '/fellowship', '/churches'];
+
+// The header is shown only at the very top of the page — scrolling away hides it
+// and scrolling back up does not bring it back until the page is at the top again.
+// Small tolerance so momentum scrolling that lands a pixel or two short still counts.
+const TOP_TOLERANCE = 4;
 
 interface HeaderProps {
   onLogout?: () => void;
@@ -13,30 +18,35 @@ interface HeaderProps {
 
 export function Header({ onLogout, isAuthenticated = false }: HeaderProps) {
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
+  const [atTop, setAtTop] = useState(true);
   const { pathname } = useLocation();
 
   const isDarkHero = DARK_HERO_ROUTES.some(r => pathname === r || pathname.startsWith(r + '/'));
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 20);
+    const onScroll = () => setAtTop(window.scrollY <= TOP_TOLERANCE);
+
+    onScroll(); // a route can be entered already scrolled, e.g. via the back button
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  // When not scrolled on a dark-video page → white text; otherwise gray
-  const navLinkClass = scrolled || !isDarkHero
-    ? 'text-gray-700 hover:text-[#F44314]'
-    : 'text-white/90 hover:text-white';
+  // Never hide the bar out from under an open mobile menu.
+  const hidden = !atTop && !mobileOpen;
 
-  const iconClass = scrolled || !isDarkHero ? 'text-gray-600' : 'text-white/90';
+  // The header only ever shows over the top of the hero, so the text colour depends
+  // purely on whether that hero is dark.
+  const navLinkClass = isDarkHero
+    ? 'text-white/90 hover:text-white'
+    : 'text-gray-700 hover:text-[#F44314]';
+
+  const iconClass = isDarkHero ? 'text-white/90' : 'text-gray-600';
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        scrolled
-          ? 'bg-white/95 backdrop-blur-md shadow-sm'
-          : 'bg-transparent'
+      aria-hidden={hidden}
+      className={`fixed top-0 left-0 right-0 z-50 bg-transparent transition-opacity duration-200 ${
+        hidden ? 'opacity-0 pointer-events-none' : 'opacity-100'
       }`}
     >
       <div className="max-w-7xl mx-auto px-6 py-4">
