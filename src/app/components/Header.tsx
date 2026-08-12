@@ -7,9 +7,11 @@ import acsLogo from '@/assets/68ee6e4764f54c4a5a0a4c46b17e9e2662a774ac.png';
 const DARK_HERO_ROUTES = ['/about', '/services', '/teams', '/fellowship', '/churches'];
 
 // A service detail page opens with a breadcrumb bar rather than a hero image, so a
-// header floating over the top of it covers the breadcrumb instead of sitting on
-// artwork. Drop the header on those pages. Matches /services/<id> but not /services.
-const HEADERLESS_ROUTE = /^\/services\/[^/]+\/?$/;
+// fixed header has nothing to float over and lands on the breadcrumb. On these
+// routes the header sits in normal flow instead: the page starts below it and it
+// scrolls away on its own, so no offset or scroll handling is needed.
+// Matches /services/<id> but not the /services directory, which does have a hero.
+const IN_FLOW_ROUTE = /^\/services\/[^/]+\/?$/;
 
 // The header is shown only at the very top of the page — scrolling away hides it
 // and scrolling back up does not bring it back until the page is at the top again.
@@ -26,7 +28,10 @@ export function Header({ onLogout, isAuthenticated = false }: HeaderProps) {
   const [atTop, setAtTop] = useState(true);
   const { pathname } = useLocation();
 
-  const isDarkHero = DARK_HERO_ROUTES.some(r => pathname === r || pathname.startsWith(r + '/'));
+  const inFlow = IN_FLOW_ROUTE.test(pathname);
+
+  // Only relevant when the header actually overlays a hero.
+  const isDarkHero = !inFlow && DARK_HERO_ROUTES.some(r => pathname === r || pathname.startsWith(r + '/'));
 
   useEffect(() => {
     const onScroll = () => setAtTop(window.scrollY <= TOP_TOLERANCE);
@@ -36,13 +41,11 @@ export function Header({ onLogout, isAuthenticated = false }: HeaderProps) {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  // After the hooks above, so hook order stays stable across routes.
-  if (HEADERLESS_ROUTE.test(pathname)) return null;
+  // An in-flow header scrolls out of view by itself, so the fade only applies to the
+  // fixed one. Never hide the bar out from under an open mobile menu either.
+  const hidden = !inFlow && !atTop && !mobileOpen;
 
-  // Never hide the bar out from under an open mobile menu.
-  const hidden = !atTop && !mobileOpen;
-
-  // The header only ever shows over the top of the hero, so the text colour depends
+  // The overlaying header sits on the top of the hero, so the text colour depends
   // purely on whether that hero is dark.
   const navLinkClass = isDarkHero
     ? 'text-white/90 hover:text-white'
@@ -53,9 +56,13 @@ export function Header({ onLogout, isAuthenticated = false }: HeaderProps) {
   return (
     <header
       aria-hidden={hidden}
-      className={`fixed top-0 left-0 right-0 z-50 bg-transparent transition-opacity duration-200 ${
-        hidden ? 'opacity-0 pointer-events-none' : 'opacity-100'
-      }`}
+      className={`z-50 transition-opacity duration-200 ${
+        inFlow
+          // Same surface as the breadcrumb bar below it, so the two read as one
+          // header block rather than a logo stranded on white.
+          ? 'relative bg-[#F8F7F5]'
+          : 'fixed top-0 left-0 right-0 bg-transparent'
+      } ${hidden ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}
     >
       <div className="max-w-7xl mx-auto px-6 py-4">
         <div className="flex items-center justify-between">
