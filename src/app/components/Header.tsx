@@ -6,6 +6,11 @@ import acsLogo from '@/assets/68ee6e4764f54c4a5a0a4c46b17e9e2662a774ac.png';
 // Pages whose hero has a dark video overlay — nav needs white text to stay legible
 const DARK_HERO_ROUTES = ['/about', '/services', '/teams', '/fellowship', '/churches'];
 
+// A service detail page opens with a breadcrumb bar rather than a hero image, so a
+// header floating over the top of it covers the breadcrumb instead of sitting on
+// artwork. Drop the header on those pages. Matches /services/<id> but not /services.
+const HEADERLESS_ROUTE = /^\/services\/[^/]+\/?$/;
+
 // The header is shown only at the very top of the page — scrolling away hides it
 // and scrolling back up does not bring it back until the page is at the top again.
 // Small tolerance so momentum scrolling that lands a pixel or two short still counts.
@@ -30,6 +35,9 @@ export function Header({ onLogout, isAuthenticated = false }: HeaderProps) {
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
+
+  // After the hooks above, so hook order stays stable across routes.
+  if (HEADERLESS_ROUTE.test(pathname)) return null;
 
   // Never hide the bar out from under an open mobile menu.
   const hidden = !atTop && !mobileOpen;
