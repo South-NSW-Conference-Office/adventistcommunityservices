@@ -150,6 +150,9 @@ jobs:
   # cuts over to the new infra — remove this job (and build-and-push-legacy
   # above) once kylevps is decommissioned. Unchanged from the pre-migration
   # workflow.
+  # kylevps's stored `docker login ghcr.io` credential is expired (predates
+  # this migration), so a fresh login with this run's GITHUB_TOKEN happens
+  # first, otherwise docker compose pull silently fails with "denied".
   deploy-legacy:
     name: Deploy to kylevps (legacy, parallel fallback)
     runs-on: ubuntu-latest
@@ -164,8 +167,13 @@ jobs:
           username: ${{ vars.VPS_USERNAME }}
           key: ${{ vars.VPS_SSH_KEY }}
           port: ${{ vars.VPS_PORT }}
+          envs: GHCR_TOKEN,GHCR_USER
           script: |
             cd /opt/acs-website-staging
+            echo "$GHCR_TOKEN" | docker login ghcr.io -u "$GHCR_USER" --password-stdin
             docker compose pull
             docker compose up -d --remove-orphans
             docker image prune -f
+        env:
+          GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GHCR_USER: ${{ github.actor }}
