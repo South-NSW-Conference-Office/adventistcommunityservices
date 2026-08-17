@@ -28,6 +28,10 @@ export const SERVICE_IMAGE_OVERRIDES: Record<string, ServiceImageOverride> = {
   '6a506d1821e0d200e99e3308': { url: '/images/services/canberra-cleanup-crew.jpg' },
   // Wodonga OP Shop — Wodonga Adventist Community Church
   '6a503cbb21e0d200e99e2c60': { url: '/images/services/wodonga-op-shop.jpg', position: '50% 40%' },
+  // Community Yard Cleans — Wodonga. Front-end-defined service, see
+  // constants/staticServices.ts. Shares the crew photo with the Wodonga team card,
+  // which is the same crew on the same job.
+  'local-wodonga-community-yard-cleans': { url: '/images/teams/wodonga-crew-card.jpg' },
   // Community Yard Cleans — Narromine ACS Team.
   // Thumbnail is the crew clearing a yard; it is the hero image so it is left out
   // of the gallery below to avoid showing the same photo twice.
