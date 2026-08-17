@@ -26,10 +26,21 @@ export const HIDDEN_TEAM_IDS: ReadonlySet<string> = new Set([
   '6a7be8e121e0d200e9a07be3',
 ]);
 
+// "Adamstown House Church" — the church the team and service above both belong to.
+// Unlike the two above, its name alone doesn't read as a test record, but it is
+// the parent of both and there's no confirmed date for it, so it's hidden too.
+export const HIDDEN_CHURCH_IDS: ReadonlySet<string> = new Set([
+  '69ad5039938273a25835c8d2',
+]);
+
 export function isHiddenService(id: string): boolean {
   return HIDDEN_SERVICE_IDS.has(id);
 }
 
 export function isHiddenTeam(id: string): boolean {
   return HIDDEN_TEAM_IDS.has(id);
+}
+
+export function isHiddenChurch(id: string): boolean {
+  return HIDDEN_CHURCH_IDS.has(id);
 }

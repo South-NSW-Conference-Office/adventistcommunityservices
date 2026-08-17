@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { churchesApi, type ChurchesQueryParams, type ChurchPagination } from '../services/churchesApi';
+import { isHiddenChurch } from '../constants/hiddenRecords';
 import type { Church } from '../types/church.types';
 
 // =============================================================================
@@ -24,7 +25,11 @@ export function usePublicChurches(): UsePublicChurchesResult {
     try {
       const res = await churchesApi.getPublicChurches();
       if (res.success && res.data) {
-        setChurches(res.data as unknown as Church[]);
+        // Records the admin panel cannot yet remove. See constants/hiddenRecords.ts.
+        const visible = (res.data as unknown as Church[]).filter(
+          (c) => !isHiddenChurch(c._id)
+        );
+        setChurches(visible);
       } else {
         setError('Failed to fetch churches');
       }
@@ -58,6 +63,15 @@ export function usePublicChurchDetail(id: string | undefined): UsePublicChurchDe
 
   const fetchChurch = useCallback(async () => {
     if (!id) { setLoading(false); return; }
+
+    // Hidden records are treated as missing, so a direct link cannot reach one.
+    if (isHiddenChurch(id)) {
+      setChurch(null);
+      setError('Church not found');
+      setLoading(false);
+      return;
+    }
+
     setLoading(true);
     setError(null);
     try {
@@ -157,6 +171,15 @@ export function useChurchDetail(id: string | undefined): UseChurchDetailResult {
 
   const fetchChurch = useCallback(async () => {
     if (!id) { setLoading(false); return; }
+
+    // Hidden records are treated as missing, so a direct link cannot reach one.
+    if (isHiddenChurch(id)) {
+      setChurch(null);
+      setError('Church not found');
+      setLoading(false);
+      return;
+    }
+
     setLoading(true);
     setError(null);
     try {

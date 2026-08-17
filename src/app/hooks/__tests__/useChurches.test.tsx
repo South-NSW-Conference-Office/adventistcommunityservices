@@ -2,9 +2,11 @@ import { describe, it, expect } from 'vitest'
 import { renderHook, waitFor } from '@testing-library/react'
 import { http, HttpResponse } from 'msw'
 import { server } from '../../../test/mocks/server'
-import { usePublicChurches, usePublicChurchDetail } from '../useChurches'
+import { usePublicChurches, usePublicChurchDetail, useChurchDetail } from '../useChurches'
+import { HIDDEN_CHURCH_IDS } from '../../constants/hiddenRecords'
 
 const API = '*' // wildcard host — matches whatever VITE_API_URL is in the env
+const hiddenId = [...HIDDEN_CHURCH_IDS][0]
 
 describe('usePublicChurches', () => {
   it('starts with loading=true and no error', () => {
@@ -63,6 +65,28 @@ describe('usePublicChurches', () => {
     await result.current.refetch()
     expect(callCount).toBe(2)
   })
+
+  it('drops hidden records the API still returns', async () => {
+    server.use(
+      http.get(`${API}/api/churches/public`, () =>
+        HttpResponse.json({
+          success: true,
+          data: [
+            { _id: 'church1', name: 'Mock Church 1', isActive: true },
+            { _id: hiddenId, name: 'Adamstown House Church', isActive: true },
+          ],
+          count: 2,
+        })
+      )
+    )
+
+    const { result } = renderHook(() => usePublicChurches())
+    await waitFor(() => expect(result.current.loading).toBe(false))
+
+    const ids = result.current.churches.map((c) => c._id)
+    expect(ids).toContain('church1')
+    expect(ids).not.toContain(hiddenId)
+  })
 })
 
 describe('usePublicChurchDetail', () => {
@@ -100,5 +124,35 @@ describe('usePublicChurchDetail', () => {
 
     expect(result.current.error).not.toBeNull()
     expect(result.current.church).toBeNull()
+  })
+
+  it('treats a hidden id as not found rather than rendering it', async () => {
+    const { result } = renderHook(() => usePublicChurchDetail(hiddenId))
+    await waitFor(() => expect(result.current.loading).toBe(false))
+
+    expect(result.current.church).toBeNull()
+    expect(result.current.error).toBe('Church not found')
+  })
+})
+
+// useChurchDetail is the hook ChurchDetails.tsx actually renders with (routed at
+// /churches/:id) — usePublicChurchDetail above is unused dead code that happens to
+// share the same shape.
+describe('useChurchDetail', () => {
+  it('fetches a specific church by ID', async () => {
+    const { result } = renderHook(() => useChurchDetail('church1'))
+
+    await waitFor(() => expect(result.current.loading).toBe(false))
+
+    expect(result.current.church).not.toBeNull()
+    expect(result.current.church?._id).toBe('church1')
+  })
+
+  it('treats a hidden id as not found rather than rendering it', async () => {
+    const { result } = renderHook(() => useChurchDetail(hiddenId))
+    await waitFor(() => expect(result.current.loading).toBe(false))
+
+    expect(result.current.church).toBeNull()
+    expect(result.current.error).toBe('Church not found')
   })
 })
