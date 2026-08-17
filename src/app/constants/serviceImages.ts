@@ -30,8 +30,15 @@ export const SERVICE_IMAGE_OVERRIDES: Record<string, ServiceImageOverride> = {
   '6a503cbb21e0d200e99e2c60': { url: '/images/services/wodonga-op-shop.jpg', position: '50% 40%' },
   // Community Yard Cleans — Wodonga. Front-end-defined service, see
   // constants/staticServices.ts. Shares the crew photo with the Wodonga team card,
-  // which is the same crew on the same job.
-  'local-wodonga-community-yard-cleans': { url: '/images/teams/wodonga-crew-card.jpg' },
+  // which is the same crew on the same job. The gallery holds the other shots from
+  // that job, showing the cut grass. wodonga-op-shop.jpg is deliberately excluded:
+  // it is the OP Shop crew under an OP Shop sign, which would misrepresent this
+  // service. wodonga-card.jpg is also left out as a near-duplicate of the cover
+  // shot — same crew, same ramp, same moment.
+  'local-wodonga-community-yard-cleans': {
+    url: '/images/teams/wodonga-crew-card.jpg',
+    gallery: ['/images/teams/wodonga-cover.jpg'],
+  },
   // Community Yard Cleans — Narromine ACS Team.
   // Thumbnail is the crew clearing a yard; it is the hero image so it is left out
   // of the gallery below to avoid showing the same photo twice.
