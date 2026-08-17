@@ -4,6 +4,7 @@ import { http, HttpResponse } from 'msw'
 import { server } from '../../../test/mocks/server'
 import { useServices, useServiceDetail } from '../useServices'
 import { STATIC_SERVICES } from '../../constants/staticServices'
+import { HIDDEN_SERVICE_IDS } from '../../constants/hiddenRecords'
 
 const API = '*' // wildcard host — matches whatever VITE_API_URL is in the env
 
@@ -56,6 +57,30 @@ describe('useServices — front-end-defined services', () => {
     for (const service of STATIC_SERVICES) {
       expect(service._id).not.toMatch(/^[0-9a-f]{24}$/)
     }
+  })
+})
+
+describe('useServices — hidden records', () => {
+  const hiddenId = [...HIDDEN_SERVICE_IDS][0]
+
+  it('drops hidden records the API still returns', async () => {
+    mockServicesList([dbService, { ...dbService, _id: hiddenId, name: 'Adams town test' }])
+
+    const { result } = renderHook(() => useServices())
+    await waitFor(() => expect(result.current.loading).toBe(false))
+
+    const ids = result.current.services.map((s) => s._id)
+    expect(ids).toContain(dbService._id)
+    expect(ids).not.toContain(hiddenId)
+    expect(result.current.services.some((s) => /test/i.test(s.name))).toBe(false)
+  })
+
+  it('treats a hidden id as not found rather than rendering it', async () => {
+    const { result } = renderHook(() => useServiceDetail(hiddenId))
+    await waitFor(() => expect(result.current.loading).toBe(false))
+
+    expect(result.current.service).toBeNull()
+    expect(result.current.error).toBe('Service not found')
   })
 })
 
