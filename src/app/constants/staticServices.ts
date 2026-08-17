@@ -23,7 +23,9 @@ export const STATIC_SERVICES: Service[] = [
     // Mirrors the Wodonga OP Shop record, which belongs to the same team and church.
     teamId: {
       _id: '6a502fff21e0d200e99e28f2',
-      name: 'Wodonga Adventist Community Church Team',
+      // Shortened to match how the other teams read ("Narromine Team", "Dubbo
+      // Team"). The database still holds the full name, so other pages show that.
+      name: 'Wodonga Team',
     },
     churchId: {
       _id: '696733967394e82212d36649',
