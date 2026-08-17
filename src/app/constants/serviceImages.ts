@@ -28,24 +28,12 @@ export const SERVICE_IMAGE_OVERRIDES: Record<string, ServiceImageOverride> = {
   '6a506d1821e0d200e99e3308': { url: '/images/services/canberra-cleanup-crew.jpg' },
   // Wodonga OP Shop — Wodonga Adventist Community Church
   '6a503cbb21e0d200e99e2c60': { url: '/images/services/wodonga-op-shop.jpg', position: '50% 40%' },
-  // Community Yard Cleans — Wodonga. Front-end-defined service, see
-  // constants/staticServices.ts. Shares the crew photo with the Wodonga team card,
-  // which is the same crew on the same job. The gallery holds the other shots from
-  // that job, showing the cut grass. wodonga-op-shop.jpg is deliberately excluded:
-  // it is the OP Shop crew under an OP Shop sign, which would misrepresent this
-  // service. wodonga-card.jpg is also left out as a near-duplicate of the cover
-  // shot — same crew, same ramp, same moment.
-  'local-wodonga-community-yard-cleans': {
-    url: '/images/teams/wodonga-crew-card.jpg',
-    gallery: ['/images/teams/wodonga-cover.jpg'],
-  },
-  // Community Yard Cleans — Narromine ACS Team.
-  // Thumbnail is the crew clearing a yard; it is the hero image so it is left out
-  // of the gallery below to avoid showing the same photo twice.
+  // Community Yard Cleans — Narromine ACS Team
   '6a50af5821e0d200e99e524c': {
-    url: '/images/services/narromine-yard-cleans-2.jpg',
+    url: '/images/services/narromine-community-yard-cleans.jpg',
     gallery: [
       '/images/services/narromine-yard-cleans-1.jpg',
+      '/images/services/narromine-yard-cleans-2.jpg',
       '/images/services/narromine-yard-cleans-3.jpg',
       '/images/services/narromine-yard-cleans-4.jpg',
     ],

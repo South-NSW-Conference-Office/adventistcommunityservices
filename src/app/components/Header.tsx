@@ -3,20 +3,8 @@ import { Link, useLocation } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import acsLogo from '@/assets/68ee6e4764f54c4a5a0a4c46b17e9e2662a774ac.png';
 
-// Pages whose hero has a dark video overlay — nav needs white text to stay legible
+// Pages whose hero has a dark video overlay — nav should be white when not scrolled
 const DARK_HERO_ROUTES = ['/about', '/services', '/teams', '/fellowship', '/churches'];
-
-// A service detail page opens with a breadcrumb bar rather than a hero image, so a
-// fixed header has nothing to float over and lands on the breadcrumb. On these
-// routes the header sits in normal flow instead: the page starts below it and it
-// scrolls away on its own, so no offset or scroll handling is needed.
-// Matches /services/<id> but not the /services directory, which does have a hero.
-const IN_FLOW_ROUTE = /^\/services\/[^/]+\/?$/;
-
-// The header is shown only at the very top of the page — scrolling away hides it
-// and scrolling back up does not bring it back until the page is at the top again.
-// Small tolerance so momentum scrolling that lands a pixel or two short still counts.
-const TOP_TOLERANCE = 4;
 
 interface HeaderProps {
   onLogout?: () => void;
@@ -25,44 +13,31 @@ interface HeaderProps {
 
 export function Header({ onLogout, isAuthenticated = false }: HeaderProps) {
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [atTop, setAtTop] = useState(true);
+  const [scrolled, setScrolled] = useState(false);
   const { pathname } = useLocation();
 
-  const inFlow = IN_FLOW_ROUTE.test(pathname);
-
-  // Only relevant when the header actually overlays a hero.
-  const isDarkHero = !inFlow && DARK_HERO_ROUTES.some(r => pathname === r || pathname.startsWith(r + '/'));
+  const isDarkHero = DARK_HERO_ROUTES.some(r => pathname === r || pathname.startsWith(r + '/'));
 
   useEffect(() => {
-    const onScroll = () => setAtTop(window.scrollY <= TOP_TOLERANCE);
-
-    onScroll(); // a route can be entered already scrolled, e.g. via the back button
+    const onScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  // An in-flow header scrolls out of view by itself, so the fade only applies to the
-  // fixed one. Never hide the bar out from under an open mobile menu either.
-  const hidden = !inFlow && !atTop && !mobileOpen;
+  // When not scrolled on a dark-video page → white text; otherwise gray
+  const navLinkClass = scrolled || !isDarkHero
+    ? 'text-gray-700 hover:text-[#F44314]'
+    : 'text-white/90 hover:text-white';
 
-  // The overlaying header sits on the top of the hero, so the text colour depends
-  // purely on whether that hero is dark.
-  const navLinkClass = isDarkHero
-    ? 'text-white/90 hover:text-white'
-    : 'text-gray-700 hover:text-[#F44314]';
-
-  const iconClass = isDarkHero ? 'text-white/90' : 'text-gray-600';
+  const iconClass = scrolled || !isDarkHero ? 'text-gray-600' : 'text-white/90';
 
   return (
     <header
-      aria-hidden={hidden}
-      className={`z-50 transition-opacity duration-200 ${
-        inFlow
-          // Same surface as the breadcrumb bar below it, so the two read as one
-          // header block rather than a logo stranded on white.
-          ? 'relative bg-[#F8F7F5]'
-          : 'fixed top-0 left-0 right-0 bg-transparent'
-      } ${hidden ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+        scrolled
+          ? 'bg-white/95 backdrop-blur-md shadow-sm'
+          : 'bg-transparent'
+      }`}
     >
       <div className="max-w-7xl mx-auto px-6 py-4">
         <div className="flex items-center justify-between">

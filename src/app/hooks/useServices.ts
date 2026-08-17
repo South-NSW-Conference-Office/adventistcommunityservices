@@ -1,6 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
 import { servicesApi } from '../services/servicesApi';
-import { STATIC_SERVICES, getStaticService } from '../constants/staticServices';
 import type { Service, ServiceFilters } from '../types/service.types';
 
 interface UseServicesResult {
@@ -24,9 +23,7 @@ export function useServices(initialFilters?: ServiceFilters): UseServicesResult 
     try {
       const response = await servicesApi.getPublicServices(filters);
       if (response.success && response.data) {
-        // Front-end-defined services are appended so they appear alongside the real
-        // records. See constants/staticServices.ts — this is temporary.
-        setServices([...response.data, ...STATIC_SERVICES]);
+        setServices(response.data);
       } else {
         setError('Failed to fetch services');
       }
@@ -61,16 +58,6 @@ export function useServiceDetail(id: string | undefined): UseServiceDetailResult
 
   const fetchService = useCallback(async () => {
     if (!id) {
-      setLoading(false);
-      return;
-    }
-
-    // Resolve front-end-defined services locally; the API has no record of them and
-    // would answer 404, leaving the card on the list pointing at a dead page.
-    const staticService = getStaticService(id);
-    if (staticService) {
-      setService(staticService);
-      setError(null);
       setLoading(false);
       return;
     }
