@@ -15,7 +15,7 @@
 
 services:
   website:
-    image: ghcr.io/south-nsw-conference-office/adventistcommunityservices:${IMAGE_TAG:-staging}
+    image: ghcr.io/south-nsw-conference-office/adventistcommunityservices:${IMAGE_TAG:-staging-new}
     container_name: acs-website-staging
     restart: unless-stopped
 

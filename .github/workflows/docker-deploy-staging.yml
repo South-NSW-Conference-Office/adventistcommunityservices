@@ -1,5 +1,14 @@
 name: Build and Deploy Docker (Staging)
 
+# Two image variants are built because VITE_API_URL is baked in at build time
+# and the two hosts point at different backends:
+#   :staging      -> old kylevps API URL, deployed to kylevps (legacy, kept
+#                     running in parallel per user request; unchanged from
+#                     before this migration)
+#   :staging-new  -> new staging-api.communityservices.org.au (morpheus, via
+#                     the snswserver proxy), deployed to snswserver
+# Remove the legacy build/deploy jobs once kylevps is decommissioned.
+
 on:
   push:
     branches: [staging]
@@ -8,9 +17,11 @@ env:
   REGISTRY: ghcr.io
   IMAGE_NAME: south-nsw-conference-office/adventistcommunityservices
   STAGING_API_URL: https://staging-api.communityservices.org.au
+  LEGACY_API_URL: https://76.13.176.13:5443
 
 jobs:
   build-and-push:
+    name: Build & push (new infra)
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -36,8 +47,8 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
-            type=raw,value=staging
-            type=sha,prefix=staging-
+            type=raw,value=staging-new
+            type=sha,prefix=staging-new-
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v6
@@ -48,8 +59,50 @@ jobs:
             VITE_API_URL=${{ env.STAGING_API_URL }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          cache-from: type=gha,scope=new
+          cache-to: type=gha,scope=new,mode=max
+
+  build-and-push-legacy:
+    name: Build & push (legacy, kylevps API URL)
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata for Docker
+        id: meta-legacy
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=raw,value=staging
+            type=sha,prefix=staging-
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          build-args: |
+            VITE_API_URL=${{ env.LEGACY_API_URL }}
+          tags: ${{ steps.meta-legacy.outputs.tags }}
+          labels: ${{ steps.meta-legacy.outputs.labels }}
+          cache-from: type=gha,scope=legacy
+          cache-to: type=gha,scope=legacy,mode=max
 
   # Migrated 2026-08-17 from Genesis (kylevps) to snswserver, over SSH
   # (mirrors morpheustools' deploy-frontend job — no self-hosted runner on
@@ -92,3 +145,27 @@ jobs:
         env:
           GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GHCR_USER: ${{ github.actor }}
+
+  # Original deploy target, kept running in parallel as a fallback until DNS
+  # cuts over to the new infra — remove this job (and build-and-push-legacy
+  # above) once kylevps is decommissioned. Unchanged from the pre-migration
+  # workflow.
+  deploy-legacy:
+    name: Deploy to kylevps (legacy, parallel fallback)
+    runs-on: ubuntu-latest
+    needs: build-and-push-legacy
+    environment: acs-website
+
+    steps:
+      - name: Deploy to Genesis VPS (Staging, legacy)
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ vars.VPS_HOST }}
+          username: ${{ vars.VPS_USERNAME }}
+          key: ${{ vars.VPS_SSH_KEY }}
+          port: ${{ vars.VPS_PORT }}
+          script: |
+            cd /opt/acs-website-staging
+            docker compose pull
+            docker compose up -d --remove-orphans
+            docker image prune -f
