@@ -1,0 +1,48 @@
+# =============================================================================
+# adventistcommunityservices (frontend/website) — STAGING docker-compose for
+# the **snswserver** host (Debian 13, linux/amd64, public IP). Migrated from
+# kylevps 2026-08-17.
+# =============================================================================
+#
+# Lives at /opt/acs-website-staging/docker-compose.yml on snswserver. CI scp's
+# this file here, then runs `docker compose pull && up -d`. Builds nothing —
+# pulls the prebuilt linux/amd64 image from GHCR.
+#
+# VITE_API_URL is baked into the bundle at BUILD time (see Dockerfile /
+# .github/workflows/docker-deploy-staging.yml build-args), not read from this
+# file at runtime.
+# =============================================================================
+
+services:
+  website:
+    image: ghcr.io/south-nsw-conference-office/adventistcommunityservices:${IMAGE_TAG:-staging}
+    container_name: acs-website-staging
+    restart: unless-stopped
+
+    environment:
+      - VIRTUAL_HOST=staging.communityservices.org.au
+      - VIRTUAL_PORT=80
+      - LETSENCRYPT_HOST=staging.communityservices.org.au
+
+    expose:
+      - "80"
+
+    networks:
+      - proxy-network
+
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:80/", "-T", "5"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"
+
+networks:
+  proxy-network:
+    external: true

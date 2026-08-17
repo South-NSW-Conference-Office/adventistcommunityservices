@@ -7,7 +7,7 @@ on:
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: south-nsw-conference-office/adventistcommunityservices
-  STAGING_API_URL: https://76.13.176.13:5443
+  STAGING_API_URL: https://staging-api.communityservices.org.au
 
 jobs:
   build-and-push:
@@ -51,21 +51,44 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
+  # Migrated 2026-08-17 from Genesis (kylevps) to snswserver, over SSH
+  # (mirrors morpheustools' deploy-frontend job — no self-hosted runner on
+  # snswserver).
   deploy:
     runs-on: ubuntu-latest
     needs: build-and-push
-    environment: acs-website
+    concurrency:
+      group: deploy-acs-website-staging-snswserver
+      cancel-in-progress: false
 
     steps:
-      - name: Deploy to Genesis VPS (Staging)
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Copy compose file to server
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: 107.155.65.229
+          username: snswcomms
+          key: ${{ secrets.SNSW_SSH_KEY }}
+          source: deploy/docker-compose.snswserver.yml
+          target: /opt/acs-website-staging/
+
+      - name: Pull and restart on server
         uses: appleboy/ssh-action@v1.0.3
         with:
-          host: ${{ vars.VPS_HOST }}
-          username: ${{ vars.VPS_USERNAME }}
-          key: ${{ vars.VPS_SSH_KEY }}
-          port: ${{ vars.VPS_PORT }}
+          host: 107.155.65.229
+          username: snswcomms
+          key: ${{ secrets.SNSW_SSH_KEY }}
+          envs: GHCR_TOKEN,GHCR_USER
           script: |
             cd /opt/acs-website-staging
+            mv deploy/docker-compose.snswserver.yml docker-compose.yml
+            rmdir deploy 2>/dev/null || true
+            echo "$GHCR_TOKEN" | docker login ghcr.io -u "$GHCR_USER" --password-stdin
             docker compose pull
             docker compose up -d --remove-orphans
             docker image prune -f
+        env:
+          GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GHCR_USER: ${{ github.actor }}
