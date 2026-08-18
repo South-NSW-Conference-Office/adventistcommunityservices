@@ -1,14 +1,24 @@
 import { useState, useMemo } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { TeamCard } from '../components/TeamCard';
-import { RefreshCw, Search, MapPin } from 'lucide-react';
+import { RefreshCw, Search } from 'lucide-react';
 import { useTeams } from '../hooks/useTeams';
+import { usePublicChurches } from '../hooks/useChurches';
 import { useCMSPage } from '../hooks/useCMSContent';
+import { normaliseRegionCode, regionLabel, isSameRegion, isKnownRegion } from '../constants/regions';
+
+const ALL_REGIONS = 'All Regions';
 
 function getTeamChurchName(team: { churchId?: { name?: string } | string }): string | null {
   if (typeof team.churchId === 'object' && team.churchId?.name) {
     return team.churchId.name;
   }
   return null;
+}
+
+function getTeamChurchId(team: { churchId?: { _id?: string } | string }): string | null {
+  if (typeof team.churchId === 'string') return team.churchId;
+  return team.churchId?._id ?? null;
 }
 
 function getTeamLeaderName(team: { leaderId?: { name?: string } | string }): string | null {
@@ -28,9 +38,57 @@ export function Teams(): JSX.Element {
     'Browse community service teams by location. Every team is run by local volunteers ready to serve.';
 
   const { teams, loading, error, refetch } = useTeams();
+  // Teams carry no region of their own — only churches do — so the region filter is a
+  // team -> church -> conference join done here rather than server-side.
+  const { churches: allChurches } = usePublicChurches();
+  const [searchParams, setSearchParams] = useSearchParams();
+
   const [selectedChurch, setSelectedChurch] = useState('All Locations');
   const [selectedCategory, setSelectedCategory] = useState('All Categories');
   const [searchQuery, setSearchQuery] = useState('');
+
+  // churchId -> canonical region code. Note the conference *code* field is null on
+  // every church the API returns; the code actually lives in conference.name
+  // ("NNSW" / "SNSW"), so read that and fall back to code if it is ever populated.
+  const regionByChurchId = useMemo(() => {
+    const map = new Map<string, string>();
+    for (const church of allChurches) {
+      const raw = church.conference?.name || church.conference?.code;
+      const code = normaliseRegionCode(raw);
+      if (church._id && code) map.set(church._id, code);
+    }
+    return map;
+  }, [allChurches]);
+
+  // Offer regions that actually have teams, so no option is a dead end. Derived from
+  // the full team list rather than the filtered one, unlike the church and category
+  // lists below — those narrow as other filters are applied.
+  //
+  // A region named in the URL is included even with no teams: the home map links here
+  // per region, and a region can legitimately be empty (North NSW currently is).
+  // Honouring it filters to an empty result that says so, rather than silently showing
+  // every other region's teams as though the link had done nothing.
+  const regions = useMemo(() => {
+    const present = new Set<string>();
+    for (const team of teams) {
+      const churchId = getTeamChurchId(team);
+      const code = churchId ? regionByChurchId.get(churchId) : undefined;
+      if (code) present.add(code);
+    }
+
+    const requested = normaliseRegionCode(searchParams.get('region'));
+    if (isKnownRegion(requested)) present.add(requested);
+
+    return [ALL_REGIONS, ...Array.from(present).sort((a, b) => regionLabel(a).localeCompare(regionLabel(b)))];
+  }, [teams, regionByChurchId, searchParams]);
+
+  // The selected region lives in the URL rather than in state, so the home-page map can
+  // deep-link into a filtered view (/teams?region=nnsw) and that view stays shareable.
+  // Resolved against the region list, so an unknown or not-yet-loaded code falls back
+  // to showing everything rather than stranding the page on zero teams.
+  const regionParam = searchParams.get('region');
+  const selectedRegion =
+    regions.find((r) => r !== ALL_REGIONS && isSameRegion(r, regionParam)) ?? ALL_REGIONS;
 
   const { churches, categories, filteredTeams } = useMemo(() => {
     const churchSet = new Set<string>();
@@ -45,6 +103,10 @@ export function Teams(): JSX.Element {
       if (churchName) churchSet.add(churchName);
       if (teamCategory) categorySet.add(teamCategory);
 
+      const churchId = getTeamChurchId(team);
+      const teamRegion = churchId ? regionByChurchId.get(churchId) : undefined;
+
+      const regionMatch = selectedRegion === ALL_REGIONS || isSameRegion(teamRegion, selectedRegion);
       const churchMatch = selectedChurch === 'All Locations' || churchName === selectedChurch;
       const categoryMatch = selectedCategory === 'All Categories' || teamCategory === selectedCategory;
       const searchMatch =
@@ -54,7 +116,7 @@ export function Teams(): JSX.Element {
         (team.description && team.description.toLowerCase().includes(searchLower)) ||
         (leaderName && leaderName.toLowerCase().includes(searchLower));
 
-      return churchMatch && categoryMatch && searchMatch;
+      return regionMatch && churchMatch && categoryMatch && searchMatch;
     });
 
     return {
@@ -62,7 +124,21 @@ export function Teams(): JSX.Element {
       categories: ['All Categories', ...Array.from(categorySet).sort()],
       filteredTeams: filtered,
     };
-  }, [teams, selectedChurch, selectedCategory, searchQuery]);
+  }, [teams, regionByChurchId, selectedRegion, selectedChurch, selectedCategory, searchQuery]);
+
+  const handleRegionChange = (value: string) => {
+    const next = new URLSearchParams(searchParams);
+    if (value === ALL_REGIONS) next.delete('region');
+    else next.set('region', value);
+    setSearchParams(next, { replace: true });
+  };
+
+  const clearFilters = () => {
+    setSearchQuery('');
+    setSelectedChurch('All Locations');
+    setSelectedCategory('All Categories');
+    handleRegionChange(ALL_REGIONS);
+  };
 
   return (
     <div>
@@ -105,6 +181,24 @@ export function Teams(): JSX.Element {
                 />
               </div>
 
+              {/* Region — hidden when there is only one to pick from and nothing is
+                  selected, since a single-option filter is just noise. Always shown
+                  once a region is active, so an arrival from the home map can see
+                  what is filtering the list and change or clear it. */}
+              {(regions.length > 2 || selectedRegion !== ALL_REGIONS) && (
+                <select
+                  value={selectedRegion}
+                  onChange={(e) => handleRegionChange(e.target.value)}
+                  className="px-3 py-1.5 rounded-lg bg-gray-50 border border-gray-200 text-gray-700 text-sm focus:outline-none focus:border-[#F44314] transition-colors cursor-pointer"
+                >
+                  {regions.map((region) => (
+                    <option key={region} value={region}>
+                      {region === ALL_REGIONS ? region : regionLabel(region)}
+                    </option>
+                  ))}
+                </select>
+              )}
+
               {/* Location */}
               <select
                 value={selectedChurch}
@@ -128,9 +222,12 @@ export function Teams(): JSX.Element {
               </select>
 
               {/* Clear */}
-              {(searchQuery || selectedChurch !== 'All Locations' || selectedCategory !== 'All Categories') && (
+              {(searchQuery ||
+                selectedChurch !== 'All Locations' ||
+                selectedCategory !== 'All Categories' ||
+                selectedRegion !== ALL_REGIONS) && (
                 <button
-                  onClick={() => { setSearchQuery(''); setSelectedChurch('All Locations'); setSelectedCategory('All Categories'); }}
+                  onClick={clearFilters}
                   className="text-[#F44314] text-xs font-semibold hover:underline"
                 >
                   Clear
@@ -139,6 +236,7 @@ export function Teams(): JSX.Element {
 
               <span className="text-gray-400 text-xs ml-auto">
                 {filteredTeams.length} team{filteredTeams.length !== 1 ? 's' : ''}
+                {selectedRegion !== ALL_REGIONS && ` · ${regionLabel(selectedRegion)}`}
                 {selectedChurch !== 'All Locations' && ` · ${selectedChurch}`}
                 {selectedCategory !== 'All Categories' && ` · ${selectedCategory}`}
                 {searchQuery && ` matching "${searchQuery}"`}
@@ -195,11 +293,20 @@ export function Teams(): JSX.Element {
           {!loading && !error && filteredTeams.length === 0 && (
             <div className="text-center py-16">
               <div className="bg-[#F8F7F5] border border-gray-200 rounded-2xl p-12 max-w-lg mx-auto">
-                <p className="text-[#1F2937] text-xl font-semibold mb-4">Community service teams are being registered</p>
+                <p className="text-[#1F2937] text-xl font-semibold mb-4">
+                  {/* Name the region when one is selected — arriving from the home map
+                      and being told only "no teams found" gives no clue that the
+                      region itself is the reason. */}
+                  {teams.length > 0 && selectedRegion !== ALL_REGIONS
+                    ? `No teams in ${regionLabel(selectedRegion)} yet`
+                    : 'Community service teams are being registered'}
+                </p>
                 <p className="text-gray-600 mb-6">
                   {teams.length === 0
                     ? "Teams across Australia are setting up their services. Check back soon, or contact us if you need help now!"
-                    : "Try adjusting your search to find teams in other locations. We're here to help connect you with the right support."}
+                    : selectedRegion !== ALL_REGIONS
+                      ? `Teams in ${regionLabel(selectedRegion)} are still setting up their profiles. Try another region, or contact us if you need help now.`
+                      : "Try adjusting your search to find teams in other locations. We're here to help connect you with the right support."}
                 </p>
                 <div className="flex flex-col sm:flex-row gap-3 justify-center">
                   <a

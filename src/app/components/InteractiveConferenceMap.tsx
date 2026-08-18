@@ -109,7 +109,11 @@ export const InteractiveConferenceMap: React.FC = () => {
 
   const handleClick = (region: RegionLayer) => {
     if (region.active) {
-      navigate(`/services?conference=${region.code}`);
+      // Teams, not services: a team is the regional unit and each team page lists its
+      // own services, so this reaches both. The previous target was
+      // /services?conference=<code>, which nothing read — the page ignored the query
+      // string entirely and rendered the full unfiltered list.
+      navigate(`/teams?region=${region.code}`);
     }
   };
 

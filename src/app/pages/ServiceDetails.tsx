@@ -106,12 +106,24 @@ export function ServiceDetails() {
 
   const loc = service.locations?.[0];
   const coords = loc?.coordinates;
+  // Include the street when there is one. It was dropped here, so a service with a
+  // full address still got a suburb-level pin. Most records have no street today —
+  // that is a data gap, not a code one — but the ones that do should be precise.
   const mapQuery = coords
     ? `${coords.lat},${coords.lng}`
-    : encodeURIComponent([loc?.address?.suburb, loc?.address?.state, 'Australia'].filter(Boolean).join(', '));
+    : encodeURIComponent(
+        [loc?.address?.street, loc?.address?.suburb, loc?.address?.state, loc?.address?.postcode, 'Australia']
+          .filter(Boolean)
+          .join(', ')
+      );
+  // Without coordinates OpenStreetMap's embed cannot geocode a text address, and the
+  // previous fallback was a fixed bbox spanning roughly Canberra to Newcastle with no
+  // marker — the same view for every service in the state. Google's embed does accept
+  // a text query, so use it when there are no coordinates and keep OSM for when there
+  // are. Both are keyless.
   const mapSrc = coords
     ? `https://www.openstreetmap.org/export/embed.html?bbox=${coords.lng - 0.02},${coords.lat - 0.015},${coords.lng + 0.02},${coords.lat + 0.015}&layer=mapnik&marker=${coords.lat},${coords.lng}`
-    : `https://www.openstreetmap.org/export/embed.html?bbox=148.5,-36.0,152.5,-32.0&layer=mapnik`;
+    : `https://www.google.com/maps?q=${mapQuery}&z=14&output=embed`;
 
   return (
     <div className="min-h-screen bg-white">

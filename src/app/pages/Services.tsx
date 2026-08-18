@@ -1,4 +1,5 @@
 import { useState, useMemo } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { ServiceCard } from '../components/ServiceCard';
 import { Search, RefreshCw } from 'lucide-react';
 import { SERVICE_CATEGORIES as SERVICE_TYPES } from '../constants/categories';
@@ -15,8 +16,23 @@ function getTeamName(service: any): string {
 export function Services(): JSX.Element {
   const { getBlock } = useCMSPage('services');
   const { services, loading, error, refetch } = useServices();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedType, setSelectedType] = useState<string | null>(null);
+
+  // The selected type lives in the URL rather than in state. The home page links here
+  // as /services?type=<type> for each category tile, and the query string was never
+  // read, so every one of those tiles landed on the unfiltered list. Deriving it here
+  // makes those links work and makes a filtered view shareable, without an effect
+  // mirroring the URL into state. Only a type the directory knows about is accepted.
+  const typeParam = searchParams.get('type');
+  const selectedType = typeParam && SERVICE_TYPES.some((t) => t.type === typeParam) ? typeParam : null;
+
+  const setSelectedType = (type: string | null) => {
+    const next = new URLSearchParams(searchParams);
+    if (type) next.set('type', type);
+    else next.delete('type');
+    setSearchParams(next, { replace: true });
+  };
 
   const heroLabel = getBlock('hero', 'section_label') || 'Services Directory';
   const heroTitle = getBlock('hero', 'title') || 'Find a Service';

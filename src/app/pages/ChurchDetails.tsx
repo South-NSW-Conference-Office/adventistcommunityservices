@@ -56,7 +56,25 @@ const OUTREACH_LABELS: Record<string, string> = {
 function formatAddress(location: ChurchLocation | undefined): string {
   if (!location?.address) return 'Address not available';
   const { street, city, state, postalCode } = location.address;
-  const parts = [street, city, state, postalCode].filter(Boolean);
+
+  // Some records store the whole address in `street` ("3 Orana Crescent, Adamstown
+  // Heights NSW 2289") while also setting city/state/postalCode. Appending those again
+  // produced "…, Adamstown Heights NSW 2289, Adamstown Heights, NSW, 2289", which reads
+  // badly and geocodes worse — the duplication pushes the map to a coarser match. Drop
+  // any part the street already contains.
+  const streetText = (street ?? '').trim();
+  const alreadyInStreet = (part: string | null | undefined): boolean => {
+    const value = (part ?? '').trim();
+    return value !== '' && streetText.toLowerCase().includes(value.toLowerCase());
+  };
+
+  const parts = [
+    streetText,
+    alreadyInStreet(city) ? null : city,
+    alreadyInStreet(state) ? null : state,
+    alreadyInStreet(postalCode) ? null : postalCode,
+  ].filter(Boolean);
+
   return parts.length > 0 ? parts.join(', ') : 'Address not available';
 }
 

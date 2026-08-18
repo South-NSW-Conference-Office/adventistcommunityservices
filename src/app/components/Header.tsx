@@ -6,6 +6,14 @@ import acsLogo from '@/assets/68ee6e4764f54c4a5a0a4c46b17e9e2662a774ac.png';
 // Pages whose hero has a dark video overlay — nav should be white when not scrolled
 const DARK_HERO_ROUTES = ['/about', '/services', '/teams', '/fellowship', '/churches'];
 
+// A service detail page opens with a breadcrumb bar rather than a hero image, so the
+// fixed header has nothing to float over and lands on the breadcrumb — the logo
+// covering the service type. On these routes the header sits in normal flow instead:
+// the page starts below it and it scrolls away on its own, so no offset is needed and
+// no header height has to be hardcoded anywhere.
+// Matches /services/<id> but not the /services directory, which does have a hero.
+const IN_FLOW_ROUTE = /^\/services\/[^/]+\/?$/;
+
 interface HeaderProps {
   onLogout?: () => void;
   isAuthenticated?: boolean;
@@ -16,7 +24,11 @@ export function Header({ onLogout, isAuthenticated = false }: HeaderProps) {
   const [scrolled, setScrolled] = useState(false);
   const { pathname } = useLocation();
 
-  const isDarkHero = DARK_HERO_ROUTES.some(r => pathname === r || pathname.startsWith(r + '/'));
+  const inFlow = IN_FLOW_ROUTE.test(pathname);
+
+  // Only relevant when the header actually overlays a hero. An in-flow header sits on
+  // its own light surface, so it always takes the dark text treatment below.
+  const isDarkHero = !inFlow && DARK_HERO_ROUTES.some(r => pathname === r || pathname.startsWith(r + '/'));
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -33,10 +45,14 @@ export function Header({ onLogout, isAuthenticated = false }: HeaderProps) {
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        scrolled
-          ? 'bg-white/95 backdrop-blur-md shadow-sm'
-          : 'bg-transparent'
+      className={`z-50 transition-all duration-300 ${
+        inFlow
+          // Same surface as the breadcrumb bar below it, so the two read as one
+          // header block rather than a logo stranded on white.
+          ? 'relative bg-[#F8F7F5]'
+          : `fixed top-0 left-0 right-0 ${
+              scrolled ? 'bg-white/95 backdrop-blur-md shadow-sm' : 'bg-transparent'
+            }`
       }`}
     >
       <div className="max-w-7xl mx-auto px-6 py-4">

@@ -17,6 +17,7 @@ import { Preview } from './pages/Preview';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { EditModeProvider } from './contexts/EditModeContext';
 import { EditModeFloatingButton, EditModeSaveBar } from './components/editable';
+import { ScrollToTop } from './components/ScrollToTop';
 import { Toaster } from './components/ui/sonner';
 import { Loader2 } from 'lucide-react';
 
@@ -25,6 +26,7 @@ function AppContent() {
 
   return (
     <div className="min-h-screen bg-white">
+      <ScrollToTop />
       <Header onLogout={logout} isAuthenticated={isAuthenticated} />
 
       <Routes>
