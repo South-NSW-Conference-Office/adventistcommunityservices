@@ -1,0 +1,115 @@
+# -----------------------------------------------------------------------------
+# adventistcommunityservices (public website) — CI/CD (Production)
+#
+# This repo had NO CI before this workflow — the site is normally deployed by
+# Vercel's git integration on push to main. This adds a second, parallel
+# deployment target: builds a Docker image (VITE_API_URL pointing at
+# api.communityservices.org.au, the live morpheus backend) and deploys it to
+# snswserver as `acs-website`, joining the shared nginx-proxy for
+# communityservices.org.au. Vercel keeps serving the real domain until DNS is
+# manually flipped to snswserver's public IP (107.155.65.229); until then
+# this is a warm standby, reachable only via a Host-header request straight
+# to that IP.
+# -----------------------------------------------------------------------------
+
+name: Build and Deploy Docker (Production)
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+
+concurrency:
+  group: deploy-production-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: south-nsw-conference-office/adventistcommunityservices
+
+jobs:
+  build-and-push:
+    name: Build & push
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata for Docker
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=raw,value=production
+            type=sha,prefix=production-
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          build-args: |
+            VITE_API_URL=https://api.communityservices.org.au
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha,scope=production
+          cache-to: type=gha,scope=production,mode=max
+
+  deploy:
+    name: Deploy to snswserver
+    runs-on: ubuntu-latest
+    needs: build-and-push
+    concurrency:
+      group: deploy-acs-website-production-snswserver
+      cancel-in-progress: false
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Copy compose file to server
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: 107.155.65.229
+          username: snswcomms
+          key: ${{ secrets.SNSW_SSH_KEY }}
+          source: deploy/docker-compose.snswserver-production.yml
+          target: /opt/acs-website/
+
+      - name: Pull and restart on server
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: 107.155.65.229
+          username: snswcomms
+          key: ${{ secrets.SNSW_SSH_KEY }}
+          envs: GHCR_TOKEN,GHCR_USER
+          script: |
+            cd /opt/acs-website
+            mv deploy/docker-compose.snswserver-production.yml docker-compose.yml
+            rmdir deploy 2>/dev/null || true
+            echo "$GHCR_TOKEN" | docker login ghcr.io -u "$GHCR_USER" --password-stdin
+            docker compose pull
+            docker compose up -d --remove-orphans
+            docker image prune -f
+        env:
+          GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GHCR_USER: ${{ github.actor }}
