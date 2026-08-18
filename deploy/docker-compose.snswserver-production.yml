@@ -1,0 +1,60 @@
+# =============================================================================
+# adventistcommunityservices (public website) — PRODUCTION docker-compose for
+# the **snswserver** host (Debian 13, linux/amd64, public IP). Deployed
+# 2026-08-18 in PARALLEL with the existing Vercel deployment, while DNS for
+# communityservices.org.au still points at Vercel — see project_acs_backend
+# memory. Once DNS is manually flipped (apex A records -> 107.155.65.229),
+# this container becomes the live site and Vercel can be retired.
+# =============================================================================
+#
+# Lives at /opt/acs-website/docker-compose.yml on snswserver. CI scp's this
+# file here, then runs `docker compose pull && up -d`. Builds nothing — pulls
+# the prebuilt linux/amd64 image from GHCR.
+#
+# VITE_API_URL is baked into the bundle at BUILD time (see Dockerfile /
+# .github/workflows/docker-deploy-production.yml build-args), not read from
+# this file at runtime. It points at https://api.communityservices.org.au,
+# the acs-api-proxy fronting the production backend on morpheus.
+#
+# FRONT DOOR (TLS) — joins snswserver's existing SHARED nginx-proxy +
+#   acme-companion stack. acme-companion can only issue a real cert for
+#   communityservices.org.au once DNS for that name actually resolves here —
+#   until the DNS cutover it will retry and fail quietly, which is expected.
+#   Verify readiness in the meantime via a Host-header curl against
+#   107.155.65.229 directly, e.g.:
+#     curl -H "Host: communityservices.org.au" http://107.155.65.229/
+# =============================================================================
+
+services:
+  website:
+    image: ghcr.io/south-nsw-conference-office/adventistcommunityservices:${IMAGE_TAG:-production}
+    container_name: acs-website
+    restart: unless-stopped
+
+    environment:
+      - VIRTUAL_HOST=communityservices.org.au
+      - VIRTUAL_PORT=80
+      - LETSENCRYPT_HOST=communityservices.org.au
+
+    expose:
+      - "80"
+
+    networks:
+      - proxy-network
+
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:80/", "-T", "5"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"
+
+networks:
+  proxy-network:
+    external: true
