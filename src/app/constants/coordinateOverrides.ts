@@ -34,8 +34,11 @@ export const SERVICE_COORDINATES: Record<string, LocalCoordinates> = {
   // so a pin is worth having. Google lists it as "located in: Wodonga Seventh-Day
   // Adventist Community Church", which is why the church below shares this pin.
   '6a503cbb21e0d200e99e2c60': { lat: -36.1160716, lng: 146.8679408 },
-  // Food Pantry — Bathurst Team.
-  '6a507fed21e0d200e99e3b1b': { lat: -33.4167, lng: 149.5806 },
+  // Food Pantry — Bathurst Team, at the church below: 155 Lambert St, Bathurst NSW
+  // 2795. Searching Google for an Adventist food pantry in Bathurst returns only the
+  // church, so the two are one site, as in Wodonga. Correct this if the pantry runs
+  // from a separate hall.
+  '6a507fed21e0d200e99e3b1b': { lat: -33.4214075, lng: 149.5729675 },
 
   // Deliberately not pinned, pending confirmation:
   // - 6a50818421e0d200e99e3f9f  Moving Houses (Bathurst)
@@ -51,8 +54,9 @@ export const CHURCH_COORDINATES: Record<string, LocalCoordinates> = {
   // the OP Shop's pin above: Google lists the shop as located inside this church, so
   // they are one site rather than two.
   '696733967394e82212d36649': { lat: -36.1160716, lng: 146.8679408 },
-  // Bathurst. Same pin as the Bathurst food pantry, same assumption.
-  '696733987394e82212d36690': { lat: -33.4167, lng: 149.5806 },
+  // Bathurst Seventh-day Adventist Church — 155 Lambert St, Bathurst NSW 2795. Shares
+  // the food pantry's pin above; they are the same site.
+  '696733987394e82212d36690': { lat: -33.4214075, lng: 149.5729675 },
 
   // Not pinned: 6967339d7394e82212d36733 Wodonga Slavic — a separate congregation, so
   // the Wodonga pin above should not be assumed to apply to it.
