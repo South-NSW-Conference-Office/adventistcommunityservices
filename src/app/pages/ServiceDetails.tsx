@@ -5,6 +5,7 @@ import { useServiceDetail, useServices } from '../hooks/useServices';
 import { ServiceRequestBanner } from '../components/ServiceRequestBanner';
 import type { ServiceLocation, ServiceCapacity, ServiceScheduling } from '../types/service.types';
 import { getServiceImage, getServiceImagePosition, getServiceGallery } from '../constants/serviceImages';
+import { getServiceCoordinates } from '../constants/coordinateOverrides';
 
 const DEFAULT_SERVICE_IMAGE = 'https://images.unsplash.com/photo-1559027615-cd4628902d4a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080';
 const DAY_NAMES = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
@@ -105,7 +106,9 @@ export function ServiceDetails() {
   const allImages = [{ url: imageUrl, alt: service.name, position: imagePosition }, ...galleryImages];
 
   const loc = service.locations?.[0];
-  const coords = loc?.coordinates;
+  // A pin entered through the admin always wins; the local override only fills the gap
+  // while no record has coordinates. See constants/coordinateOverrides.ts — temporary.
+  const coords = loc?.coordinates ?? getServiceCoordinates(service._id);
   // Include the street when there is one. It was dropped here, so a service with a
   // full address still got a suburb-level pin. Most records have no street today —
   // that is a data gap, not a code one — but the ones that do should be precise.
@@ -116,13 +119,19 @@ export function ServiceDetails() {
           .filter(Boolean)
           .join(', ')
       );
-  // Without coordinates OpenStreetMap's embed cannot geocode a text address, and the
-  // previous fallback was a fixed bbox spanning roughly Canberra to Newcastle with no
-  // marker — the same view for every service in the state. Google's embed does accept
-  // a text query, so use it when there are no coordinates and keep OSM for when there
-  // are. Both are keyless.
+  // Google's embed for both branches — it takes coordinates or a text query, and is
+  // what ChurchDetails already uses. Keyless either way.
+  //
+  // The coordinate branch used OpenStreetMap's embed until now. That was dead code —
+  // no record has ever had coordinates — and it turns out not to render at all: the
+  // iframe loads but stays blank, while Google's fills the same slot. Supplying pins
+  // via constants/coordinateOverrides.ts made that branch live for the first time and
+  // exposed it.
+  //
+  // The no-coordinates fallback was previously a fixed bbox spanning roughly Canberra
+  // to Newcastle with no marker — the same view for every service in the state.
   const mapSrc = coords
-    ? `https://www.openstreetmap.org/export/embed.html?bbox=${coords.lng - 0.02},${coords.lat - 0.015},${coords.lng + 0.02},${coords.lat + 0.015}&layer=mapnik&marker=${coords.lat},${coords.lng}`
+    ? `https://www.google.com/maps?q=${coords.lat},${coords.lng}&z=16&output=embed`
     : `https://www.google.com/maps?q=${mapQuery}&z=14&output=embed`;
 
   return (

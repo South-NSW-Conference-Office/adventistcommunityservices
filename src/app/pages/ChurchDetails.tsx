@@ -23,6 +23,7 @@ import {
   Image as ImageIcon,
 } from 'lucide-react';
 import { useChurchDetail } from '../hooks/useChurches';
+import { getChurchCoordinates, type LocalCoordinates } from '../constants/coordinateOverrides';
 import {
   getChurchImage,
   getChurchImagePosition,
@@ -84,9 +85,34 @@ function formatLocationShort(location: ChurchLocation | undefined): string {
   return [city, state].filter(Boolean).join(', ') || 'Location TBA';
 }
 
-function getDirectionsUrl(location: ChurchLocation | undefined, address: string): string | null {
-  if (location?.coordinates) {
-    return `https://www.google.com/maps/dir/?api=1&destination=${location.coordinates.latitude},${location.coordinates.longitude}`;
+/**
+ * The pin to use, or null to fall back to the text address.
+ *
+ * A pin entered through the admin always wins; the local override only fills the gap
+ * while no church record has coordinates. See constants/coordinateOverrides.ts.
+ *
+ * Note the two shapes differ — the API uses latitude/longitude, the override file uses
+ * lat/lng — so both are normalised here. Validation happens once, in one place: the
+ * directions URL previously used the raw values without checking them, so a malformed
+ * record produced a link to "NaN,NaN" while the embed beside it correctly showed
+ * nothing.
+ */
+function resolveCoordinates(
+  location: ChurchLocation | undefined,
+  churchId: string | undefined
+): LocalCoordinates | null {
+  const fromRecord = location?.coordinates;
+  if (fromRecord) {
+    const lat = Number(fromRecord.latitude);
+    const lng = Number(fromRecord.longitude);
+    if (Number.isFinite(lat) && Number.isFinite(lng)) return { lat, lng };
+  }
+  return getChurchCoordinates(churchId) ?? null;
+}
+
+function getDirectionsUrl(coords: LocalCoordinates | null, address: string): string | null {
+  if (coords) {
+    return `https://www.google.com/maps/dir/?api=1&destination=${coords.lat},${coords.lng}`;
   }
   if (address && address !== 'Address not available') {
     return `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(address)}`;
@@ -94,17 +120,13 @@ function getDirectionsUrl(location: ChurchLocation | undefined, address: string)
   return null;
 }
 
-function getMapEmbedUrl(location: ChurchLocation | undefined, address: string): string | null {
-  const coordinates = location?.coordinates;
-  if (!coordinates) {
-    return address ? `https://www.google.com/maps?q=${encodeURIComponent(address)}&z=15&output=embed` : null;
+function getMapEmbedUrl(coords: LocalCoordinates | null, address: string): string | null {
+  if (coords) {
+    return `https://www.google.com/maps?q=${coords.lat},${coords.lng}&z=15&output=embed`;
   }
-
-  const lat = Number(coordinates.latitude);
-  const lng = Number(coordinates.longitude);
-  if (!Number.isFinite(lat) || !Number.isFinite(lng)) return null;
-
-  return `https://www.google.com/maps?q=${lat},${lng}&z=15&output=embed`;
+  return address && address !== 'Address not available'
+    ? `https://www.google.com/maps?q=${encodeURIComponent(address)}&z=15&output=embed`
+    : null;
 }
 
 function getWebsiteUrl(website: string): string {
@@ -281,8 +303,9 @@ export function ChurchDetails(): JSX.Element {
   const phone = church.contact?.phone || 'Contact for details';
   const email = church.contact?.email;
   const website = church.contact?.website;
-  const directionsUrl = getDirectionsUrl(church.location, address);
-  const mapEmbedUrl = getMapEmbedUrl(church.location, address);
+  const churchCoords = resolveCoordinates(church.location, church._id);
+  const directionsUrl = getDirectionsUrl(churchCoords, address);
+  const mapEmbedUrl = getMapEmbedUrl(churchCoords, address);
   const conferenceName =
     church.conference?.name?.replace(/\s*Conference$/i, '') || 'Region';
 
