@@ -200,8 +200,10 @@ export function ServiceDetails() {
             )}
           </div>
 
-          {/* Info Panel ΓÇö 2 cols (Google Maps listing style) */}
-          <div className="lg:col-span-2 space-y-6">
+          {/* Info Panel ΓÇö 2 cols (Google Maps listing style).
+              Flex column rather than space-y so the map at the bottom can take the
+              leftover height and finish level with the gallery beside it. */}
+          <div className="lg:col-span-2 flex flex-col gap-6">
             <div>
               <h1 className="text-[#1F2937] text-2xl md:text-3xl font-bold mb-2">{service.name}</h1>
               {teamName && <p className="text-gray-500 text-sm">Provided by <span className="font-medium text-[#1F2937]">{teamName}</span></p>}
@@ -275,9 +277,12 @@ export function ServiceDetails() {
               )}
             </div>
 
-            {/* Mini Map */}
-            <div className="rounded-xl overflow-hidden border border-gray-200">
-              <iframe src={mapSrc} className="w-full h-40 border-0" loading="lazy" title={`Map - ${service.name}`} />
+            {/* Map — grows into whatever height is left in this column so it ends
+                level with the gallery, rather than sitting at a fixed 160px. The
+                min-height matters on mobile, where the columns stack and there is no
+                leftover height to grow into. */}
+            <div className="rounded-xl overflow-hidden border border-gray-200 flex-1 min-h-[200px]">
+              <iframe src={mapSrc} className="w-full h-full border-0" loading="lazy" title={`Map - ${service.name}`} />
             </div>
           </div>
         </div>
