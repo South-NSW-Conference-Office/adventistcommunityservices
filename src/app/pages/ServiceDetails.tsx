@@ -105,6 +105,15 @@ export function ServiceDetails() {
     : (service.primaryImage?.url ? [] : getServiceGallery(service._id).map(g => ({ url: g.url, alt: service.name, position: g.position || 'center' })));
   const allImages = [{ url: imageUrl, alt: service.name, position: imagePosition }, ...galleryImages];
 
+  // Whether this service has any photo of its own, from either source.
+  //
+  // The prompts below used to ask only whether the *database* fields were empty, while
+  // the carousel above renders local overrides too — so every service whose photos come
+  // from constants/serviceImages.ts displayed its gallery and, directly underneath, a
+  // message saying it had no photos. imageUrl falls back to a stock Unsplash photo, so
+  // "is the hero the default?" is the question that actually distinguishes them.
+  const hasOwnPhotos = imageUrl !== DEFAULT_SERVICE_IMAGE || galleryImages.length > 0;
+
   const loc = service.locations?.[0];
   // A pin entered through the admin always wins; the local override only fills the gap
   // while no record has coordinates. See constants/coordinateOverrides.ts — temporary.
@@ -191,8 +200,8 @@ export function ServiceDetails() {
               </div>
             )}
 
-            {/* Empty gallery prompt */}
-            {gallery.length === 0 && !service.primaryImage?.url && (
+            {/* Empty gallery prompt — only when there is genuinely nothing to show */}
+            {!hasOwnPhotos && (
               <div className="mt-3 bg-gray-50 border border-dashed border-gray-300 rounded-xl p-6 text-center">
                 <ImageIcon className="w-8 h-8 text-gray-300 mx-auto mb-2" />
                 <p className="text-gray-400 text-sm">Add photos so visitors know what to expect</p>
@@ -368,7 +377,7 @@ export function ServiceDetails() {
         </div>
 
         {/* Empty state for admins */}
-        {!service.descriptionLong && !service.descriptionShort && tags.length === 0 && gallery.length === 0 && (
+        {!service.descriptionLong && !service.descriptionShort && tags.length === 0 && !hasOwnPhotos && (
           <div className="bg-[#F8F7F5] border border-dashed border-gray-300 rounded-2xl p-10 text-center mb-10">
             <Heart className="w-12 h-12 text-gray-300 mx-auto mb-4" />
             <h3 className="text-[#1F2937] text-xl font-semibold mb-2">This service page is ready to be filled in</h3>
