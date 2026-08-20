@@ -1,6 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
 import { servicesApi } from '../services/servicesApi';
-import { STATIC_SERVICES, getStaticService } from '../constants/staticServices';
 import { isHiddenService } from '../constants/hiddenRecords';
 import type { Service, ServiceFilters } from '../types/service.types';
 
@@ -25,11 +24,11 @@ export function useServices(initialFilters?: ServiceFilters): UseServicesResult 
     try {
       const response = await servicesApi.getPublicServices(filters);
       if (response.success && response.data) {
-        // Front-end-defined services are appended so they appear alongside the real
-        // records; records the admin cannot yet remove are dropped. See
-        // constants/staticServices.ts and constants/hiddenRecords.ts — both temporary.
-        const visible = response.data.filter((s) => !isHiddenService(s._id));
-        setServices([...visible, ...STATIC_SERVICES]);
+        // Records the admin cannot yet remove are dropped — see
+        // constants/hiddenRecords.ts, still temporary. (The static Wodonga card
+        // that used to be appended here became a real database record on
+        // 2026-08-20: service 6a86aa0691c8b178af300b54.)
+        setServices(response.data.filter((s) => !isHiddenService(s._id)));
       } else {
         setError('Failed to fetch services');
       }
@@ -72,16 +71,6 @@ export function useServiceDetail(id: string | undefined): UseServiceDetailResult
     if (isHiddenService(id)) {
       setService(null);
       setError('Service not found');
-      setLoading(false);
-      return;
-    }
-
-    // Resolve front-end-defined services locally; the API has no record of them and
-    // would answer 404, leaving the card on the list pointing at a dead page.
-    const staticService = getStaticService(id);
-    if (staticService) {
-      setService(staticService);
-      setError(null);
       setLoading(false);
       return;
     }

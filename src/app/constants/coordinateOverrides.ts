@@ -1,8 +1,10 @@
 // Map pins defined in the front end rather than the database.
 //
-// TEMPORARY, and the third file of its kind alongside staticServices.ts and
-// hiddenRecords.ts. All three exist because records cannot be edited through the admin
-// panel yet — see those files for the background.
+// TEMPORARY, alongside hiddenRecords.ts. (staticServices.ts, the third file of this
+// kind, was retired on 2026-08-20 when the admin panel became able to create
+// records; its Wodonga card is now a real database record.) These exist because
+// records cannot be edited through the admin panel yet — see hiddenRecords.ts for
+// the background.
 //
 // Why coordinates rather than street addresses: no record in the database has any
 // coordinates at all (0 of 21 services, 0 of 136 churches), and 20 of 21 services have
@@ -42,7 +44,7 @@ export const SERVICE_COORDINATES: Record<string, LocalCoordinates> = {
 
   // Deliberately not pinned, pending confirmation:
   // - 6a50818421e0d200e99e3f9f  Moving Houses (Bathurst)
-  // - local-wodonga-community-yard-cleans  Community Yard Cleans (Wodonga)
+  // - 6a86aa0691c8b178af300b54  Community Yard Cleans (Wodonga)
   // Both are mobile — the crew travels to the person needing help — so a fixed marker
   // implies somewhere to turn up to that does not exist. The suburb-level view is the
   // more honest default for those.

@@ -1,14 +1,13 @@
 // Records that exist in the database but must not appear on the public site.
 //
-// TEMPORARY, and the mirror image of staticServices.ts: that file adds records the
-// admin panel cannot create, this one hides records it cannot remove. Both exist
-// because production runs acs-backend `main`, which is missing the authorization
-// fixes sitting on `staging`.
+// TEMPORARY. (Its former mirror image, staticServices.ts — which added records the
+// admin panel could not create — was retired on 2026-08-20 once the admin could
+// create them; its Wodonga card is now a real database record.)
 //
-// Deleting or deactivating these through the admin is the real fix — a super admin
-// can do it today, since super admin short-circuits the broken permission check.
-// Once a record is gone from the database, delete its id here too; leaving a stale
-// id behind would silently hide a future record that reuses it.
+// Deleting or deactivating these through the admin is the real fix, and the admin
+// can do it now that the authorization fixes are deployed. Once a record is gone
+// from the database, delete its id here too; leaving a stale id behind would
+// silently hide a future record that reuses it.
 //
 // Filtered out of the list hooks and treated as not-found by the detail hooks, so
 // a stray direct link cannot surface one either.

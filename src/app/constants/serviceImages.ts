@@ -28,7 +28,9 @@ export const SERVICE_IMAGE_OVERRIDES: Record<string, ServiceImageOverride> = {
   '6a506d1821e0d200e99e3308': { url: '/images/services/canberra-cleanup-crew.jpg' },
   // Wodonga OP Shop — Wodonga Adventist Community Church
   '6a503cbb21e0d200e99e2c60': { url: '/images/services/wodonga-op-shop.jpg', position: '50% 40%' },
-  // Community Yard Cleans — Wodonga Team (front-end-defined, see staticServices.ts).
+  // Community Yard Cleans — Wodonga Adventist Community Church Team. Formerly the
+  // front-end-defined card 'local-wodonga-community-yard-cleans'; recreated as a
+  // real database record on 2026-08-20, so the override is keyed by its ObjectId.
   // The cover is the crew group shot that was previously filed under Narromine's
   // Community Yard Cleans; it is the same crew, house and day as the Wodonga team
   // cover, so it was renamed to match the service that actually owns it. The gallery
@@ -36,7 +38,7 @@ export const SERVICE_IMAGE_OVERRIDES: Record<string, ServiceImageOverride> = {
   // Deliberately excluded: wodonga-op-shop.jpg (a different crew under an OP Shop
   // sign, which would misrepresent this service) and wodonga-card.jpg (same crew,
   // same ramp, same moment as the cover — a near-duplicate).
-  'local-wodonga-community-yard-cleans': {
+  '6a86aa0691c8b178af300b54': {
     url: '/images/services/wodonga-community-yard-cleans.jpg',
     gallery: ['/images/teams/wodonga-cover.jpg'],
   },
