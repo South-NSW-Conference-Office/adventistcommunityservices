@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import { Search, MapPin, UtensilsCrossed, Heart, Users, Clock, ExternalLink } from 'lucide-react';
 import { API_BASE_URL } from '../services/config';
 import { getChurchImage, getChurchImagePosition } from '../constants/churchImages';
-import { isHiddenChurch } from '../constants/hiddenRecords';
 
 // Rotating default images for communities that have no photo
 const DEFAULT_IMAGES = [
@@ -85,8 +84,6 @@ function mapChurchData(raw: ChurchData[]): { churches: FellowshipChurch[]; confe
   const confCounts: Record<string, number> = {};
   const churches: FellowshipChurch[] = raw
     .filter(c => c.isActive)
-    // Records the admin panel cannot yet remove. See constants/hiddenRecords.ts.
-    .filter(c => !isHiddenChurch(c.id))
     .map(c => {
       confCounts[c.conference] = (confCounts[c.conference] || 0) + 1;
       return {
@@ -273,11 +270,7 @@ export function Fellowship(): JSX.Element {
         if (res.ok) {
           const data = await res.json();
           if (data.success && data.churches) {
-            // Records the admin panel cannot yet remove. See constants/hiddenRecords.ts.
-            const visible = (data.churches as FellowshipChurch[]).filter(
-              (c) => !isHiddenChurch(c.id)
-            );
-            setChurches(visible);
+            setChurches(data.churches as FellowshipChurch[]);
             setConferences(data.conferences || []);
             return;
           }

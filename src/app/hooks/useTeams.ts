@@ -1,6 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
 import { teamsApi } from '../services/teamsApi';
-import { isHiddenTeam } from '../constants/hiddenRecords';
 import type { Team, TeamFilters } from '../types/team.types';
 
 interface UseTeamsResult {
@@ -24,8 +23,7 @@ export function useTeams(initialFilters?: TeamFilters): UseTeamsResult {
     try {
       const response = await teamsApi.getTeams(filters);
       if (response.success && response.data) {
-        // Records the admin panel cannot yet remove. See constants/hiddenRecords.ts.
-        setTeams(response.data.filter((t) => !isHiddenTeam(t._id)));
+        setTeams(response.data);
       } else {
         setError('Failed to fetch teams');
       }
@@ -60,14 +58,6 @@ export function useTeamDetail(id: string | undefined): UseTeamDetailResult {
 
   const fetchTeam = useCallback(async () => {
     if (!id) {
-      setLoading(false);
-      return;
-    }
-
-    // Hidden records are treated as missing, so a direct link cannot reach one.
-    if (isHiddenTeam(id)) {
-      setTeam(null);
-      setError('Team not found');
       setLoading(false);
       return;
     }

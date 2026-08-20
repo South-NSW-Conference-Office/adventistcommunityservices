@@ -1,10 +1,11 @@
 // Map pins defined in the front end rather than the database.
 //
-// TEMPORARY, alongside hiddenRecords.ts. (staticServices.ts, the third file of this
-// kind, was retired on 2026-08-20 when the admin panel became able to create
-// records; its Wodonga card is now a real database record.) These exist because
-// records cannot be edited through the admin panel yet — see hiddenRecords.ts for
-// the background.
+// TEMPORARY — and the last file of its kind: staticServices.ts and
+// hiddenRecords.ts were both retired on 2026-08-20 once the admin panel could
+// create and remove records. This one outlives them only because nothing in the
+// database carries coordinates (and most records lack street addresses), so the
+// maps have nowhere else to get a pin from. Retire it by giving records real
+// addresses/coordinates and reading them from the API.
 //
 // Why coordinates rather than street addresses: no record in the database has any
 // coordinates at all (0 of 21 services, 0 of 136 churches), and 20 of 21 services have
