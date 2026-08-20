@@ -1,15 +1,14 @@
 # -----------------------------------------------------------------------------
 # adventistcommunityservices (public website) — CI/CD (Production)
 #
-# This repo had NO CI before this workflow — the site is normally deployed by
-# Vercel's git integration on push to main. This adds a second, parallel
-# deployment target: builds a Docker image (VITE_API_URL pointing at
-# api.communityservices.org.au, the live morpheus backend) and deploys it to
-# snswserver as `acs-website`, joining the shared nginx-proxy for
-# communityservices.org.au. Vercel keeps serving the real domain until DNS is
-# manually flipped to snswserver's public IP (107.155.65.229); until then
-# this is a warm standby, reachable only via a Host-header request straight
-# to that IP.
+# Builds a Docker image (VITE_API_URL pointing at api.communityservices.org.au,
+# the live morpheus backend) and deploys it to snswserver as `acs-website`,
+# joining the shared nginx-proxy for communityservices.org.au.
+#
+# THIS IS THE LIVE SITE. DNS for communityservices.org.au points at snswserver
+# (verified 2026-08-20: the live domain serves byte-identical bundles to a
+# Host-header request straight at 107.155.65.229). The Vercel deployment this
+# ran in parallel with no longer owns the domain.
 # -----------------------------------------------------------------------------
 
 name: Build and Deploy Docker (Production)
@@ -38,10 +37,27 @@ jobs:
     permissions:
       contents: read
       packages: write
+    outputs:
+      # Consumed by the deploy job, so both halves reference the same tag by
+      # construction rather than by both happening to format it the same way.
+      image_tag: ${{ steps.imagetag.outputs.tag }}
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+
+      # A tag unique to this commit.
+      #
+      # The deploy previously pulled the floating `production` tag. `docker compose
+      # up -d` compares the image reference it already has against the one in the
+      # compose file, sees the same `:production` string, and can leave the running
+      # container in place — so the old build stayed live while every step of the
+      # workflow reported success. That is how commit 4795ed5 (retiring the static
+      # Wodonga card) deployed green and did not reach the site — the same failure
+      # acs-frontend hit with 45e54a0 and fixed with this exact pattern.
+      - name: Compute immutable image tag
+        id: imagetag
+        run: echo "tag=production-${GITHUB_SHA::7}" >> "$GITHUB_OUTPUT"
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -60,7 +76,7 @@ jobs:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
             type=raw,value=production
-            type=sha,prefix=production-
+            type=raw,value=${{ steps.imagetag.outputs.tag }}
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v6
@@ -101,15 +117,34 @@ jobs:
           host: 107.155.65.229
           username: snswcomms
           key: ${{ secrets.SNSW_SSH_KEY }}
-          envs: GHCR_TOKEN,GHCR_USER
+          envs: GHCR_TOKEN,GHCR_USER,IMAGE_TAG
           script: |
+            set -euo pipefail
             cd /opt/acs-website
             mv deploy/docker-compose.snswserver-production.yml docker-compose.yml
             rmdir deploy 2>/dev/null || true
             echo "$GHCR_TOKEN" | docker login ghcr.io -u "$GHCR_USER" --password-stdin
+
+            # Persist IMAGE_TAG so the compose file resolves to this commit's image.
+            # docker compose reads .env from the project directory, and without it the
+            # ${IMAGE_TAG:-production} default sends us back to the floating tag.
+            echo "IMAGE_TAG=$IMAGE_TAG" > .env
+
             docker compose pull
-            docker compose up -d --remove-orphans
+            docker compose up -d --force-recreate --remove-orphans
+
+            # Assert the container is actually on this commit's image. Without this the
+            # job passes whenever the commands merely exit 0, which is exactly how a
+            # stale container went unnoticed.
+            RUNNING=$(docker inspect --format '{{.Config.Image}}' acs-website)
+            echo "running image: $RUNNING"
+            case "$RUNNING" in
+              *"$IMAGE_TAG") echo "OK: serving $IMAGE_TAG" ;;
+              *) echo "FAIL: expected $IMAGE_TAG, container is on $RUNNING" >&2; exit 1 ;;
+            esac
+
             docker image prune -f
         env:
           GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GHCR_USER: ${{ github.actor }}
+          IMAGE_TAG: ${{ needs.build-and-push.outputs.image_tag }}
