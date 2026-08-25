@@ -29,7 +29,13 @@ function formatLocation(locations?: ServiceLocation[]): string {
 
 export function ServiceCard({ id, name, descriptionShort, locations, primaryImage, teamName }: ServiceCardProps) {
   const imageUrl = primaryImage?.url || (id && getServiceImage(id)) || DEFAULT_SERVICE_IMAGE;
-  const imagePosition = (!primaryImage?.url && id && getServiceImagePosition(id)) || 'center';
+  // An uploaded image carries its own framing, chosen in the admin panel; records
+  // saved before that control existed have no focalY and fall back to 50, the plain
+  // centre crop they were already getting. The local override map only applies when
+  // there is no uploaded image at all.
+  const imagePosition = primaryImage?.url
+    ? `center ${primaryImage.focalY ?? 50}%`
+    : ((id && getServiceImagePosition(id)) || 'center');
   const location = formatLocation(locations);
 
   const content = (

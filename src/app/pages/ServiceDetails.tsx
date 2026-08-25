@@ -86,7 +86,12 @@ export function ServiceDetails() {
   }
 
   const imageUrl = service.primaryImage?.url || getServiceImage(service._id) || DEFAULT_SERVICE_IMAGE;
-  const imagePosition = (!service.primaryImage?.url && getServiceImagePosition(service._id)) || 'center';
+  // An uploaded image carries the framing chosen in the admin panel. Records saved
+  // before that control existed have no focalY and fall back to 50 — the plain centre
+  // crop they already had. The local override map applies only when nothing is uploaded.
+  const imagePosition = service.primaryImage?.url
+    ? `center ${service.primaryImage.focalY ?? 50}%`
+    : (getServiceImagePosition(service._id) || 'center');
   const address = formatAddress(service.locations);
   const locationShort = formatLocationShort(service.locations);
   const capacityText = formatCapacity(service.capacity);

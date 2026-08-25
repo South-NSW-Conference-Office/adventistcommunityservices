@@ -46,6 +46,13 @@ export interface ServiceImage {
   url: string;
   key?: string;
   alt?: string;
+  /**
+   * Where to centre this image vertically when it is cropped, as a percentage from
+   * the top: 0 keeps the top edge, 50 centres, 100 keeps the bottom. Set in the
+   * admin panel. Absent on records saved before that control existed — treat as 50,
+   * which is the plain centre crop they were already getting.
+   */
+  focalY?: number;
 }
 
 export interface GalleryImage extends ServiceImage {
