@@ -84,7 +84,14 @@ function AppContent() {
             <div>
               <h3 className="text-white font-semibold mb-4">Contact</h3>
               <ul className="space-y-2 text-sm text-gray-400">
-                <li>acs@adventist.org.au</li>
+                <li>
+                  <a
+                    href="mailto:snswfinance@adventist.bot"
+                    className="hover:text-[#F44314] transition-colors"
+                  >
+                    snswfinance@adventist.bot
+                  </a>
+                </li>
                 <li>Monday – Friday: 9am – 5pm</li>
               </ul>
             </div>
