@@ -47,11 +47,15 @@ export interface ServiceImage {
   key?: string;
   alt?: string;
   /**
-   * Where to centre this image vertically when it is cropped, as a percentage from
-   * the top: 0 keeps the top edge, 50 centres, 100 keeps the bottom. Set in the
-   * admin panel. Absent on records saved before that control existed — treat as 50,
-   * which is the plain centre crop they were already getting.
+   * Where to centre this image when it is cropped, as percentages: focalX from the
+   * left, focalY from the top. 50/50 is the plain centre crop. Set in the admin
+   * panel. Absent on records saved before those controls existed — treat as 50.
+   *
+   * focalX matters more than it looks: banners are uploaded at 1200x400 (3:1) but
+   * rendered here at roughly 16:10, a taller box, so a compliant banner is cropped
+   * sideways and not at all vertically.
    */
+  focalX?: number;
   focalY?: number;
 }
 
@@ -119,6 +123,17 @@ export interface Service {
   hierarchyPath?: string;
   createdAt?: string;
   updatedAt?: string;
+}
+
+/**
+ * An active service type as returned by GET /services/public/types.
+ * `value` is what a Service record carries in its `type` field.
+ */
+export interface ServiceTypeOption {
+  value: string;
+  name: string;
+  description?: string;
+  displayOrder?: number;
 }
 
 // API Response Types

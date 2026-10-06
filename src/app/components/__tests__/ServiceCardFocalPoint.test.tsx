@@ -11,7 +11,7 @@ import { ServiceCard } from '../ServiceCard';
 // and must keep rendering exactly as they did — a plain centre crop — rather than
 // jumping to some new default.
 
-function renderCard(primaryImage?: { url: string; alt?: string; focalY?: number }) {
+function renderCard(primaryImage?: { url: string; alt?: string; focalX?: number; focalY?: number }) {
   const { container } = render(
     <MemoryRouter>
       <ServiceCard
@@ -31,31 +31,45 @@ describe('ServiceCard — banner framing', () => {
   it('honours a focal point chosen in the admin', () => {
     const img = renderCard({ url: UPLOADED, focalY: 20 });
 
-    expect(img.style.objectPosition).toBe('center 20%');
+    expect(img.style.objectPosition).toBe('50% 20%');
   });
 
   it('keeps the top of the picture when asked', () => {
     const img = renderCard({ url: UPLOADED, focalY: 0 });
 
-    expect(img.style.objectPosition).toBe('center 0%');
+    expect(img.style.objectPosition).toBe('50% 0%');
   });
 
   it('keeps the bottom when asked', () => {
     const img = renderCard({ url: UPLOADED, focalY: 100 });
 
-    expect(img.style.objectPosition).toBe('center 100%');
+    expect(img.style.objectPosition).toBe('50% 100%');
   });
 
   it('centres a record saved before the control existed', () => {
     // The regression that would matter: every existing service has no focalY.
     const img = renderCard({ url: UPLOADED });
 
-    expect(img.style.objectPosition).toBe('center 50%');
+    expect(img.style.objectPosition).toBe('50% 50%');
   });
 
   it('uses the uploaded image itself', () => {
     const img = renderCard({ url: UPLOADED, focalY: 30 });
 
     expect(img.getAttribute('src')).toBe(UPLOADED);
+  });
+
+  it('honours a horizontal focal point', () => {
+    // The axis that actually matters: a 1200x400 banner in a ~16:10 box is cropped
+    // sideways, not vertically, so focalY alone could never move it.
+    const img = renderCard({ url: UPLOADED, focalX: 20 });
+
+    expect(img.style.objectPosition).toBe('20% 50%');
+  });
+
+  it('honours both axes together', () => {
+    const img = renderCard({ url: UPLOADED, focalX: 25, focalY: 75 });
+
+    expect(img.style.objectPosition).toBe('25% 75%');
   });
 });

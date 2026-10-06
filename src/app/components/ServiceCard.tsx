@@ -34,7 +34,7 @@ export function ServiceCard({ id, name, descriptionShort, locations, primaryImag
   // centre crop they were already getting. The local override map only applies when
   // there is no uploaded image at all.
   const imagePosition = primaryImage?.url
-    ? `center ${primaryImage.focalY ?? 50}%`
+    ? `${primaryImage.focalX ?? 50}% ${primaryImage.focalY ?? 50}%`
     : ((id && getServiceImagePosition(id)) || 'center');
   const location = formatLocation(locations);
 
