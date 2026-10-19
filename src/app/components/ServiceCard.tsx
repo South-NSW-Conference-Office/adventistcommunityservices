@@ -56,6 +56,7 @@ export function ServiceCard({ id, name, descriptionShort, locations, primaryImag
           alt={name}
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
           style={{ objectPosition: imagePosition }}
+          onError={(e) => { (e.target as HTMLImageElement).src = DEFAULT_SERVICE_IMAGE; }}
         />
       </div>
 
