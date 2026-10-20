@@ -4,7 +4,7 @@
 FROM node:20-bullseye-slim AS build
 WORKDIR /app
 COPY package.json package-lock.json* ./
-RUN npm ci --legacy-peer-deps || npm install --legacy-peer-deps
+RUN npm install --legacy-peer-deps
 ARG VITE_API_URL
 ENV VITE_API_URL=$VITE_API_URL
 COPY . .
